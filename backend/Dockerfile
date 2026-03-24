@@ -1,25 +1,19 @@
-# 使用 Node.js 20 Debian 12（Bookworm），自带 OpenSSL 3.0
-FROM node:20-bookworm-slim
+FROM node:18-alpine
+
+# 安装 libssl1.1（解决 Prisma 依赖问题）
+RUN apk add --no-cache libssl1.1
 
 WORKDIR /app
 
-# 复制 package 文件
+# 复制依赖文件并安装
 COPY package*.json ./
+RUN npm install
 
-# 安装依赖
-RUN npm ci
-
-# 复制 Prisma Schema
-COPY prisma ./prisma/
-
-# 生成 Prisma Client
-RUN npx prisma generate
-
-# 复制所有源代码
+# 复制项目代码
 COPY . .
 
-# 暴露端口
-EXPOSE 3001
+# 生成 Prisma 客户端
+RUN npx prisma generate
 
-# 启动命令
-CMD ["npm", "start"]
+# 启动服务
+CMD ["node", "src/app.js"]
