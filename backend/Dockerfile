@@ -1,11 +1,11 @@
 FROM node:18-alpine
 
-# 安装 libssl1.1（解决 Prisma 依赖问题）
+# 关键步骤：安装缺失的 libssl1.1
 RUN apk add --no-cache libssl1.1
 
 WORKDIR /app
 
-# 复制依赖文件并安装
+# 复制并安装依赖
 COPY package*.json ./
 RUN npm install
 
