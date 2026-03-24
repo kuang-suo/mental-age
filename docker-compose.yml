@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: mental_age_test_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mental_age_test
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js 应用
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mental_age_test_app
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mental_age_test
+      JWT_SECRET: your-secret-key-change-in-production
+      INIT_ADMIN_PASSWORD: admin123
+      FRONTEND_URL: http://localhost:3000
+      PORT: 3001
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: mental_age_test_network
