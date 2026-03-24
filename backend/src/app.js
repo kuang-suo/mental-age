@@ -33,7 +33,7 @@ async function start() {
     // 初始化数据库
     await initializeDatabase(prisma);
 
-    app.listen(config.port, () => {
+    app.listen(config.port, "0.0.0.0", () => {
       console.log(`服务器运行在 http://localhost:${config.port}`);
       console.log(`环境: ${config.nodeEnv}`);
     });
