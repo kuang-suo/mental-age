@@ -1,15 +1,22 @@
 FROM node:18-alpine
 
-# 👇这一行是救命关键：直接安装缺失的 libssl1.1
-RUN apk add --no-cache libssl1.1
-
 WORKDIR /app
 
+# 复制 package 文件
 COPY package*.json ./
-RUN npm install
+COPY prisma ./prisma/
 
-COPY . .
+# 安装依赖
+RUN npm ci
 
+# 复制应用代码
+COPY src ./src/
+
+# 生成 Prisma 客户端
 RUN npx prisma generate
 
-CMD ["node", "src/app.js"]
+# 暴露端口
+EXPOSE 3001
+
+# 启动应用
+CMD ["npm", "start"]

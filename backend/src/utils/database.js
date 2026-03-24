@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import config from '../config/env.js';
 
 // 20道测试题目（覆盖8个维度）
