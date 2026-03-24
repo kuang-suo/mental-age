@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理员后台 - 心理年龄测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 登录界面 */
+    .login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #5568d3;
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    /* 管理界面 */
+    .admin-screen {
+      display: none;
+    }
+
+    .admin-screen.active {
+      display: block;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      color: #333;
+    }
+
+    .logout-btn {
+      padding: 10px 20px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
+    }
+
+    .section {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .generate-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .generate-form input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .generate-form .btn {
+      flex: 0 0 auto;
+      width: auto;
+      padding: 10px 20px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .action-buttons .btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .codes-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .codes-table th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .codes-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .codes-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-unused {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-used {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .pagination button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      .codes-table {
+        font-size: 12px;
+      }
+
+      .codes-table th,
+      .codes-table td {
+        padding: 8px;
+      }
+
+      .generate-form {
+        flex-direction: column;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 登录界面 -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <h1>管理员登录</h1>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn">登录</button>
+        <div id="loginError" class="error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 管理界面 -->
+  <div id="adminScreen" class="admin-screen">
+    <div class="container">
+      <div class="header">
+        <h1>心理年龄测试 - 管理后台</h1>
+        <button class="logout-btn" onclick="logout()">退出登录</button>
+      </div>
+
+      <!-- 生成兑换码 -->
+      <div class="section">
+        <h2>生成兑换码</h2>
+        <div class="generate-form">
+          <input type="number" id="codeCount" min="1" max="100" value="10" placeholder="输入数量 (1-100)">
+          <button class="btn" onclick="generateCodes()">生成</button>
+        </div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="generatedCodes" style="display: none;">
+          <h3>生成的兑换码:</h3>
+          <textarea id="codesTextarea" readonly style="width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: monospace;"></textarea>
+          <button class="btn" style="margin-top: 10px; width: auto;" onclick="copyToClipboard()">复制到剪贴板</button>
+        </div>
+      </div>
+
+      <!-- 兑换码列表 -->
+      <div class="section">
+        <h2>兑换码列表</h2>
+        <div class="action-buttons">
+          <button class="btn" onclick="loadCodes()">刷新列表</button>
+          <button class="btn" onclick="exportCodes()">导出 CSV</button>
+        </div>
+        <div id="codesContainer" class="loading">加载中...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

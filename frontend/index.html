@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心理年龄测试 - 发现真实的自己</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- 开始界面 -->
+    <div id="startScreen" class="screen active">
+      <div class="start-content">
+        <div class="logo">🌸</div>
+        <h1>心理年龄测试</h1>
+        <p class="subtitle">发现真实的自己，探索内心的智慧</p>
+        <div class="description">
+          <p>通过20道精心设计的问题，我们将帮助你了解：</p>
+          <ul>
+            <li>✨ 你的心理年龄</li>
+            <li>💫 你的人格类型</li>
+            <li>🎭 你的原型角色</li>
+            <li>🌟 你的独特特质</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary" onclick="startTest()">开始测试</button>
+      </div>
+    </div>
+
+    <!-- 兑换码模态框 -->
+    <div id="codeModal" class="modal">
+      <div class="modal-content">
+        <h2>输入兑换码</h2>
+        <p>请输入您的兑换码以开始测试</p>
+        <input type="text" id="codeInput" placeholder="请输入8位兑换码" maxlength="8" class="input-field">
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="closeCodeModal()">取消</button>
+          <button class="btn btn-primary" onclick="validateCode()">验证</button>
+        </div>
+        <div id="codeError" class="error-message"></div>
+      </div>
+    </div>
+
+    <!-- 测试界面 -->
+    <div id="testScreen" class="screen">
+      <div class="test-container">
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div class="progress-text">
+          <span id="currentQuestion">1</span> / <span id="totalQuestions">20</span>
+        </div>
+
+        <div class="question-card">
+          <h2 id="questionText"></h2>
+          <div class="options">
+            <label class="option" onclick="selectAnswer(1)">
+              <input type="radio" name="answer" value="1">
+              <span class="option-text">完全不同意</span>
+            </label>
+            <label class="option" onclick="selectAnswer(2)">
+              <input type="radio" name="answer" value="2">
+              <span class="option-text">不同意</span>
+            </label>
+            <label class="option" onclick="selectAnswer(3)">
+              <input type="radio" name="answer" value="3">
+              <span class="option-text">中立</span>
+            </label>
+            <label class="option" onclick="selectAnswer(4)">
+              <input type="radio" name="answer" value="4">
+              <span class="option-text">同意</span>
+            </label>
+            <label class="option" onclick="selectAnswer(5)">
+              <input type="radio" name="answer" value="5">
+              <span class="option-text">完全同意</span>
+            </label>
+          </div>
+
+          <!-- 第20题时显示年龄输入框 -->
+          <div id="ageInputBox" style="display:none; margin-top: 20px; padding: 20px; background: var(--light-bg); border-radius: 12px;">
+            <label for="realAgeInput" style="display: block; margin-bottom: 8px; font-weight: 600;">你的实际年龄</label>
+            <input type="number" id="realAgeInput" min="18" max="100" placeholder="请输入18-100之间的年龄" class="input-field" style="margin-bottom: 10px;">
+            <small style="color: #999;">为了给您提供更准确的分析，请填写您的实际年龄</small>
+          </div>
+        </div>
+
+        <div class="test-buttons">
+          <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn" style="display:none;">上一题</button>
+          <button class="btn btn-primary" onclick="handleSubmitTest()" id="submitTestBtn" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div id="resultScreen" class="screen">
+      <div class="result-container" id="resultContent">
+        <!-- 结果内容将由 JavaScript 动态生成 -->
+      </div>
+      <div class="result-buttons">
+        <button class="btn btn-secondary" onclick="backToStart()">返回首页</button>
+        <button class="btn btn-primary" onclick="saveResultImage()">保存结果图片</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

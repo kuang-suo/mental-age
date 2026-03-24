@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 测试题目
+model Question {
+  id        Int     @id @default(autoincrement())
+  title     String  @db.Text
+  dimension Int     // 1-8 维度
+  order     Int
+  createdAt DateTime @default(now())
+
+  @@index([dimension])
+}
+
+// 兑换码
+model ExchangeCode {
+  id          Int         @id @default(autoincrement())
+  code        String      @unique @db.VarChar(8)
+  used        Boolean     @default(false)
+  usedAt      DateTime?
+  createdAt   DateTime    @default(now())
+  testResult  TestResult?
+
+  @@index([used])
+  @@index([code])
+}
+
+// 测试结果
+model TestResult {
+  id                Int         @id @default(autoincrement())
+  mentalAge         Int
+  realAge           Int
+  dimensionScores   Json        // 8个维度的得分
+  personalityType   String
+  archetype         String
+  matchedCelebrity  String
+  keywords          Json        // 关键词数组
+  analysisText      Json        // 深度分析（对象：coreTraits, blindSpots, growthAdvice）
+  matchText         Json        // 社交匹配（对象：socialType, socialStyle, bestMatch, relationshipReminder）
+  createdAt         DateTime    @default(now())
+  exchangeCodeId    Int         @unique
+  exchangeCode      ExchangeCode @relation(fields: [exchangeCodeId], references: [id])
+
+  @@index([createdAt])
+}
+
+// 管理员账户
+model Admin {
+  id            Int     @id @default(autoincrement())
+  username      String  @unique
+  passwordHash  String
+  createdAt     DateTime @default(now())
+}
