@@ -25,8 +25,12 @@ export function errorHandler(err, req, res, next) {
   });
 }
 
+// 通用接口限流
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15分钟
-  max: 100, // 每个IP最多100次请求
-  message: '请求过于频繁，请稍后再试'
+  max: 100, // 限制每个IP 100次请求
+  standardHeaders: true, // 返回标准的限流响应头
+  legacyHeaders: false, // 关闭旧版本的X-RateLimit-*头
+  trustProxy: true, // 【核心新增】信任代理，和express的trust proxy配置匹配，解决报错
+  message: { error: '请求过于频繁，请稍后再试' },
 });

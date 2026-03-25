@@ -11,7 +11,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 // 【核心修复】开启trust proxy，适配Railway反向代理环境
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // 中间件
 app.use(cors({ 
