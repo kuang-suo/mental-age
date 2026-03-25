@@ -3,12 +3,15 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import config from './config/env.js';
 import { generalLimiter, errorHandler } from './middleware/auth.js';
-// import { initializeDatabase } from './utils/database.js'; 先注释掉，避免启动失败
+import { initializeDatabase } from './utils/database.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
 
 const app = express();
 const prisma = new PrismaClient();
+
+// 【核心修复】开启trust proxy，适配Railway反向代理环境
+app.set('trust proxy', true);
 
 // 中间件
 app.use(cors({ 
@@ -16,13 +19,14 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+// 限流中间件放在json解析之后
 app.use(generalLimiter);
 
 // 路由
 app.use('/api', apiRoutes);
 app.use('/api/admin', adminRoutes);
 
-// 健康检查（优先测试这个接口，确认服务是否正常）
+// 健康检查
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: '服务运行正常' });
 });
@@ -33,10 +37,9 @@ app.use(errorHandler);
 // 启动服务器
 async function start() {
   try {
-    // 先注释掉数据库初始化，避免启动崩溃
-    // await initializeDatabase(prisma);
+    // 数据库初始化（现在服务能正常启动，不会崩溃了，可以恢复这个逻辑）
+    await initializeDatabase(prisma);
 
-    // 正确监听端口，适配Railway环境
     app.listen(config.port, "0.0.0.0", () => {
       console.log(`✅ 服务启动成功，监听端口：${config.port}`);
       console.log(`🌍 运行环境：${config.nodeEnv}`);
