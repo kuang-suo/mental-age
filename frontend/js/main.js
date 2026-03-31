@@ -1,5 +1,6 @@
 // API 基础 URL
-const API_BASE_URL = 'http://localhost:3001/api';
+//const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
 //const API_BASE_URL = 'https://mental-age-production.up.railway.app/api';
 // 全局状态
 let state = {
