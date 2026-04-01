@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \":*)",
+      "Bash(curl -X POST http://localhost:3001/api/admin/generate-codes -H \"Content-Type: application/json\" -H \"Authorization: Bearer your_admin_token_here\" -d '{\"\"count\"\": 5}')",
+      "Bash(node generate-test-codes.js)",
+      "Bash(node ../generate-test-codes-simple.js)",
+      "Bash(npm install:*)",
+      "Bash(node generate-test-codes-simple.js)",
+      "Bash(node add-fixed-test-codes.js)",
+      "Bash(node fixed-test-codes.js)",
+      "Bash(ls -la *.js)",
+      "Bash(npx prisma:*)"
+    ]
+  }
+}

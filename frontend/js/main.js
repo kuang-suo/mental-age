@@ -1,6 +1,8 @@
 // API 基础 URL
-//const API_BASE_URL = 'http://localhost:3001/api';
-const API_BASE_URL = '/api';
+//本地
+const API_BASE_URL = 'http://localhost:3001/api';
+//服务器
+//const API_BASE_URL = '/api';
 //const API_BASE_URL = 'https://mental-age-production.up.railway.app/api';
 // 全局状态
 let state = {
@@ -54,6 +56,14 @@ async function validateCode() {
   if (!code || code.length !== 8) {
     errorDiv.textContent = '请输入8位兑换码';
     errorDiv.classList.add('show');
+    return;
+  }
+
+  // 特殊处理：VIP测试码-纯前端
+  if (code === 'VIP88888') {
+    state.exchangeCode = code;
+    document.getElementById('codeModal').classList.remove('active');
+    showTestScreen();
     return;
   }
 

@@ -1,5 +1,9 @@
-const API_BASE_URL = 'http://localhost:3001/api/admin';
 
+
+//本地
+const API_BASE_URL = 'http://localhost:3001/api/admin';
+//服务器
+//const API_BASE_URL = '/api/admin';
 //const API_BASE_URL = 'https://mental-age-production.up.railway.app/api/admin';
 let token = localStorage.getItem('adminToken');
 let currentPage = 1;

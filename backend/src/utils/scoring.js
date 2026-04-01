@@ -111,8 +111,8 @@ export function calculateDimensionScores(answers) {
 export function calculateMentalAge(dimensionScores) {
   const totalScore = Object.values(dimensionScores).reduce((a, b) => a + b, 0);
   const avgScore = totalScore / 8;
-  // 线性映射：0-5 -> 18-60
-  const mentalAge = Math.round(18 + (avgScore / 5) * 42);
+  // 线性映射：0-100 -> 18-60
+  const mentalAge = Math.round(18 + (avgScore / 100) * 42);
   return Math.max(18, Math.min(60, mentalAge));
 }
 
