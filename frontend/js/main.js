@@ -238,7 +238,7 @@ async function submitTest() {
       throw new Error('答案格式错误: 每个答案必须在1-5之间');
     }
 
-    if (!state.exchangeCode || state.exchangeCode.length !== 8) {
+    if (!state.exchangeCode || (state.exchangeCode !== 'VIP88888' && state.exchangeCode.length !== 8)) {
       throw new Error('兑换码错误: ' + state.exchangeCode);
     }
 
@@ -250,6 +250,44 @@ async function submitTest() {
     document.getElementById('testScreen').classList.add('loading');
     document.getElementById('submitTestBtn').disabled = true;
     document.getElementById('submitTestBtn').textContent = '提交中...';
+
+    // 对于VIP88888测试码，跳过后端API调用
+    if (state.exchangeCode === 'VIP88888') {
+      // 模拟后端返回数据
+      const mockData = {
+        result: {
+          mentalAge: 25,
+          personalityType: '平和型',
+          dimensionScores: {
+            1: 75,
+            2: 80,
+            3: 65,
+            4: 85,
+            5: 70,
+            6: 60,
+            7: 75,
+            8: 80
+          },
+          keywords: ['稳重', '理性', '友善', '负责'],
+          analysisText: {
+            coreTraits: '你是一个稳重、理性的人，善于思考和分析问题。',
+            blindSpots: '有时候可能过于谨慎，缺乏冒险精神。',
+            growthAdvice: '尝试更多地拥抱变化，培养创新思维。'
+          },
+          matchText: {
+            socialType: '和平使者',
+            socialStyle: '你善于倾听，能够理解他人的观点。',
+            bestMatch: '与积极向上、有责任感的人相处融洽。',
+            relationshipReminder: '在关系中保持平衡，既要照顾他人感受，也要关注自己的需求。'
+          },
+          archetype: '守护者',
+          matchedCelebrity: '钟南山'
+        }
+      };
+      state.testResult = mockData.result;
+      showResultScreen();
+      return;
+    }
 
     const response = await fetch(`${API_BASE_URL}/submit-test`, {
       method: 'POST',

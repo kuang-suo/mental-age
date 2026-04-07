@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI性格测试 - 发现你的性格类型</title>
+  <link rel="stylesheet" href="css/style.css?v=1.0.1">
+  <script src="https://unpkg.com/chart.js"></script>
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body class="mbti-test">
+  <div class="container">
+    <!-- 开始界面 -->
+    <div id="startScreen" class="screen active">
+      <div class="start-content">
+        <div class="logo">🎭</div>
+        <h1>MBTI性格测试</h1>
+        <p class="subtitle">发现你的性格类型，了解真实的自己</p>
+        <div class="description">
+          <p>通过70道精心设计的问题，我们将帮助你了解：</p>
+          <ul>
+            <li>✨ 你的4字母MBTI性格类型</li>
+            <li>💫 你的性格维度分布</li>
+            <li>🎭 你的性格特点和优势</li>
+            <li>🌟 你的职业和关系建议</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary" onclick="startTest()">开始测试</button>
+      </div>
+    </div>
+
+    <!-- 兑换码模态框 -->
+    <div id="codeModal" class="modal">
+      <div class="modal-content">
+        <h2>输入兑换码</h2>
+        <p>请输入您的兑换码以开始测试</p>
+        <input type="text" id="codeInput" placeholder="请输入8位兑换码" maxlength="8" class="input-field">
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="closeCodeModal()">取消</button>
+          <button class="btn btn-primary" onclick="validateCode()">验证</button>
+        </div>
+        <div id="codeError" class="error-message"></div>
+      </div>
+    </div>
+
+    <!-- 测试界面 -->
+    <div id="testScreen" class="screen">
+      <div class="test-container">
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div class="progress-text">
+          <span id="currentQuestion">1</span> / <span id="totalQuestions">70</span>
+        </div>
+
+        <div class="question-card">
+          <h2 id="questionText"></h2>
+          <div class="options">
+            <label class="option" onclick="selectAnswer('e')">
+              <input type="radio" name="answer" value="e">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('i')">
+              <input type="radio" name="answer" value="i">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('s')">
+              <input type="radio" name="answer" value="s">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('n')">
+              <input type="radio" name="answer" value="n">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('t')">
+              <input type="radio" name="answer" value="t">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('f')">
+              <input type="radio" name="answer" value="f">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('j')">
+              <input type="radio" name="answer" value="j">
+              <span class="option-text"></span>
+            </label>
+            <label class="option" onclick="selectAnswer('p')">
+              <input type="radio" name="answer" value="p">
+              <span class="option-text"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="test-buttons">
+          <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn" style="display:none;">上一题</button>
+          <button class="btn btn-primary" onclick="handleSubmitTest()" id="submitTestBtn" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div id="resultScreen" class="screen">
+      <div class="result-container" id="resultContent">
+        <!-- 结果内容将由 JavaScript 动态生成 -->
+      </div>
+      <div class="result-buttons">
+        <button class="btn btn-secondary" onclick="backToStart()">返回首页</button>
+        <button class="btn btn-primary" onclick="saveResultImage()">保存结果图片</button>
+        <button class="btn btn-primary" onclick="goToHome()">更多测试</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/mbti.js"></script>
+</body>
+</html>

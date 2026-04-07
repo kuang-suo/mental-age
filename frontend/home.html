@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心理测试中心</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 主页特定样式 */
+    .home-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .home-content {
+      text-align: center;
+      padding: 60px 30px;
+      background: linear-gradient(135deg, #FFF8F0 0%, #FFE4E1 100%);
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 2px solid #FFB6C1;
+    }
+    
+    .home-logo {
+      font-size: 100px;
+      margin-bottom: 30px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-20px);
+      }
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .home-title {
+      font-size: 48px;
+      color: #FF69B4;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+    }
+    
+    .home-subtitle {
+      font-size: 18px;
+      color: #999;
+      margin-bottom: 40px;
+    }
+    
+    .test-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .test-buttons .btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px 32px;
+      font-size: 18px;
+      border-radius: 30px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .test-buttons .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .xhs-promo {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 30px;
+      border-left: 4px solid #FF69B4;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .xhs-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #FF69B4;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .xhs-content {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    
+    .xhs-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .xhs-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 600px) {
+      .home-content {
+        padding: 40px 20px;
+      }
+      
+      .home-logo {
+        font-size: 80px;
+      }
+      
+      .home-title {
+        font-size: 36px;
+      }
+      
+      .test-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .test-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="home-container">
+    <div class="home-content">
+      <div class="home-logo">🌸</div>
+      <h1 class="home-title">心理测试中心</h1>
+      <p class="home-subtitle">探索内心世界，了解真实的自己</p>
+      
+      <div class="test-buttons">
+        <button class="btn btn-primary" onclick="window.location.href='index.html'">心理年龄测试</button>
+        <button class="btn btn-secondary" onclick="window.location.href='mbti.html'">MBTI性格测试</button>
+      </div>
+      
+      <div class="xhs-promo">
+        <h3 class="xhs-title">🛍️ 购买兑换码</h3>
+        <p class="xhs-content">
+          测试需要兑换码才能开始，兑换码通用所有测试。
+          <br>请在小红书购买兑换码，支持我们的创作。
+        </p>
+        <a href="https://xhslink.com/m/3C1YqoEh1qn" class="xhs-link" target="_blank">🔗 点击前往小红书购买</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

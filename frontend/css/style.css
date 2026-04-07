@@ -5,18 +5,47 @@
 }
 
 :root {
-  --primary-color: #FFB6C1;
-  --secondary-color: #FFE4B5;
-  --accent-color: #F0E68C;
-  --text-color: #5a5a5a;
-  --light-bg: #FFF8F0;
-  --border-radius: 20px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  /* MBTI测试样式变量 */
+  --mbti-primary-color: #7C3AED;
+  --mbti-secondary-color: #F0E6FF;
+  --mbti-accent-color: #FFE9F0;
+  --mbti-text-color: #5a5a5a;
+  --mbti-light-bg: #FFFDF7;
+  --mbti-border-radius: 32px;
+  --mbti-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --mbti-soft-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+  --mbti-gradient-bg: linear-gradient(145deg, #F9F6FF 0%, #EFE6FF 100%);
+  --mbti-gradient-primary: linear-gradient(135deg, #9333EA, #7C3AED);
+  --mbti-gradient-secondary: linear-gradient(135deg, #F0E6FF, #E9DFFF);
+  
+  /* 心理年龄测试样式变量（从备份恢复） */
+  --mental-primary-color: #FFB6C1;
+  --mental-secondary-color: #FFE4B5;
+  --mental-accent-color: #F0E68C;
+  --mental-text-color: #5a5a5a;
+  --mental-light-bg: #FFF8F0;
+  --mental-border-radius: 20px;
+  --mental-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --mental-gradient-bg: linear-gradient(135deg, #FFF8F0 0%, #FFE4E1 100%);
+  --mental-gradient-primary: linear-gradient(135deg, var(--mental-primary-color), #FF69B4);
+  --mental-gradient-secondary: linear-gradient(135deg, #FFF8F0, #FFE4E1);
+  
+  /* 默认样式（用于心理年龄测试） */
+  --primary-color: var(--mental-primary-color);
+  --secondary-color: var(--mental-secondary-color);
+  --accent-color: var(--mental-accent-color);
+  --text-color: var(--mental-text-color);
+  --light-bg: var(--mental-light-bg);
+  --border-radius: var(--mental-border-radius);
+  --shadow: var(--mental-shadow);
+  --gradient-bg: var(--mental-gradient-bg);
+  --gradient-primary: var(--mental-gradient-primary);
+  --gradient-secondary: var(--mental-gradient-secondary);
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #FFF8F0 0%, #FFE4E1 100%);
+  background: var(--gradient-bg);
   color: var(--text-color);
   min-height: 100vh;
   padding: 20px;
@@ -111,7 +140,7 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), #FF69B4);
+  background: var(--gradient-primary);
   color: white;
 }
 
@@ -386,9 +415,9 @@ body {
 }
 
 .personality-label {
-  font-size: 13px;
+  font-size: 14px;
   color: #999;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-weight: 600;
 }
 
@@ -397,6 +426,10 @@ body {
   font-weight: 700;
   color: var(--primary-color);
 }
+
+
+
+
 
 /* 模块二：关键词标签 */
 .keywords-container {
@@ -459,6 +492,13 @@ body {
   white-space: nowrap;
 }
 
+.dimension-score {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: right;
+}
+
 .progress-container {
   height: 8px;
   background: #e8e8e8;
@@ -473,12 +513,7 @@ body {
   transition: width 0.5s ease;
 }
 
-.dimension-score {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary-color);
-  text-align: right;
-}
+
 
 /* 模块五：深度自我分析 */
 .module-analysis {
@@ -571,6 +606,16 @@ body {
   color: var(--text-color);
 }
 
+/* 免责声明 */
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 182, 193, 0.1);
+}
+
 .result-buttons {
   display: flex;
   gap: 15px;
@@ -581,6 +626,335 @@ body {
 .result-buttons .btn {
   flex: 1;
   max-width: 200px;
+}
+
+/* MBTI测试特定样式 */
+.mbti-test {
+  --primary-color: var(--mbti-primary-color);
+  --secondary-color: var(--mbti-secondary-color);
+  --accent-color: var(--mbti-accent-color);
+  --text-color: var(--mbti-text-color);
+  --light-bg: var(--mbti-light-bg);
+  --border-radius: var(--mbti-border-radius);
+  --shadow: var(--mbti-shadow);
+  --soft-shadow: var(--mbti-soft-shadow);
+  --gradient-bg: var(--mbti-gradient-bg);
+  --gradient-primary: var(--mbti-gradient-primary);
+  --gradient-secondary: var(--mbti-gradient-secondary);
+}
+
+/* MBTI测试特定样式覆盖 */
+.mbti-test .start-content {
+  padding: 64px 32px;
+}
+
+.mbti-test .test-container {
+  padding: 48px 32px;
+}
+
+.mbti-test .result-container {
+  background: white;
+  padding: 32px 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow);
+}
+
+.mbti-test .result-module {
+  padding: 32px 24px;
+  border-radius: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--soft-shadow);
+  border: 1px solid rgba(124, 58, 237, 0.1);
+}
+
+.mbti-test .module-title {
+  font-size: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--secondary-color);
+  text-align: center;
+}
+
+.mbti-test .module-age-comparison {
+  background: var(--gradient-bg);
+}
+
+.mbti-test .personality-highlight {
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .personality-name {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.mbti-test .personality-nickname {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 16px;
+}
+
+.mbti-test .personality-quote {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.mbti-test .personality-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mbti-test .personality-tag {
+  padding: 6px 14px;
+  background: rgba(124, 58, 237, 0.1);
+  border-radius: 40px;
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.mbti-test .personality-image {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--gradient-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .dimension-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mbti-test .dimension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mbti-test .dimension-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mbti-test .dimension-letter {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.mbti-test .dimension-name {
+  font-size: 12px;
+  color: #999;
+}
+
+.mbti-test .progress-container {
+  height: 8px !important;
+  background: #E5E7EB !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+}
+
+.mbti-test .progress-bar-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #A78BFA, #C084FC) !important;
+  border-radius: 20px !important;
+  transition: width 0.5s ease;
+}
+
+.mbti-test .dimension-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.mbti-test .dimension-percentage {
+  font-weight: 600;
+  color: var(--mbti-primary-color);
+}
+
+.mbti-test .dimension-insight {
+  color: #666;
+  font-style: normal;
+  margin: 0;
+}
+
+.mbti-test .module-analysis {
+  background: var(--gradient-bg);
+}
+
+.mbti-test .analysis-section {
+  margin-bottom: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .section-subtitle {
+  font-size: 16px;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.mbti-test .section-content {
+  font-size: 15px;
+}
+
+.mbti-test .module-matching {
+  background: var(--gradient-bg);
+}
+
+.mbti-test .matching-section {
+  margin-bottom: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .matching-section:last-child {
+  margin-bottom: 24px;
+}
+
+.mbti-test .archetype-info {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: var(--soft-shadow);
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  gap: 16px;
+}
+
+.mbti-test .info-item {
+  padding: 16px 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.mbti-test .info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .info-label {
+  font-size: 14px;
+}
+
+.mbti-test .info-value {
+  font-size: 16px;
+}
+
+.mbti-test .share-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.mbti-test .share-buttons .btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+.mbti-test .compatibility-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.mbti-test .compatibility-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--light-bg);
+  border-radius: 12px;
+}
+
+.mbti-test .compatibility-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.mbti-test .compatibility-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.mbti-test .celebrities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.mbti-test .celebrity-tag {
+  padding: 8px 16px;
+  background: var(--secondary-color);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.mbti-test .celebrity-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--soft-shadow);
+}
+
+.mbti-test .egg-text {
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  margin-top: 24px;
+  font-style: italic;
+  padding: 16px;
+  background: var(--light-bg);
+  border-radius: 12px;
+}
+
+.mbti-test .disclaimer {
+  border-top: 1px solid rgba(124, 58, 237, 0.1);
+}
+
+.mbti-test .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+}
+
+.mbti-test .progress-fill {
+  background: var(--gradient-primary);
+}
+
+.mbti-test .option {
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+}
+
+.mbti-test .option:hover {
+  background: var(--secondary-color);
+  box-shadow: var(--soft-shadow);
 }
 
 /* 响应式设计 */
