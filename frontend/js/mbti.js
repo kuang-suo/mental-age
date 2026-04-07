@@ -1275,7 +1275,22 @@ document.addEventListener('DOMContentLoaded', () => {
   state.answers = new Array(MBTI_QUESTIONS.length).fill(null);
   document.getElementById('totalQuestions').textContent = MBTI_QUESTIONS.length;
   
-  
+   // 添加测试按钮，用于验证百分比计算
+   /*
+  const testButton = document.createElement('button');
+  testButton.textContent = '测试百分比计算';
+  testButton.style.position = 'fixed';
+  testButton.style.top = '10px';
+  testButton.style.right = '10px';
+  testButton.style.padding = '10px';
+  testButton.style.backgroundColor = '#7C3AED';
+  testButton.style.color = 'white';
+  testButton.style.border = 'none';
+  testButton.style.borderRadius = '8px';
+  testButton.style.cursor = 'pointer';
+  testButton.onclick = testPercentageCalculation;
+  document.body.appendChild(testButton);
+  */
 });
 
 // 测试百分比计算
@@ -1509,6 +1524,8 @@ function displayQuestion() {
     optionElement.querySelector('input[type="radio"]').value = option.value;
     optionElement.querySelector('.option-text').textContent = option.text;
     optionElement.querySelector('input[type="radio"]').checked = state.answers[state.currentQuestion] === option.value;
+    // 动态设置 onclick 事件，确保调用正确的 selectAnswer 函数
+    optionElement.onclick = () => selectAnswer(option.value);
   });
 
   // 启用所有选项
@@ -1593,22 +1610,31 @@ function calculateMBTIResult(answers) {
     j: 0, p: 0
   };
 
+  // 每个维度的问题数量
+  const dimensionCounts = {
+    e: 10, i: 10,
+    s: 20, n: 20,
+    t: 20, f: 20,
+    j: 20, p: 20
+  };
+
+  // 统计每个维度的得分，确保不超过对应维度的问题数量
   answers.forEach(answer => {
-    if (counts.hasOwnProperty(answer)) {
+    if (counts.hasOwnProperty(answer) && counts[answer] < dimensionCounts[answer]) {
       counts[answer]++;
     }
   });
 
   // 计算百分比
   const percentages = {
-    e: (counts.e / 10) * 100,
-    i: 100 - (counts.e / 10) * 100,
-    s: (counts.s / 20) * 100,
-    n: 100 - (counts.s / 20) * 100,
-    t: (counts.t / 20) * 100,
-    f: 100 - (counts.t / 20) * 100,
-    j: (counts.j / 20) * 100,
-    p: 100 - (counts.j / 20) * 100
+    e: Math.min((counts.e / 10) * 100, 100),
+    i: Math.min(100 - (counts.e / 10) * 100, 100),
+    s: Math.min((counts.s / 20) * 100, 100),
+    n: Math.min(100 - (counts.s / 20) * 100, 100),
+    t: Math.min((counts.t / 20) * 100, 100),
+    f: Math.min(100 - (counts.t / 20) * 100, 100),
+    j: Math.min((counts.j / 20) * 100, 100),
+    p: Math.min(100 - (counts.j / 20) * 100, 100)
   };
 
   // 确定类型
