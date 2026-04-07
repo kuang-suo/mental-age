@@ -27,16 +27,16 @@ const MBTI_QUESTIONS = [
     id: 2,
     question: "你更倾向于：",
     options: [
-      { value: 's', text: "现实性优于推测性" },
-      { value: 'n', text: "推测性大于现实性" }
+      { value: 's', text: "现实性大于理想性" },
+      { value: 'n', text: "理想性大于现实性" }
     ]
   },
   {
     id: 3,
     question: "以下哪种情况更糟糕：",
     options: [
-      { value: 's', text: "需要发挥你的想象力" },
-      { value: 'n', text: "需要墨守成规" }
+      { value: 's', text: "头脑飘忽不定" },
+      { value: 'n', text: "出于‘陷入困境’" }
     ]
   },
   {
@@ -49,39 +49,39 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 5,
-    question: "你更倾向于：",
+    question: "你更倾向于被以下哪种吸引：",
     options: [
-      { value: 't', text: "有说服力" },
-      { value: 'f', text: "打动人心" }
+      { value: 't', text: "令人信服" },
+      { value: 'f', text: "触摸" }
     ]
   },
   {
     id: 6,
-    question: "你更喜欢以下哪种工作方式：",
+    question: "你更喜欢以下哪种情况工作：",
     options: [
       { value: 'j', text: "遵守截止日期" },
-      { value: 'p', text: "仅'无论何时'" }
+      { value: 'p', text: "随时随地" }
     ]
   },
   {
     id: 7,
     question: "你倾向于选择：",
     options: [
-      { value: 'j', text: "相当小心" },
-      { value: 'p', text: "有点冲动" }
+      { value: 'j', text: "相当谨慎" },
+      { value: 'p', text: "有些冲动" }
     ]
   },
   {
     id: 8,
     question: "在聚会上，你会：",
     options: [
-      { value: 'e', text: "熬夜，精力却越来越旺盛" },
-      { value: 'i', text: "精力不济，早点离开" }
+      { value: 'e', text: "延迟离开，精力越来越旺盛" },
+      { value: 'i', text: "提前离开，精力越来越不济" }
     ]
   },
   {
     id: 9,
-    question: "你更倾向于：",
+    question: "你更被以下哪种人吸引：",
     options: [
       { value: 's', text: "明智的人" },
       { value: 'n', text: "富有想象力的人" }
@@ -91,32 +91,32 @@ const MBTI_QUESTIONS = [
     id: 10,
     question: "您对以下哪个更感兴趣：",
     options: [
-      { value: 's', text: "什么是实际的" },
-      { value: 'n', text: "什么是可能的" }
+      { value: 's', text: "实际的" },
+      { value: 'n', text: "可能的" }
     ]
   },
   {
     id: 11,
     question: "在评价他人时，你更容易受到以下因素的影响：",
     options: [
-      { value: 't', text: "法律而非情况" },
+      { value: 't', text: "法律而非情境" },
       { value: 'f', text: "情境而非法律" }
     ]
   },
   {
     id: 12,
-    question: "在接近他人时，你是否倾向于：",
+    question: "在接近他人时，你倾向于是怎样的：",
     options: [
-      { value: 't', text: "目标" },
-      { value: 'f', text: "个人" }
+      { value: 't', text: "客观的" },
+      { value: 'f', text: "个人的" }
     ]
   },
   {
     id: 13,
-    question: "你更倾向于：",
+    question: "你更倾向于以下哪种情况：",
     options: [
-      { value: 'j', text: "守时" },
-      { value: 'p', text: "悠闲地" }
+      { value: 'j', text: "守时的" },
+      { value: 'p', text: "悠闲的" }
     ]
   },
   {
@@ -131,29 +131,29 @@ const MBTI_QUESTIONS = [
     id: 15,
     question: "在你的社交群体中，你是否：",
     options: [
-      { value: 'e', text: "随时了解他人的动态" },
-      { value: 'i', text: "了解最新新闻" }
+      { value: 'e', text: "关注他人的动态" },
+      { value: 'i', text: "落后于新闻" }
     ]
   },
   {
     id: 16,
-    question: "在做日常事情时，你更有可能：",
+    question: "在做日常事情时，你更倾向于：",
     options: [
-      { value: 's', text: "按常规方式执行" },
-      { value: 'n', text: "随心所欲" }
+      { value: 's', text: "用常规方式去执行" },
+      { value: 'n', text: "以你自己的方式去做" }
     ]
   },
   {
     id: 17,
     question: "作家应该：",
     options: [
-      { value: 's', text: "言其所意，意其所言" },
-      { value: 'n', text: "通过类比来更好地表达事物" }
+      { value: 's', text: "说他们想说的话，做他们说说的事" },
+      { value: 'n', text: "更多的通过类比来表达事物" }
     ]
   },
   {
     id: 18,
-    question: "你更喜欢哪种：",
+    question: "哪种更吸引你：",
     options: [
       { value: 't', text: "思维一致性" },
       { value: 'f', text: "和谐的人际关系" }
@@ -161,7 +161,7 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 19,
-    question: "你更习惯于做以下哪种事情：",
+    question: "你在做出以下哪种判断时更自在：",
     options: [
       { value: 't', text: "逻辑判断" },
       { value: 'f', text: "价值判断" }
@@ -169,15 +169,15 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 20,
-    question: "你是否想要以下物品：",
+    question: "你希望事情是：",
     options: [
-      { value: 'j', text: "已解决并决定" },
-      { value: 'p', text: "犹豫不决" }
+      { value: 'j', text: "已解决和决定的" },
+      { value: 'p', text: "未解决和不确定的" }
     ]
   },
   {
     id: 21,
-    question: "你会更倾向于以下哪种描述：",
+    question: "你更倾向于以下哪种描述：",
     options: [
       { value: 'j', text: "严肃且坚定" },
       { value: 'p', text: "随和" }
@@ -187,7 +187,7 @@ const MBTI_QUESTIONS = [
     id: 22,
     question: "在打电话时，你会：",
     options: [
-      { value: 'e', text: "很少质疑是否所有事情都会被说清楚" },
+      { value: 'e', text: "很少质疑是否所有事情都会被说出来" },
       { value: 'i', text: "排练你要说的话" }
     ]
   },
@@ -195,13 +195,13 @@ const MBTI_QUESTIONS = [
     id: 23,
     question: "事实：",
     options: [
-      { value: 's', text: "代表自己发言" },
-      { value: 'n', text: "阐述原理" }
+      { value: 's', text: "自行表达" },
+      { value: 'n', text: "说明原则" }
     ]
   },
   {
     id: 24,
-    question: "是否具有远见卓识：",
+    question: "你是否远见卓识的人吗：",
     options: [
       { value: 's', text: "有些烦人" },
       { value: 'n', text: "相当迷人" }
@@ -209,7 +209,7 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 25,
-    question: "你更经常：",
+    question: "你更经常是：",
     options: [
       { value: 't', text: "一个头脑冷静的人" },
       { value: 'f', text: "一个热心肠的人" }
@@ -225,7 +225,7 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 27,
-    question: "一个人通常应该顺其自然吗：",
+    question: "通常应该事件顺其自然吗：",
     options: [
       { value: 'j', text: "通过精心挑选和慎重选择" },
       { value: 'p', text: "随机且偶然" }
@@ -233,9 +233,9 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 28,
-    question: "你是否对以下方面感觉更好：",
+    question: "你对以下哪种情况感觉更好：",
     options: [
-      { value: 'j', text: "已购买" },
+      { value: 'j', text: "已经够买" },
       { value: 'p', text: "有购买选择权" }
     ]
   },
@@ -276,7 +276,7 @@ const MBTI_QUESTIONS = [
     question: "你更倾向于：",
     options: [
       { value: 't', text: "坚定而非温和" },
-      { value: 'f', text: "温和而非坚硬" }
+      { value: 'f', text: "温和而非坚定" }
     ]
   },
   {
@@ -284,15 +284,15 @@ const MBTI_QUESTIONS = [
     question: "以下哪一项更值得敬佩：",
     options: [
       { value: 'j', text: "组织能力和条理性" },
-      { value: 'p', text: "适应和将就的能力" }
+      { value: 'p', text: "适应和应付的能力" }
     ]
   },
   {
     id: 35,
-    question: "你更看重：",
+    question: "你更看重以下哪项：",
     options: [
-      { value: 'j', text: "无穷大" },
-      { value: 'p', text: "思想开放" }
+      { value: 'j', text: "无限的" },
+      { value: 'p', text: "开放的" }
     ]
   },
   {
@@ -300,12 +300,12 @@ const MBTI_QUESTIONS = [
     question: "新的非常规交互是否：",
     options: [
       { value: 'e', text: "激励你，让你充满活力" },
-      { value: 'i', text: "对储备金征税" }
+      { value: 'i', text: "挑战你的储备能力" }
     ]
   },
   {
     id: 37,
-    question: "你是否更频繁地：",
+    question: "你是否更频繁地是：",
     options: [
       { value: 's', text: "一个务实的人" },
       { value: 'n', text: "一个爱幻想的人" }
@@ -313,10 +313,10 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 38,
-    question: "你更有可能：",
+    question: "你更倾向于：",
     options: [
-      { value: 's', text: "看看别人是如何发挥作用的" },
-      { value: 'n', text: "看看别人是怎么看的" }
+      { value: 's', text: "看到别人有多有用" },
+      { value: 'n', text: "看别人如何看待的" }
     ]
   },
   {
@@ -331,21 +331,21 @@ const MBTI_QUESTIONS = [
     id: 40,
     question: "你更遵循哪些规则：",
     options: [
-      { value: 't', text: "你的头" },
-      { value: 'f', text: "你的心" }
+      { value: 't', text: "你的头（逻辑）" },
+      { value: 'f', text: "你的心（情感）" }
     ]
   },
   {
     id: 41,
     question: "你更喜欢以下哪种工作：",
     options: [
-      { value: 'j', text: "已签约" },
-      { value: 'p', text: "偶尔完成" }
+      { value: 'j', text: "合同制的" },
+      { value: 'p', text: "以随意的方式完成" }
     ]
   },
   {
     id: 42,
-    question: "你是否倾向于寻找：",
+    question: "你更倾向于寻找：",
     options: [
       { value: 'j', text: "秩序井然者" },
       { value: 'p', text: "无论发生什么" }
@@ -379,15 +379,15 @@ const MBTI_QUESTIONS = [
     id: 46,
     question: "以下哪一项更像是一种赞美：",
     options: [
-      { value: 't', text: "有一个人非常有条理。" },
-      { value: 'f', text: "有一个非常多愁善感的人。" }
+      { value: 't', text: "这是一个非常有逻辑的人。" },
+      { value: 'f', text: "这是一个非常多愁善感的人。" }
     ]
   },
   {
     id: 47,
     question: "你更看重自己的以下哪个方面：",
     options: [
-      { value: 't', text: "坚定不移" },
+      { value: 't', text: "不动摇的" },
       { value: 'f', text: "忠诚的" }
     ]
   },
@@ -401,9 +401,9 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 49,
-    question: "你更习惯于：",
+    question: "你更倾向于哪种情况：",
     options: [
-      { value: 'j', text: "做出决定后" },
+      { value: 'j', text: "在做出决定之后" },
       { value: 'p', text: "在做出决定之前" }
     ]
   },
@@ -412,30 +412,30 @@ const MBTI_QUESTIONS = [
     question: "你是否：",
     options: [
       { value: 'e', text: "与陌生人轻松且长时间地交谈" },
-      { value: 'i', text: "发现与陌生人无话可说" }
+      { value: 'i', text: "对陌生人几乎没有什么可说的" }
     ]
   },
   {
     id: 51,
-    question: "你更倾向于信任：",
+    question: "你更倾向于信任你的：",
     options: [
       { value: 's', text: "经验" },
-      { value: 'n', text: "预感" }
+      { value: 'n', text: "猜测" }
     ]
   },
   {
     id: 52,
-    question: "你是否觉得：",
+    question: "你感觉：",
     options: [
-      { value: 's', text: "实用胜于巧妙" },
-      { value: 'n', text: "巧胜于实" }
+      { value: 's', text: "实用胜于创意" },
+      { value: 'n', text: "创意胜于实用" }
     ]
   },
   {
     id: 53,
     question: "以下哪个人更值得称赞：",
     options: [
-      { value: 't', text: "明确原因" },
+      { value: 't', text: "清晰的理由" },
       { value: 'f', text: "强烈的感情" }
     ]
   },
@@ -443,37 +443,37 @@ const MBTI_QUESTIONS = [
     id: 54,
     question: "你更倾向于：",
     options: [
-      { value: 't', text: "公正" },
-      { value: 'f', text: "同情" }
+      { value: 't', text: "公正的" },
+      { value: 'f', text: "有同情的" }
     ]
   },
   {
     id: 55,
-    question: "更倾向于：",
+    question: "最好主要选择：",
     options: [
       { value: 'j', text: "确保事情安排妥当" },
-      { value: 'p', text: "顺其自然" }
+      { value: 'p', text: "让事情自然发生" }
     ]
   },
   {
     id: 56,
-    question: "在人际关系中，大多数事情应该是：",
+    question: "在人际关系中，大多数事情应该是什么样的：",
     options: [
-      { value: 'j', text: "可重新协商" },
-      { value: 'p', text: "随机且偶然" }
+      { value: 'j', text: "可重新协商的" },
+      { value: 'p', text: "随机且偶然的" }
     ]
   },
   {
     id: 57,
-    question: "当电话响起时，你会：",
+    question: "当电话铃声响起时，你会：",
     options: [
-      { value: 'e', text: "赶紧抢先行动" },
-      { value: 'i', text: "希望其他人能回答" }
+      { value: 'e', text: "急于抢先接电话" },
+      { value: 'i', text: "希望别人接电话" }
     ]
   },
   {
     id: 58,
-    question: "你更看重自己的哪一点：",
+    question: "你更看重自己的哪方面：",
     options: [
       { value: 's', text: "强烈的现实感" },
       { value: 'n', text: "丰富的想象力" }
@@ -481,15 +481,15 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 59,
-    question: "你更倾向于：",
+    question: "你沟通更倾向于：",
     options: [
-      { value: 's', text: "基本原理" },
+      { value: 's', text: "基础交流" },
       { value: 'n', text: "言外之意" }
     ]
   },
   {
     id: 60,
-    question: "以下哪个错误更大：",
+    question: "以下哪个错误看起来更大：",
     options: [
       { value: 't', text: "过于热情" },
       { value: 'f', text: "过于客观" }
@@ -499,7 +499,7 @@ const MBTI_QUESTIONS = [
     id: 61,
     question: "你认为自己基本上是：",
     options: [
-      { value: 't', text: "头脑冷静" },
+      { value: 't', text: "头脑冷静的" },
       { value: 'f', text: "心肠柔软的" }
     ]
   },
@@ -515,29 +515,29 @@ const MBTI_QUESTIONS = [
     id: 63,
     question: "你更倾向于以下哪种类型的人：",
     options: [
-      { value: 'j', text: "常规化而非异想天开" },
-      { value: 'p', text: "异想天开而非墨守成规" }
+      { value: 'j', text: "常规化的而非异想天开" },
+      { value: 'p', text: "异想天开而非常规化的" }
     ]
   },
   {
     id: 64,
-    question: "你更倾向于：",
+    question: "你更倾向于成为：",
     options: [
-      { value: 'e', text: "容易接近" },
-      { value: 'i', text: "有些保守" }
+      { value: 'e', text: "容易接近的" },
+      { value: 'i', text: "有些保守的" }
     ]
   },
   {
     id: 65,
     question: "在写作方面，你更倾向于：",
     options: [
-      { value: 's', text: "更为直译" },
-      { value: 'n', text: "比喻性更强" }
+      { value: 's', text: "更为直白的" },
+      { value: 'n', text: "更为形象化的" }
     ]
   },
   {
     id: 66,
-    question: "你是否觉得以下事情更难做到：",
+    question: "你是否觉得以下哪项事情更难做到：",
     options: [
       { value: 's', text: "与他人产生共鸣" },
       { value: 'n', text: "利用他人" }
@@ -555,24 +555,24 @@ const MBTI_QUESTIONS = [
     id: 68,
     question: "哪个是更大的错误：",
     options: [
-      { value: 't', text: "无差别" },
+      { value: 't', text: "无差别对待" },
       { value: 'f', text: "保持批判性思维" }
     ]
   },
   {
     id: 69,
-    question: "你更喜欢：",
+    question: "你更喜欢以下哪种情况：",
     options: [
       { value: 'j', text: "计划中的活动" },
-      { value: 'p', text: "意外事件" }
+      { value: 'p', text: "意外的事件" }
     ]
   },
   {
     id: 70,
-    question: "你是否更倾向于：",
+    question: "你倾向于更偏向于：",
     options: [
-      { value: 'j', text: "深思熟虑而非自发" },
-      { value: 'p', text: "自发而非刻意" }
+      { value: 'j', text: "有计划的而非自发" },
+      { value: 'p', text: "自发的而非刻意的" }
     ]
   }
 ];
