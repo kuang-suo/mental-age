@@ -17,7 +17,7 @@ let state = {
 const MBTI_QUESTIONS = [
   {
     id: 1,
-    question: "在聚会上，你会：",
+    question: "在聚会上，你更倾向于：",
     options: [
       { value: 'e', text: "与许多人互动，包括陌生人" },
       { value: 'i', text: "与几位你认识的人互动" }
@@ -35,8 +35,8 @@ const MBTI_QUESTIONS = [
     id: 3,
     question: "以下哪种情况更糟糕：",
     options: [
-      { value: 's', text: "发挥你的想象力" },
-      { value: 'n', text: "墨守成规" }
+      { value: 's', text: "需要发挥你的想象力" },
+      { value: 'n', text: "需要墨守成规" }
     ]
   },
   {
@@ -49,10 +49,10 @@ const MBTI_QUESTIONS = [
   },
   {
     id: 5,
-    question: "更倾向于：",
+    question: "你更倾向于：",
     options: [
       { value: 't', text: "有说服力" },
-      { value: 'f', text: "触摸" }
+      { value: 'f', text: "打动人心" }
     ]
   },
   {
@@ -123,8 +123,8 @@ const MBTI_QUESTIONS = [
     id: 14,
     question: "以下哪种情况更让你感到困扰：",
     options: [
-      { value: 'j', text: "未完成" },
-      { value: 'p', text: "已完成" }
+      { value: 'j', text: "事情未完成" },
+      { value: 'p', text: "事情已完成" }
     ]
   },
   {
@@ -484,7 +484,7 @@ const MBTI_QUESTIONS = [
     question: "你更倾向于：",
     options: [
       { value: 's', text: "基本原理" },
-      { value: 'n', text: "泛音" }
+      { value: 'n', text: "言外之意" }
     ]
   },
   {
