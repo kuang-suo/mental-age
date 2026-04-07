@@ -1716,9 +1716,9 @@ function showResultScreen() {
 
 // 渲染结果
 function renderResult() {
-  console.log('renderResult 函数被调用');
+  //console.log('renderResult 函数被调用');
   const result = state.testResult;
-  console.log('测试结果:', result);
+  //console.log('测试结果:', result);
   const typeData = MBTI_DATA[result.type] || MBTI_DATA['INTJ']; // 默认使用INTJ数据
   
   const html = `
@@ -1956,7 +1956,7 @@ function renderResult() {
   `;
 
   document.getElementById('resultContent').innerHTML = html;
-  console.log('生成的HTML:', html);
+  //console.log('生成的HTML:', html);
 }
 
 // 绘制雷达图
