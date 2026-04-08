@@ -1315,7 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('totalQuestions').textContent = MBTI_QUESTIONS.length;
   
    // 添加测试按钮，用于验证百分比计算
-   /* 测试按钮 */   
+   /* 测试按钮   
   const testButton = document.createElement('button');
   testButton.textContent = '测试百分比计算';
   testButton.style.position = 'fixed';
@@ -1329,7 +1329,7 @@ document.addEventListener('DOMContentLoaded', () => {
   testButton.style.cursor = 'pointer';
   testButton.onclick = testPercentageCalculation;
   document.body.appendChild(testButton);
-  
+  */ 
 });
 
 // 测试百分比计算
