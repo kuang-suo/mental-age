@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SBTI 人格测试</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    .mbti-test .start-content {
+      padding: 64px 32px;
+    }
+    .author-info {
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    .author-info a {
+      color: var(--primary-color);
+    }
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+    .question {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #999;
+      font-size: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+    .question-title {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: var(--text-color);
+    }
+    .mbti-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .mbti-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .mbti-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .mbti-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .mbti-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .option-code {
+      font-weight: 800;
+      color: var(--primary-color);
+      min-width: 22px;
+    }
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .hint {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .result-top {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .poster-box {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-height: 280px;
+      overflow: hidden;
+      position: relative;
+      background: var(--gradient-bg);
+    }
+    .poster-image {
+      width: 100%;
+      min-height: 220px;
+      max-height: 460px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.75);
+      position: relative;
+      z-index: 1;
+    }
+    .poster-box.no-image .poster-image {
+      display: none;
+    }
+    .poster-caption {
+      margin-top: 14px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+    .type-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .type-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+    }
+    .type-subname {
+      margin-top: 10px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .match {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #666;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .dim-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .dim-item-score {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .dim-item p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .author-box summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .author-box summary::-webkit-details-marker { display: none; }
+    .author-box summary::after {
+      content: '展开';
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-color);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      background: var(--secondary-color);
+      padding: 6px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .author-box[open] summary::after {
+      content: '收起';
+    }
+    .author-content {
+      border-top: 1px solid rgba(124, 58, 237, 0.1);
+      padding: 0 18px 18px;
+    }
+    .author-content p {
+      margin: 14px 0 0;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    @media (max-width: 860px) {
+      .result-top { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .mbti-test .start-content { padding: 40px 20px; }
+      .mbti-test .start-content h1 { font-size: 32px; }
+      .question-title { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="mbti-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">🧠</div>
+        <h1>SBTI 人格测试</h1>
+        <p class="subtitle">MBTI已经过时，SBTI来了。</p>
+        <div class="description">
+          <p>通过30+道精心设计的问题（含隐藏彩蛋），我们将帮助你了解：</p>
+          <ul>
+            <li>✨ 你的SBTI人格类型及匹配度</li>
+            <li>💫 十五维度人格画像分布</li>
+            <li>🎭 你的人格特点与深度解读</li>
+            <li>🌟 你的社交、情感与行动驱力倾向</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 31</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout">
+          <div class="result-top">
+            <div class="poster-box result-module" id="posterBox">
+              <img id="posterImage" class="poster-image" alt="人格结果图" />
+              <div id="posterCaption" class="poster-caption">怎么样，被我拿捏了吧？</div>
+            </div>
+
+            <div class="type-box result-module">
+              <div class="type-kicker" id="resultModeKicker">你的主类型</div>
+              <div class="type-name" id="resultTypeName">CTRL（拿捏者）</div>
+              <div class="match" id="matchBadge">匹配度 92%</div>
+              <div class="type-subname" id="resultTypeSub">系统备注会显示在这里。</div>
+            </div>
+          </div>
+
+          <div class="analysis-box result-module">
+            <h3 class="module-title">该人格的简单解读</h3>
+            <p id="resultDesc"></p>
+          </div>
+
+          <div class="dim-box result-module">
+            <h3 class="module-title">十五维度评分</h3>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">SBTI 对应 MBTI</h3>
+            <div id="mbtiInfo" class="mbti-info"></div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p id="funNote">本测试仅供娱乐，不构成任何专业建议。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="toTopBtn" class="btn btn-secondary">返回首页</button>
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='mbti.html'">MBTI 测试</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/sbti.js"></script>
+
+
+
+
+</html>

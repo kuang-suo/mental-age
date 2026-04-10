@@ -133,4 +133,63 @@ router.post(
   }
 );
 
+// 提交SBTI测试
+router.post(
+  '/submit-sbti',
+  submitTestLimiter,
+  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.error('参数验证失败:', errors.array());
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      console.log('提交SBTI测试请求:', {
+        code: req.body.code
+      });
+
+      // 这里我们只需要标记兑换码为已使用，不需要计算心理年龄结果
+      const { code } = req.body;
+      
+      // 在事务中处理，确保原子性
+      const result = await prisma.$transaction(async (tx) => {
+        // 1. 查找兑换码
+        const exchangeCode = await tx.exchangeCode.findUnique({
+          where: { code }
+        });
+
+        if (!exchangeCode) {
+          throw new Error('兑换码不存在');
+        }
+
+        if (exchangeCode.used) {
+          throw new Error('兑换码已被使用');
+        }
+
+        // 2. 标记兑换码为已使用
+        await tx.exchangeCode.update({
+          where: { id: exchangeCode.id },
+          data: {
+            used: true,
+            usedAt: new Date()
+          }
+        });
+
+        return {
+          success: true,
+          message: '兑换码已成功使用'
+        };
+      });
+
+      console.log('提交SBTI测试成功');
+      res.json(result);
+    } catch (error) {
+      console.error('提交SBTI测试失败:', error.message);
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
 export default router;
