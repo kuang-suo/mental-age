@@ -332,122 +332,7 @@ function startTest() {
   document.getElementById('codeModal').classList.add('active');
 }
 
-// 快速测试
-function quickTest() {
-  // 生成随机的真实年龄（20-40岁）
-  const mockRealAge = Math.floor(Math.random() * 21) + 20;
-  
-  // 生成随机的心理年龄（18-45岁）
-  const mockMentalAge = Math.floor(Math.random() * 28) + 18;
-  
-  // 生成随机的维度得分（4-10分）
-  const generateRandomScore = () => {
-    return Math.round((Math.random() * 6 + 4) * 10) / 10;
-  };
-  
-  const mockDimensionScores = {
-    1: generateRandomScore(),
-    2: generateRandomScore(),
-    3: generateRandomScore(),
-    4: generateRandomScore(),
-    5: generateRandomScore(),
-    6: generateRandomScore(),
-    7: generateRandomScore(),
-    8: generateRandomScore()
-  };
-  
-  // 随机选择人格类型
-  const personalityTypeKeys = Object.keys(PERSONALITY_TYPES);
-  const randomKey = personalityTypeKeys[Math.floor(Math.random() * personalityTypeKeys.length)];
-  const mockPersonalityType = PERSONALITY_TYPES[randomKey];
-  
-  // 关键词列表
-  const allKeywords = ['稳重', '理性', '友善', '负责', '活力', '创新', '独立', '协作', '乐观', '谨慎', '勇敢', '智慧', '同理心', '创造力', '领导力', '洞察力', '耐心', '自信', '开放', '专注'];
-  // 随机选择4个关键词
-  const mockKeywords = [];
-  while (mockKeywords.length < 4) {
-    const keyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
-    if (!mockKeywords.includes(keyword)) {
-      mockKeywords.push(keyword);
-    }
-  }
-  
-  // 生成随机分析文本
-  const coreTraitTexts = [
-    `你的心理年龄是${mockMentalAge}岁，比实际年龄${mockMentalAge > mockRealAge ? '成熟' : '年轻'}${Math.abs(mockMentalAge - mockRealAge)}岁。作为一个${mockPersonalityType.name}，你${mockKeywords.join('、')}，具有独特的人生智慧。`,
-    `你的心理年龄是${mockMentalAge}岁，${mockMentalAge > mockRealAge ? '比实际年龄更加成熟' : '保持着年轻的心态'}。你是一个${mockPersonalityType.name}，${mockKeywords.join('、')}，展现出独特的个人魅力。`
-  ];
-  
-  const blindSpotTexts = [
-    '你的内心世界丰富而深邃，有时候可能会过度思考。学会在理性和感性之间找到平衡，会让你更加自在。',
-    '你有着强烈的自我要求，有时候可能会给自己过多的压力。记得给自己一些放松的空间，接受不完美的自己。',
-    '你善于观察和分析，有时候可能会过度分析他人的行为。学会信任直觉，减少过度思考，会让你的人际关系更加自然。',
-    '你充满活力和热情，有时候可能会过于冲动。学会在行动前思考，会让你更加从容。'
-  ];
-  
-  const growthAdviceTexts = [
-    '建议你在日常生活中多关注自己的内心需求，通过冥想、日记等方式，更深入地了解自己。',
-    '勇敢地表达你的真实想法，不要总是在意他人的看法。你的独特性正是你的魅力所在。',
-    '学会在给予和接受之间找到平衡，你的需求同样重要。',
-    '尝试新的事物和挑战，不断拓展自己的舒适区，会让你获得更多的成长。'
-  ];
-  
-  const socialTypeTexts = ['温暖陪伴者', '活力领导者', '理性思考者', '自由探索者', '和谐协调者'];
-  
-  const socialStyleTexts = [
-    '你是一个天生的倾听者，在与人相处时总能表现出真诚的关心。',
-    '你充满活力和热情，总能带动周围的氛围，是社交场合的焦点。',
-    '你理性而沉稳，善于分析和解决问题，是朋友们的可靠顾问。',
-    '你独立而好奇，喜欢探索新事物，总是能带给他人新鲜的视角。',
-    '你善于调和矛盾，保持和谐，是团队中的黏合剂。'
-  ];
-  
-  const bestMatchTexts = [
-    '与你互补最好的是有强烈目标感的人，他们能鼓励你勇敢表达自己的想法。',
-    '与你最匹配的是同样充满活力和创意的人，你们可以一起探索更多可能性。',
-    '与你最合拍的是善于倾听和理解的人，你们可以深入交流思想。',
-    '与你互补的是稳重而有耐心的人，他们能给你提供稳定的支持。'
-  ];
-  
-  const relationshipReminderTexts = [
-    '提醒：不要总是优先考虑他人，你的需求同样重要。学会温柔但坚定地表达界限。',
-    '提醒：保持开放的心态，尊重他人的不同观点，会让你的人际关系更加和谐。',
-    '提醒：在关系中保持独立的自我，不要过度依赖他人，这样会让关系更加健康。',
-    '提醒：学会表达感激和欣赏，这会让你的关系更加稳固和幸福。'
-  ];
-  
-  const mockAnalysisText = {
-    coreTraits: coreTraitTexts[Math.floor(Math.random() * coreTraitTexts.length)],
-    blindSpots: blindSpotTexts[Math.floor(Math.random() * blindSpotTexts.length)],
-    growthAdvice: growthAdviceTexts[Math.floor(Math.random() * growthAdviceTexts.length)]
-  };
-  
-  const mockMatchText = {
-    socialType: socialTypeTexts[Math.floor(Math.random() * socialTypeTexts.length)],
-    socialStyle: socialStyleTexts[Math.floor(Math.random() * socialStyleTexts.length)],
-    bestMatch: bestMatchTexts[Math.floor(Math.random() * bestMatchTexts.length)],
-    relationshipReminder: relationshipReminderTexts[Math.floor(Math.random() * relationshipReminderTexts.length)]
-  };
-  
-  // 设置测试结果
-  state.realAge = mockRealAge;
-  state.testResult = {
-    mentalAge: mockMentalAge,
-    realAge: mockRealAge,
-    dimensionScores: mockDimensionScores,
-    personalityType: mockPersonalityType.name,
-    archetype: mockPersonalityType.archetype,
-    matchedCelebrity: mockPersonalityType.celebrity,
-    keywords: mockKeywords,
-    analysisText: mockAnalysisText,
-    matchText: mockMatchText
-  };
-  
-  // 跳转到结果页面
-  document.getElementById('startScreen').classList.remove('active');
-  document.getElementById('resultScreen').classList.add('active');
-  showResultScreen();
-}
+
 
 // 关闭兑换码模态框
 function closeCodeModal() {
@@ -882,8 +767,19 @@ const RELATIONSHIP_ADVICE = {
 function calculateEmotionalHealthIndex(dimensionScores) {
   const scores = Object.values(dimensionScores);
   const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-  // 转换为0-100的健康指数
-  const healthIndex = Math.round((average / 10) * 100);
+  
+  // 检查得分是10分制还是100分制
+  let normalizedAverage;
+  if (average > 10) {
+    // 如果平均值大于10，认为是100分制，直接使用
+    normalizedAverage = average;
+  } else {
+    // 否则认为是10分制，转换为100分制
+    normalizedAverage = (average / 10) * 100;
+  }
+  
+  // 确保健康指数在0-100之间
+  const healthIndex = Math.round(Math.max(0, Math.min(100, normalizedAverage)));
   return healthIndex;
 }
 

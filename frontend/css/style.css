@@ -1047,32 +1047,7 @@ body {
   margin-top: 10px;
 }
 
-/* 快速测试按钮样式 */
-.quick-test-button {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
 
-.quick-test-button .btn {
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.quick-test-button .btn:hover {
-  background-color: #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
-}
 
 .mbti-test .celebrities-list {
   display: flex;
