@@ -43,9 +43,6 @@ router.post(
   '/submit-test',
   submitTestLimiter,
   body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  body('answers').isArray({ min: 20, max: 20 }).withMessage('答案数量必须为20'),
-  body('answers.*').isInt({ min: 1, max: 5 }).withMessage('每个答案必须在1-5之间'),
-  body('realAge').isInt({ min: 18, max: 150 }).withMessage('年龄必须在18-150之间'),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -55,12 +52,42 @@ router.post(
 
     try {
       console.log('提交心理年龄测试请求:', {
-        code: req.body.code,
-        answersLength: req.body.answers?.length,
-        realAge: req.body.realAge
+        code: req.body.code
       });
 
-      const result = await submitTest(req.body.code, req.body.answers, req.body.realAge);
+      // 这里我们只需要标记兑换码为已使用，不需要计算心理年龄结果
+      const { code } = req.body;
+      
+      // 在事务中处理，确保原子性
+      const result = await prisma.$transaction(async (tx) => {
+        // 1. 查找兑换码
+        const exchangeCode = await tx.exchangeCode.findUnique({
+          where: { code }
+        });
+
+        if (!exchangeCode) {
+          throw new Error('兑换码不存在');
+        }
+
+        if (exchangeCode.used) {
+          throw new Error('兑换码已被使用');
+        }
+
+        // 2. 标记兑换码为已使用
+        await tx.exchangeCode.update({
+          where: { id: exchangeCode.id },
+          data: {
+            used: true,
+            usedAt: new Date()
+          }
+        });
+
+        return {
+          success: true,
+          message: '兑换码已成功使用'
+        };
+      });
+
       console.log('提交测试成功');
       res.json(result);
     } catch (error) {

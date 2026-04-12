@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>心理年龄测试 - 发现真实的自己</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/chart.js"></script>
-  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- 延迟加载外部库 -->
+  <script defer src="https://unpkg.com/chart.js"></script>
+  <script defer src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
+  <!-- 快速测试按钮 -->
+  <div class="quick-test-button">
+    <button class="btn btn-secondary" onclick="quickTest()">快速测试</button>
+  </div>
+  
   <div class="container">
     <!-- 开始界面 -->
     <div id="startScreen" class="screen active">
@@ -99,8 +105,8 @@
         <!-- 结果内容将由 JavaScript 动态生成 -->
       </div>
       <div class="result-buttons">
-        <button class="btn btn-secondary" onclick="backToStart()">返回首页</button>
         <button class="btn btn-primary" onclick="saveResultImage()">保存结果图片</button>
+        <button class="btn btn-primary" onclick="backToStart()">更多测试</button>
       </div>
     </div>
   </div>

@@ -1,0 +1,22 @@
+[
+  { "id": 1, "title": "当遇到挫折时，我能很快调整心态继续前进", "dimension": 1, "order": 1 },
+  { "id": 2, "title": "我喜欢在社交场合中与陌生人交流", "dimension": 2, "order": 2 },
+  { "id": 3, "title": "我对自己的优缺点有清晰的认识", "dimension": 3, "order": 3 },
+  { "id": 4, "title": "我会主动承担工作中的责任", "dimension": 4, "order": 4 },
+  { "id": 5, "title": "我对新事物充满好奇心", "dimension": 5, "order": 5 },
+  { "id": 6, "title": "面对变化，我能快速适应新环境", "dimension": 6, "order": 6 },
+  { "id": 7, "title": "我对生活的未来充满乐观", "dimension": 7, "order": 7 },
+  { "id": 8, "title": "在压力下，我能保持冷静思考", "dimension": 8, "order": 8 },
+  { "id": 9, "title": "我很少因为小事而感到烦恼", "dimension": 1, "order": 9 },
+  { "id": 10, "title": "我是朋友圈中的活跃分子", "dimension": 2, "order": 10 },
+  { "id": 11, "title": "我经常反思自己的行为和决定", "dimension": 3, "order": 11 },
+  { "id": 12, "title": "我会按时完成承诺的事情", "dimension": 4, "order": 12 },
+  { "id": 13, "title": "我喜欢学习新的知识和技能", "dimension": 5, "order": 13 },
+  { "id": 14, "title": "我能轻松接受他人的不同意见", "dimension": 6, "order": 14 },
+  { "id": 15, "title": "即使困难重重，我也相信会有好结果", "dimension": 7, "order": 15 },
+  { "id": 16, "title": "我有有效的方法来缓解压力", "dimension": 8, "order": 16 },
+  { "id": 17, "title": "我的情绪波动不会影响日常生活", "dimension": 1, "order": 17 },
+  { "id": 18, "title": "我喜欢参加各种社交活动", "dimension": 2, "order": 18 },
+  { "id": 19, "title": "我了解自己真正想要什么", "dimension": 3, "order": 19 },
+  { "id": 20, "title": "我会为自己的错误承担后果", "dimension": 4, "order": 20 }
+]

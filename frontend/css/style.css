@@ -48,6 +48,7 @@ body {
   background: var(--gradient-bg);
   color: var(--text-color);
   min-height: 100vh;
+  position: relative;
   padding: 20px;
 }
 
@@ -897,8 +898,180 @@ body {
 
 .mbti-test .compatibility-value {
   font-size: 14px;
+}
+
+/* 分数解释说明模块 */
+.module-score-explanation .score-explanations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.module-score-explanation .score-range {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #FFB6C1;
+}
+
+.module-score-explanation .score-label {
+  display: block;
   font-weight: 600;
-  color: var(--primary-color);
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.module-score-explanation .score-description {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 情绪健康指数模块 */
+.module-emotional-health .health-index-container {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.module-emotional-health .health-index-display {
+  text-align: center;
+}
+
+.module-emotional-health .health-index-value {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.module-emotional-health .health-index-level {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.module-emotional-health .health-index-advice {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* 个性化行动建议模块 */
+.module-action-suggestions .suggestions-list {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.module-action-suggestions .suggestion-item {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+}
+
+.module-action-suggestions .suggestion-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.module-action-suggestions .suggestion-emoji {
+  font-size: 20px;
+}
+
+.module-action-suggestions .suggestion-dimension {
+  font-weight: 600;
+  color: #333;
+}
+
+.module-action-suggestions .suggestion-content {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 职业与关系建议模块 */
+.module-career-relationship .career-section {
+  margin-bottom: 20px;
+}
+
+.module-career-relationship .career-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.module-career-relationship .career-tag {
+  background: #E3F2FD;
+  color: #1976D2;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.module-career-relationship .strengths {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.module-career-relationship .strengths-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.module-career-relationship .strengths-content {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.module-career-relationship .relationship-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.module-career-relationship .relationship-content {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+/* 快速测试按钮样式 */
+.quick-test-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.quick-test-button .btn {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.quick-test-button .btn:hover {
+  background-color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .mbti-test .celebrities-list {
