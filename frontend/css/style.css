@@ -468,8 +468,7 @@ body {
 }
 
 .radar-container canvas {
-  max-width: 100%;
-  height: auto;
+  display: block;
 }
 
 /* 模块四：维度详情 */
