@@ -1,11 +1,16 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
 import config from './config/env.js';
 import { generalLimiter, errorHandler } from './middleware/auth.js';
 import { initializeDatabase } from './utils/database.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const prisma = new PrismaClient();
@@ -21,6 +26,10 @@ app.use(cors({
 app.use(express.json());
 // 限流中间件放在json解析之后
 app.use(generalLimiter);
+
+// 静态文件服务 - 服务前端文件
+const frontendPath = path.join(__dirname, '../../frontend');
+app.use(express.static(frontendPath));
 
 // 路由
 app.use('/api', apiRoutes);

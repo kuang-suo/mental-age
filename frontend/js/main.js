@@ -1,6 +1,7 @@
 // API 基础 URL
 //本地
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
+//const API_BASE_URL = 'http://localhost:3001/api';
 //服务器
 //const API_BASE_URL = '/api';
 //const API_BASE_URL = 'https://mental-age-production.up.railway.app/api';
@@ -1047,27 +1048,45 @@ function renderResult() {
   // 延迟绘制雷达图，确保 DOM 已更新
   setTimeout(() => {
     drawRadarChart(result.dimensionScores);
-  }, 100);
+  }, 300);
 }
 
 // 绘制雷达图
 function drawRadarChart(scores) {
   try {
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js 未加载');
+      return;
+    }
     const canvas = document.getElementById('radarChart');
     if (!canvas) {
       console.error('Canvas 元素不存在');
       return;
     }
 
+    console.log('雷达图原始数据:', scores);
+
     const ctx = canvas.getContext('2d');
     const labels = ['情感稳定性', '社交开放性', '自我认知度', '责任感', '好奇心', '适应性', '乐观倾向', '压力应对'];
 
     // 将 dimensionScores 对象转换为数组（按维度1-8的顺序）
-    const data = [];
+    const rawData = [];
     for (let i = 1; i <= 8; i++) {
       const score = scores[i] || 0;
-      data.push(parseFloat(score));
+      rawData.push(parseFloat(score));
     }
+    console.log('雷达图转换后数据:', rawData);
+
+    // 归一化数据到0-10范围（兼容0-100和0-10两种输入格式）
+    const maxVal = Math.max(...rawData, 1);
+    const data = rawData.map(v => {
+      let normalized = v;
+      if (maxVal > 10) {
+        normalized = (v / 100) * 10;
+      }
+      return Math.max(0, Math.min(10, normalized));
+    });
+    console.log('雷达图归一化后数据:', data);
 
     // 销毁已存在的图表（如果有）
     if (window.radarChartInstance) {
@@ -1083,14 +1102,14 @@ function drawRadarChart(scores) {
           label: '你的得分',
           data: data,
           borderColor: '#FFB6C1',
-          backgroundColor: 'transparent',
+          backgroundColor: 'rgba(255, 182, 193, 0.25)',
           borderWidth: 2,
           pointBackgroundColor: '#FFB6C1',
           pointBorderColor: '#fff',
           pointBorderWidth: 2,
           pointRadius: 5,
           pointHoverRadius: 7,
-          fill: false
+          fill: true
         }]
       },
       options: {
@@ -1159,15 +1178,5 @@ async function saveResultImage() {
 
 // 返回首页
 function backToStart() {
-  state = {
-    questions: state.questions,
-    answers: new Array(state.questions.length).fill(0),
-    currentQuestion: 0,
-    exchangeCode: null,
-    realAge: null,
-    testResult: null,
-    isTransitioning: false
-  };
-  document.getElementById('resultScreen').classList.remove('active');
-  document.getElementById('startScreen').classList.add('active');
+  window.location.href = 'home.html';
 }
