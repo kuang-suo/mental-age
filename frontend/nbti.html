@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NBTI 恋爱性格测试</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/html2canvas.min.js"></script>
+  <style>
+    .nbti-test .start-content {
+      padding: 64px 32px;
+    }
+    .author-info {
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    .author-info a {
+      color: var(--primary-color);
+    }
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #999;
+      font-size: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .question-title {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: var(--text-color);
+    }
+    .nbti-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .nbti-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .nbti-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .nbti-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .nbti-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .option-code {
+      font-weight: 800;
+      color: var(--primary-color);
+      min-width: 22px;
+    }
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .hint {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .type-emoji {
+      font-size: 72px;
+      margin-bottom: 16px;
+    }
+    .type-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .type-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+    }
+    .type-subname {
+      margin-top: 10px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .match {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(233, 30, 140, 0.1);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #666;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .dim-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .dim-item-score {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .dim-item p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .trait-list {
+      display: grid;
+      gap: 12px;
+    }
+    .trait-item {
+      background: var(--light-bg);
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .trait-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .trait-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .trait-item-value {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .trait-item p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .trait-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .trait-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+    .match-section {
+      display: grid;
+      gap: 16px;
+    }
+    .match-card {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .match-card-best {
+      background: linear-gradient(135deg, #FFF5FA, #FFE4F0);
+    }
+    .match-card-avoid {
+      background: linear-gradient(135deg, #FFF5F5, #FFE8E8);
+    }
+    .match-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .match-card-icon {
+      font-size: 24px;
+    }
+    .match-card-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .match-card-type {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+    .match-card-reason {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+    .stage-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(233, 30, 140, 0.1);
+    }
+    .stage-item-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .stage-item-icon {
+      font-size: 20px;
+    }
+    .stage-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .stage-item p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .dim-detail {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(233, 30, 140, 0.15);
+    }
+    .dim-detail p {
+      margin: 4px 0;
+      color: #666;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .dim-tip {
+      color: var(--primary-color) !important;
+      font-weight: 600;
+    }
+    @media (max-width: 860px) {
+      .result-top { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nbti-test .start-content { padding: 40px 20px; }
+      .nbti-test .start-content h1 { font-size: 32px; }
+      .question-title { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="nbti-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">💕</div>
+        <h1>NBTI 恋爱性格测试</h1>
+        <p class="subtitle">测出你的恋爱DNA，找到属于你的爱情密码</p>
+        <div class="description">
+          <p>通过20道精心设计的恋爱问题，我们将帮助你了解：</p>
+          <ul>
+            <li>💕 你的NBTI恋爱性格类型</li>
+            <li>💫 四大恋爱维度的倾向分布</li>
+            <li>🎭 你的恋爱优势与雷区</li>
+            <li>🌟 你的理想伴侣类型与相处建议</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 20</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout">
+          <div class="type-box result-module">
+            <div class="type-emoji" id="resultEmoji">💕</div>
+            <div class="type-kicker" id="resultModeKicker">你的恋爱性格</div>
+            <div class="type-name" id="resultTypeName">ENRS（热情浪漫闪电型）</div>
+            <div class="match" id="matchBadge">别名：恋爱小太阳</div>
+            <div class="type-subname" id="resultTypeSub">你的恋爱性格解读将显示在这里。</div>
+          </div>
+
+          <div class="analysis-box result-module">
+            <h3 class="module-title">性格解读</h3>
+            <p id="resultDesc"></p>
+          </div>
+
+          <div class="dim-box result-module">
+            <h3 class="module-title">四大维度评分</h3>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">💕 恋爱配对推荐</h3>
+            <div id="matchSection" class="match-section"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🌸 恋爱阶段画像</h3>
+            <div id="stageList" class="dim-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">恋爱优势</h3>
+            <div id="advantageList" class="trait-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">恋爱雷区</h3>
+            <div id="riskList" class="trait-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">理想伴侣 & 相处建议</h3>
+            <div id="adviceBox" class="advice-box">
+              <div class="advice-title" id="adviceTitle">理想伴侣</div>
+              <div class="advice-content" id="adviceContent"></div>
+            </div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p id="funNote">本测试仅供娱乐，不构成任何专业建议。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='home.html'">更多测试</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/nbti.js"></script>
+</html>

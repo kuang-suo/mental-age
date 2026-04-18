@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>回避型依恋测试</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    .avoidant-test .start-content {
+      padding: 64px 32px;
+    }
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(212, 160, 23, 0.1);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #999;
+      font-size: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(212, 160, 23, 0.1);
+    }
+    .question-title {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: var(--text-color);
+    }
+    .avoidant-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .avoidant-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .avoidant-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .avoidant-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .avoidant-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .option-code {
+      font-weight: 800;
+      color: var(--primary-color);
+      min-width: 22px;
+    }
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .hint {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .result-top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .type-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .type-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+    }
+    .type-subname {
+      margin-top: 10px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .match {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(212, 160, 23, 0.1);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #666;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .dim-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 160, 23, 0.1);
+    }
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .dim-item-score {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .dim-item p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    
+    /* 核心特征样式 */
+    .traits-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .trait-tag {
+      background: linear-gradient(135deg, #FFF3D6, #FFE9B0);
+      border: 1px solid rgba(212, 160, 23, 0.3);
+      color: #B8860B;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      animation: fadeInUp 0.4s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* 行为表现样式 */
+    .behaviors-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .behavior-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--light-bg);
+      border-radius: 12px;
+      border-left: 3px solid var(--primary-color);
+      animation: fadeInUp 0.4s ease forwards;
+      opacity: 0;
+    }
+    .behavior-icon {
+      color: var(--primary-color);
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .behavior-text {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    /* 优势与挑战样式 */
+    .strengths-challenges-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .strengths-challenges-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .strengths-section, .challenges-section {
+      background: var(--light-bg);
+      padding: 20px;
+      border-radius: 16px;
+    }
+    .strengths-section {
+      border-top: 3px solid #4CAF50;
+    }
+    .challenges-section {
+      border-top: 3px solid #FF9800;
+    }
+    .section-icon {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      color: var(--text-color);
+    }
+    .styled-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .styled-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #555;
+    }
+    .styled-list .list-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .strengths-section .list-icon {
+      background: #E8F5E9;
+      color: #4CAF50;
+    }
+    .challenges-section .list-icon {
+      background: #FFF3E0;
+      color: #FF9800;
+    }
+    
+    /* 关系建议样式 */
+    .relationship-advice {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .advice-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+    .relationship-advice .advice-content {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #555;
+    }
+    
+    /* 成长路径样式 */
+    .growth-path-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .growth-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      background: var(--light-bg);
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+    }
+    .growth-step:hover {
+      transform: translateX(4px);
+    }
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--gradient-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+      padding-top: 3px;
+    }
+    
+    @media (max-width: 860px) {
+      .result-top { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .avoidant-test .start-content { padding: 40px 20px; }
+      .avoidant-test .start-content h1 { font-size: 32px; }
+      .question-title { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="avoidant-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">🛡️</div>
+        <h1>回避型依恋测试</h1>
+        <p class="subtitle">了解你的亲密关系模式，看见内心深处的自己</p>
+        <div class="description">
+          <p>通过20道精心设计的问题，我们将帮助你了解：</p>
+          <ul>
+            <li>💛 你在亲密关系中的依恋倾向</li>
+            <li>💫 你与他人的距离感与边界模式</li>
+            <li>🎭 你处理冲突与情绪的方式</li>
+            <li>🌟 你对关系的深层认知与防御机制</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 20</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <div class="question-meta">
+            <span id="questionBadge" class="badge"></span>
+            <span id="questionNum"></span>
+          </div>
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout">
+          <div class="result-top">
+            <div class="type-box result-module">
+              <div class="type-kicker" id="resultModeKicker">你的依恋类型</div>
+              <div class="type-name" id="resultTypeName">安全型倾向</div>
+              <div class="match" id="matchBadge">总分 35 / 100</div>
+              <div class="type-subname" id="resultTypeSub"></div>
+            </div>
+          </div>
+
+          <div class="analysis-box result-module">
+            <h3 class="module-title">你的依恋画像</h3>
+            <p id="resultDesc"></p>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">核心特征</h3>
+            <div id="traitsContainer" class="traits-container"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">行为表现</h3>
+            <div id="behaviorsContainer" class="behaviors-container"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">优势与挑战</h3>
+            <div class="strengths-challenges-grid">
+              <div class="strengths-section">
+                <div class="section-icon">💪</div>
+                <div class="section-title">你的优势</div>
+                <ul id="strengthsList" class="styled-list"></ul>
+              </div>
+              <div class="challenges-section">
+                <div class="section-icon">🎯</div>
+                <div class="section-title">成长挑战</div>
+                <ul id="challengesList" class="styled-list"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="dim-box result-module">
+            <h3 class="module-title">四维度评分</h3>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">关系建议</h3>
+            <div id="relationshipAdviceBox" class="advice-box relationship-advice">
+              <div class="advice-icon">💑</div>
+              <div class="advice-content" id="relationshipAdvice"></div>
+            </div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">成长路径</h3>
+            <div id="growthPathContainer" class="growth-path-container"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">给你的话</h3>
+            <div id="adviceBox" class="advice-box">
+              <div class="advice-content" id="resultAdvice"></div>
+            </div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p id="funNote">本测试仅供娱乐和自我探索参考，不构成任何专业心理诊断建议。如需专业帮助，请咨询心理咨询师。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='home.html'">更多测试</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/avoidant.js"></script>
+</body>
+</html>
