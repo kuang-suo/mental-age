@@ -964,7 +964,7 @@ function renderResult() {
 
     <!-- 模块八: 社交与匹配 -->
     <div class="result-module module-matching">
-      <h3 class="module-title">� 你的社交类型：${result.matchText.socialType || ''}</h3>
+      <h3 class="module-title">💫 你的社交类型：${result.matchText.socialType || ''}</h3>
 
       <div class="matching-section">
         <h4 class="section-subtitle">🎭 社交风格</h4>
@@ -1025,7 +1025,7 @@ function renderResult() {
 
     <!-- 模块十: 个性化行动建议 -->
     <div class="result-module module-action-suggestions">
-      <h3 class="module-title">� 个性化行动建议</h3>
+      <h3 class="module-title">🎯 个性化行动建议</h3>
       <div class="suggestions-list">
         ${(() => {
           const suggestions = generateActionSuggestions(result.dimensionScores);
