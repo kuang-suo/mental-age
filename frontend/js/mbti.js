@@ -2316,3 +2316,32 @@ function backToStart() {
 function goToHome() {
   window.location.href = 'home.html';
 }
+
+function openImageModal(imgElement) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('imageModalImg');
+  modalImg.src = imgElement.src;
+  modalImg.alt = imgElement.alt;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal(event) {
+  if (event) {
+    var target = event.target;
+    if (target.classList.contains('image-modal-img')) return;
+  }
+  var modal = document.getElementById('imageModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var modal = document.getElementById('imageModal');
+    if (modal && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+});

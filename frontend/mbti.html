@@ -107,6 +107,19 @@
         <button class="btn btn-primary" onclick="saveResultImage()">保存结果图片</button>
         <button class="btn btn-primary" onclick="goToHome()">更多测试</button>
       </div>
+      <div class="share-activity" id="shareActivity">
+        <h3 class="share-activity-title">🎁 晒单领大额劵0.1元可测试其它内容</h3>
+        <p class="share-activity-desc">晒单后免费获赠大额优惠券，可0.1元再测任意一个店铺内测试</p>
+        <img class="share-activity-flow" src="image/shaidan.png" alt="晒单流程" onclick="openImageModal(this)" title="点击放大查看">
+        <p class="share-activity-rule">活动规则以店铺内为准</p>
+      </div>
+    </div>
+    <!-- 图片放大模态窗口 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+      <div class="image-modal-content">
+        <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
+        <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
+      </div>
     </div>
   </div>
 

@@ -987,13 +987,13 @@ body {
   margin-top: 15px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .module-action-suggestions .suggestion-item {
   background: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 12px;
   border-left: 4px solid #4CAF50;
 }
 
@@ -1001,7 +1001,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .module-action-suggestions .suggestion-emoji {
@@ -1011,12 +1011,198 @@ body {
 .module-action-suggestions .suggestion-dimension {
   font-weight: 600;
   color: #333;
+  font-size: 15px;
 }
 
-.module-action-suggestions .suggestion-content {
-  font-size: 14px;
+.module-action-suggestions .suggestion-level {
+  font-size: 11px;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.module-action-suggestions .suggestion-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.module-action-suggestions .suggestion-text {
+  font-size: 13px;
   color: #666;
-  line-height: 1.5;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.module-action-suggestions .suggestion-actions {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 15px;
+}
+
+.module-action-suggestions .actions-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.module-action-suggestions .action-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.module-action-suggestions .action-step:last-child {
+  margin-bottom: 0;
+}
+
+.module-action-suggestions .action-step-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.module-action-suggestions .action-step-text {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* 友情提示模块 */
+.module-disclaimer .disclaimer-content {
+  font-size: 14px;
+  color: #999;
+  text-align: center;
+  padding: 15px 0;
+  line-height: 1.6;
+}
+
+/* 晒单活动板块 */
+.share-activity {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 25px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.share-activity-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #E65100;
+  margin-bottom: 10px;
+}
+
+.share-activity-desc {
+  font-size: 14px;
+  color: #BF360C;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.share-activity-flow {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  margin: 10px auto;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.share-activity-flow:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 图片放大模态窗口 */
+.image-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.image-modal.active {
+  display: flex;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.image-modal.active .image-modal-content {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.image-modal-close {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 2001;
+  line-height: 1;
+}
+
+.image-modal-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.image-modal-img {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.share-activity-rule {
+  font-size: 12px;
+  color: #999;
+  margin-top: 12px;
 }
 
 /* 职业与关系建议模块 */

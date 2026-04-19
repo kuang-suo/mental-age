@@ -1133,7 +1133,7 @@ async function validateCode() {
 window.__nbti_select = selectAnswer;
 
 function saveResultImage() {
-  const resultContainer = document.querySelector('.result-container');
+  const resultContainer = document.querySelector('.result-layout');
   if (!resultContainer) return;
 
   html2canvas(resultContainer, {
@@ -1150,6 +1150,35 @@ function saveResultImage() {
     alert('保存图片失败，请稍后重试');
   });
 }
+
+function openImageModal(imgElement) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('imageModalImg');
+  modalImg.src = imgElement.src;
+  modalImg.alt = imgElement.alt;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal(event) {
+  if (event) {
+    var target = event.target;
+    if (target.classList.contains('image-modal-img')) return;
+  }
+  var modal = document.getElementById('imageModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var modal = document.getElementById('imageModal');
+    if (modal && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+});
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('startBtn').addEventListener('click', showCodeModal);
