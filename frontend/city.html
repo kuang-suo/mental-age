@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>性格匹配城市测试</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/html2canvas.min.js"></script>
+  <style>
+    .city-test .start-content {
+      padding: 64px 32px;
+    }
+    .author-info {
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    .author-info a {
+      color: var(--primary-color);
+    }
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .city-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .city-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .city-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .city-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .city-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .city-hero {
+      text-align: center;
+      padding: 40px 25px;
+    }
+    .city-hero-emoji {
+      font-size: 72px;
+      margin-bottom: 16px;
+    }
+    .city-hero-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .city-hero-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+    }
+    .city-hero-en {
+      font-size: 16px;
+      color: #999;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .city-hero-slogan {
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .city-match-badge {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .city-match-percent {
+      font-size: 28px;
+      font-weight: 800;
+      color: #D4A017;
+    }
+    .city-match-label {
+      font-size: 13px;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .city-subname {
+      margin-top: 10px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .radar-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    .radar-canvas-wrap canvas {
+      max-width: 100%;
+    }
+    .dim-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .dim-item-score {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .dim-item p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .dim-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .dim-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+    .city-portrait {
+      font-size: 15px;
+      line-height: 1.9;
+      color: #666;
+      white-space: pre-wrap;
+    }
+    .city-life-scene {
+      font-size: 15px;
+      line-height: 2;
+      color: #555;
+      white-space: pre-wrap;
+      padding: 20px;
+      background: var(--light-bg);
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color);
+    }
+    .data-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .data-card-item {
+      background: var(--light-bg);
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+    }
+    .data-card-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .data-card-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .city-why-box {
+      background: var(--gradient-bg);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .city-why-box p {
+      margin: 8px 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+    .city-why-box .highlight {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .friend-cities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .friend-city-card {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      background: white;
+      text-align: center;
+    }
+    .friend-city-emoji {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .friend-city-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .friend-city-en {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .friend-city-match {
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #D4A017;
+    }
+    .friend-city-match-label {
+      font-size: 11px;
+      color: #999;
+    }
+    .friend-city-slogan {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .friend-city-tags {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .friend-city-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--secondary-color);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .friend-city-scene {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #999;
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .match-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .match-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s ease;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #666;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .personality-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .personality-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+      background: var(--secondary-color);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .personality-tag:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+    }
+    .personality-tag-icon {
+      font-size: 16px;
+    }
+    .personality-tags-desc {
+      text-align: center;
+      margin-top: 16px;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    @media (max-width: 600px) {
+      .city-test .start-content { padding: 40px 20px; }
+      .city-test .start-content h1 { font-size: 32px; }
+      .data-card-grid { grid-template-columns: 1fr 1fr; }
+      .friend-cities-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="city-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">🏙️</div>
+        <h1>性格匹配城市测试</h1>
+        <p class="subtitle">测出你的灵魂城市，找到最适合你的那座城</p>
+        <div class="description">
+          <p>通过20道精心设计的生活态度问题，我们将帮助你了解：</p>
+          <ul>
+            <li>🏙️ 你的灵魂匹配城市Top3</li>
+            <li>📊 八大维度城市画像分析</li>
+            <li>🌅 你的城市月度生活场景</li>
+            <li>💡 适合同城好友城市推荐</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 20</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout" id="resultLayout">
+          <div class="city-hero result-module" id="cityHero">
+            <div class="city-hero-emoji" id="resultEmoji">🏙️</div>
+            <div class="city-hero-kicker" id="resultKicker">🏆 你的灵魂城市</div>
+            <div class="city-hero-name" id="resultCityName">上海</div>
+            <div class="city-hero-en" id="resultCityEn">Shanghai</div>
+            <div class="city-hero-slogan" id="resultCitySlogan">「魔都的璀璨与野心」</div>
+            <div class="city-match-badge">
+              <span class="city-match-percent" id="resultMatchPercent">97%</span>
+              <span class="city-match-label" id="resultMatchLabel">灵魂契合</span>
+            </div>
+            <div class="city-subname" id="resultCitySub">你的城市匹配解读将显示在这里。</div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🏷️ 你的性格标签</h3>
+            <div id="personalityTags" class="personality-tags-wrap"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">📊 为什么是你？</h3>
+            <div id="whyBox" class="city-why-box"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🎯 八维度城市画像</h3>
+            <div class="radar-canvas-wrap">
+              <canvas id="radarCanvas" width="440" height="440"></canvas>
+            </div>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🏙️ 城市画像</h3>
+            <p id="cityPortrait" class="city-portrait"></p>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🌅 月度生活场景</h3>
+            <div id="cityLifeScene" class="city-life-scene"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">📋 数据卡片</h3>
+            <div id="dataCards" class="data-card-grid"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">👫 适合同城好友城市</h3>
+            <div id="friendCities" class="friend-cities-grid"></div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p id="funNote">本测试仅供娱乐，不构成任何专业建议。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='home.html'">更多测试</button>
+          </div>
+        </div>
+
+        <div class="share-activity" id="shareActivity">
+          <h3 class="share-activity-title">🎁 晒单领大额劵0.1元可测试其它内容</h3>
+          <p class="share-activity-desc">晒单后免费获赠大额优惠券，可0.1元再测任意一个店铺内测试</p>
+          <img class="share-activity-flow" src="image/shaidan.png" alt="晒单流程" onclick="openImageModal(this)" title="点击放大查看">
+          <p class="share-activity-rule">活动规则以店铺内为准</p>
+        </div>
+      </div>
+
+      <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+        <div class="image-modal-content">
+          <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
+          <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/city.js"></script>
+</html>

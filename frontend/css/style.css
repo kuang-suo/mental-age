@@ -56,6 +56,19 @@
   --nbti-gradient-primary: linear-gradient(135deg, #FF69B4, #E91E8C);
   --nbti-gradient-secondary: linear-gradient(135deg, #FFE4F0, #FFB6D9);
 
+  /* 性格匹配城市测试样式变量（天蓝色系） */
+  --city-primary-color: #0EA5E9;
+  --city-secondary-color: #E0F2FE;
+  --city-accent-color: #7DD3FC;
+  --city-text-color: #5a5a5a;
+  --city-light-bg: #F0F9FF;
+  --city-border-radius: 32px;
+  --city-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --city-soft-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+  --city-gradient-bg: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 100%);
+  --city-gradient-primary: linear-gradient(135deg, #38BDF8, #0EA5E9);
+  --city-gradient-secondary: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+
   /* 默认样式（用于心理年龄测试） */
   --primary-color: var(--mental-primary-color);
   --secondary-color: var(--mental-secondary-color);
@@ -2310,4 +2323,179 @@ body {
   .nbti-test .start-content { padding: 40px 20px; }
   .nbti-test .start-content h1 { font-size: 32px; }
   .nbti-test .question-title { font-size: 15px; }
+}
+
+/* 性格匹配城市测试样式（天蓝色系） */
+.city-test {
+  --primary-color: var(--city-primary-color);
+  --secondary-color: var(--city-secondary-color);
+  --accent-color: var(--city-accent-color);
+  --text-color: var(--city-text-color);
+  --light-bg: var(--city-light-bg);
+  --border-radius: var(--city-border-radius);
+  --shadow: var(--city-shadow);
+  --soft-shadow: var(--city-soft-shadow);
+  --gradient-bg: var(--city-gradient-bg);
+  --gradient-primary: var(--city-gradient-primary);
+  --gradient-secondary: var(--city-gradient-secondary);
+}
+
+.city-test .start-content {
+  padding: 64px 32px;
+}
+
+.city-test .topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  padding: 12px 4px;
+  border-radius: 16px;
+}
+
+.city-test .topbar .progress-bar {
+  width: 100%;
+  min-width: 240px;
+  margin-bottom: 0;
+}
+
+.city-test .progress-text {
+  color: #999;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.city-test .question-area {
+  background: white;
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.city-test .question-text {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-color);
+  margin-bottom: 24px;
+  white-space: pre-wrap;
+}
+
+.city-test .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--secondary-color);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.city-test .option {
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--light-bg);
+  border: 2px solid transparent;
+  position: relative;
+  padding-left: 36px;
+}
+
+.city-test .option::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background: #fff;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.city-test .option.selected::before {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.city-test .option:hover {
+  background: var(--secondary-color);
+  border-color: transparent;
+  box-shadow: var(--soft-shadow);
+}
+
+.city-test .option.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.city-test .option-code {
+  font-weight: 800;
+  color: var(--primary-color);
+  min-width: 22px;
+}
+
+.city-test .actions-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.city-test .result-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.city-test .result-module {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.city-test .module-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--secondary-color);
+  text-align: center;
+}
+
+.city-test .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+}
+
+.city-test .progress-fill {
+  background: var(--gradient-primary);
+}
+
+.city-test .option {
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+}
+
+.city-test .option:hover {
+  background: var(--secondary-color);
+  box-shadow: var(--soft-shadow);
+}
+
+@media (max-width: 600px) {
+  .city-test .start-content { padding: 40px 20px; }
+  .city-test .start-content h1 { font-size: 32px; }
 }
