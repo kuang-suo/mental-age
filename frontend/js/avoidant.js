@@ -1,3 +1,4 @@
+//回避型测试
 const API_BASE_URL = '/api';
 
 const SECTION_META = {
