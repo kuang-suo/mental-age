@@ -10,11 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CodeType {
+  SINGLE_USE
+  MONTHLY_CARD
+}
+
 // 测试题目
 model Question {
   id        Int     @id @default(autoincrement())
   title     String  @db.Text
-  dimension Int     // 1-8 维度
+  dimension Int
   order     Int
   createdAt DateTime @default(now())
 
@@ -25,32 +30,35 @@ model Question {
 model ExchangeCode {
   id          Int         @id @default(autoincrement())
   code        String      @unique @db.VarChar(8)
+  codeType    CodeType    @default(SINGLE_USE)
   used        Boolean     @default(false)
   usedAt      DateTime?
+  expiresAt   DateTime?
+  useLimit    Int?
+  usedCount   Int         @default(0)
+  remark      String?
   createdAt   DateTime    @default(now())
-  testResult  TestResult?
+  testResults TestResult[]
 
   @@index([used])
   @@index([code])
+  @@index([codeType])
+  @@index([expiresAt])
 }
 
-// 测试结果
+// 测试结果（通用）
 model TestResult {
-  id                Int         @id @default(autoincrement())
-  mentalAge         Int
-  realAge           Int
-  dimensionScores   Json        // 8个维度的得分
-  personalityType   String
-  archetype         String
-  matchedCelebrity  String
-  keywords          Json        // 关键词数组
-  analysisText      Json        // 深度分析（对象：coreTraits, blindSpots, growthAdvice）
-  matchText         Json        // 社交匹配（对象：socialType, socialStyle, bestMatch, relationshipReminder）
-  createdAt         DateTime    @default(now())
-  exchangeCodeId    Int         @unique
-  exchangeCode      ExchangeCode @relation(fields: [exchangeCodeId], references: [id])
+  id             Int          @id @default(autoincrement())
+  testType       String
+  rawAnswers     Json?
+  resultData     Json
+  createdAt      DateTime     @default(now())
+  exchangeCodeId Int?
+  exchangeCode   ExchangeCode? @relation(fields: [exchangeCodeId], references: [id])
 
+  @@index([testType])
   @@index([createdAt])
+  @@index([exchangeCodeId])
 }
 
 // 管理员账户
@@ -59,4 +67,20 @@ model Admin {
   username      String  @unique
   passwordHash  String
   createdAt     DateTime @default(now())
+}
+
+// 测试项目配置
+model TestConfig {
+  id          Int      @id @default(autoincrement())
+  typeKey     String   @unique
+  name        String
+  page        String?
+  enabled     Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([typeKey])
+  @@index([enabled])
+  @@index([order])
 }

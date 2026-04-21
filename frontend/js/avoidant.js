@@ -418,6 +418,17 @@ async function handleSubmitTest() {
     return;
   }
 
+  const result = computeResult();
+  const resultData = {
+    attachmentType: result.resultLevel.name,
+    score: result.totalScore,
+    level: result.resultLevel.badge,
+    sectionScores: result.sectionScores,
+    traits: result.resultLevel.traits,
+    advice: result.resultLevel.advice,
+    growthPath: result.resultLevel.growthPath
+  };
+
   try {
     if (app.exchangeCode && app.exchangeCode !== 'VIP88888') {
       const response = await fetch(`${API_BASE_URL}/submit-avoidant`, {
@@ -425,7 +436,8 @@ async function handleSubmitTest() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: app.exchangeCode,
-          answers: app.answers
+          rawAnswers: app.answers,
+          resultData
         })
       });
 

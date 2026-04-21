@@ -3,300 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>管理员后台 - 心理年龄测试</title>
+  <title>管理员后台 - 测试管理平台</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
+    .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+    .login-box h1 { text-align: center; margin-bottom: 30px; color: #333; font-size: 22px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+    .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-primary:hover { background: #5568d3; }
+    .btn-danger { background: #e74c3c; color: white; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-secondary:hover { background: #5a6268; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-success:hover { background: #218838; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-block { width: 100%; justify-content: center; }
+    .error { color: #e74c3c; font-size: 14px; margin-top: 10px; display: none; }
+    .error.show { display: block; }
+    .success-msg { color: #155724; background: #d4edda; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; font-size: 14px; }
+    .success-msg.show { display: block; }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    .admin-screen { display: none; }
+    .admin-screen.active { display: block; }
 
-    /* 登录界面 */
-    .login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
+    .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 16px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
+    .header h1 { font-size: 18px; color: #333; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .header-right span { color: #666; font-size: 14px; }
 
-    .login-box {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-    .login-box h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #333;
-    }
+    .tabs { display: flex; gap: 0; background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
+    .tab-btn { flex: 1; padding: 14px 20px; border: none; background: white; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+    .tab-btn:hover { background: #f8f9fa; color: #333; }
+    .tab-btn.active { color: #667eea; border-bottom-color: #667eea; background: #f8f9ff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+    .section { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px; }
+    .section h2 { margin-bottom: 20px; color: #333; font-size: 16px; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #555;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; border-top: 4px solid #667eea; }
+    .stat-card.green { border-top-color: #28a745; }
+    .stat-card.orange { border-top-color: #fd7e14; }
+    .stat-card.red { border-top-color: #e74c3c; }
+    .stat-card.blue { border-top-color: #0ea5e9; }
+    .stat-value { font-size: 32px; font-weight: 800; color: #333; margin-bottom: 4px; }
+    .stat-label { font-size: 13px; color: #999; }
 
-    .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-    }
+    .bar-chart { margin-top: 16px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .bar-label { width: 100px; font-size: 13px; color: #666; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; position: relative; }
+    .bar-fill { height: 100%; border-radius: 12px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: white; min-width: 30px; }
+    .bar-count { font-size: 13px; color: #666; width: 50px; flex-shrink: 0; }
 
-    .form-group input:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+    .filter-bar select { min-width: 140px; }
 
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8f9fa; padding: 12px; text-align: left; font-weight: 600; font-size: 13px; color: #666; border-bottom: 2px solid #eee; white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+    tr:hover td { background: #f8f9ff; }
 
-    .btn:hover {
-      background: #5568d3;
-    }
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-unused { background: #d4edda; color: #155724; }
+    .status-used { background: #f8d7da; color: #721c24; }
+    .status-active { background: #cce5ff; color: #004085; }
+    .status-expired { background: #fff3cd; color: #856404; }
 
-    .error {
-      color: #e74c3c;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
-    }
+    .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+    .pagination button { padding: 6px 12px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; font-size: 13px; }
+    .pagination button.active { background: #667eea; color: white; border-color: #667eea; }
+    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pagination button:hover:not(:disabled):not(.active) { background: #f0f0f0; }
+    .pagination-ellipsis { padding: 6px 8px; color: #999; font-size: 13px; }
 
-    .error.show {
-      display: block;
-    }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-box h3 { margin-bottom: 16px; font-size: 16px; }
+    .modal-box .close-btn { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #999; }
+    .modal-box .close-btn:hover { color: #333; }
 
-    /* 管理界面 */
-    .admin-screen {
-      display: none;
-    }
+    .detail-grid { display: grid; gap: 12px; }
+    .detail-item { padding: 10px; background: #f8f9fa; border-radius: 8px; }
+    .detail-key { font-size: 12px; color: #999; margin-bottom: 4px; }
+    .detail-value { font-size: 14px; color: #333; word-break: break-all; }
 
-    .admin-screen.active {
-      display: block;
-    }
+    .generate-form { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: flex-end; }
+    .generate-form .form-item { display: flex; flex-direction: column; gap: 4px; }
+    .generate-form .form-item label { font-size: 12px; color: #666; }
+    .generate-form .form-item input, .generate-form .form-item select { width: 140px; padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+    .action-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
-    .header h1 {
-      color: #333;
-    }
-
-    .logout-btn {
-      padding: 10px 20px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .logout-btn:hover {
-      background: #c0392b;
-    }
-
-    .section {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 25px;
-    }
-
-    .section h2 {
-      margin-bottom: 20px;
-      color: #333;
-      border-bottom: 2px solid #667eea;
-      padding-bottom: 10px;
-    }
-
-    .generate-form {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .generate-form input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    .generate-form .btn {
-      flex: 0 0 auto;
-      width: auto;
-      padding: 10px 20px;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .action-buttons .btn {
-      flex: 1;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    .codes-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    .codes-table th {
-      background: #f8f9fa;
-      padding: 12px;
-      text-align: left;
-      font-weight: 600;
-      border-bottom: 2px solid #ddd;
-    }
-
-    .codes-table td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .codes-table tr:hover {
-      background: #f8f9fa;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .status-unused {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-used {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .pagination button {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .pagination button.active {
-      background: #667eea;
-      color: white;
-      border-color: #667eea;
-    }
-
-    .pagination button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .success-message {
-      background: #d4edda;
-      color: #155724;
-      padding: 12px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    .success-message.show {
-      display: block;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #999;
-    }
+    .loading { text-align: center; padding: 40px; color: #999; }
 
     @media (max-width: 768px) {
-      .codes-table {
-        font-size: 12px;
-      }
-
-      .codes-table th,
-      .codes-table td {
-        padding: 8px;
-      }
-
-      .generate-form {
-        flex-direction: column;
-      }
-
-      .action-buttons {
-        flex-direction: column;
-      }
+      .tabs { flex-wrap: wrap; }
+      .tab-btn { font-size: 12px; padding: 10px 12px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      table { font-size: 12px; }
+      th, td { padding: 8px 6px; }
+      .generate-form { flex-direction: column; }
+      .generate-form .form-item input, .generate-form .form-item select { width: 100%; }
+      .filter-bar { flex-direction: column; }
+      .filter-bar select, .filter-bar input { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <!-- 登录界面 -->
   <div id="loginScreen" class="login-screen">
     <div class="login-box">
-      <h1>管理员登录</h1>
+      <h1>🧪 测试管理后台</h1>
       <form onsubmit="handleLogin(event)">
         <div class="form-group">
           <label for="username">用户名</label>
@@ -306,43 +136,206 @@
           <label for="password">密码</label>
           <input type="password" id="password" required>
         </div>
-        <button type="submit" class="btn">登录</button>
+        <button type="submit" class="btn btn-primary btn-block">登录</button>
         <div id="loginError" class="error"></div>
       </form>
     </div>
   </div>
 
-  <!-- 管理界面 -->
   <div id="adminScreen" class="admin-screen">
+    <div class="header">
+      <h1>🧪 测试管理后台</h1>
+      <div class="header-right">
+        <span id="adminName"></span>
+        <button class="btn btn-danger btn-sm" onclick="logout()">退出登录</button>
+      </div>
+    </div>
+
     <div class="container">
-      <div class="header">
-        <h1>心理年龄测试 - 管理后台</h1>
-        <button class="logout-btn" onclick="logout()">退出登录</button>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('overview')">📊 数据概览</button>
+        <button class="tab-btn" onclick="switchTab('codes')">💳 兑换码管理</button>
+        <button class="tab-btn" onclick="switchTab('results')">📋 结果查询</button>
+        <button class="tab-btn" onclick="switchTab('monthly')">📅 月卡管理</button>
+        <button class="tab-btn" onclick="switchTab('config')">⚙️ 测试配置</button>
       </div>
 
-      <!-- 生成兑换码 -->
-      <div class="section">
-        <h2>生成兑换码</h2>
-        <div class="generate-form">
-          <input type="number" id="codeCount" min="1" max="100" value="10" placeholder="输入数量 (1-100)">
-          <button class="btn" onclick="generateCodes()">生成</button>
+      <div id="tab-overview" class="tab-content active">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-value" id="statTotal">-</div><div class="stat-label">总测试次数</div></div>
+          <div class="stat-card green"><div class="stat-value" id="statToday">-</div><div class="stat-label">今日新增</div></div>
+          <div class="stat-card orange"><div class="stat-value" id="statCodes">-</div><div class="stat-label">兑换码总数</div></div>
+          <div class="stat-card blue"><div class="stat-value" id="statUsage">-</div><div class="stat-label">兑换码使用率</div></div>
         </div>
-        <div id="successMessage" class="success-message"></div>
-        <div id="generatedCodes" style="display: none;">
-          <h3>生成的兑换码:</h3>
-          <textarea id="codesTextarea" readonly style="width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: monospace;"></textarea>
-          <button class="btn" style="margin-top: 10px; width: auto;" onclick="copyToClipboard()">复制到剪贴板</button>
+
+        <div class="section">
+          <h2>各测试完成量</h2>
+          <div id="testTypeChart" class="bar-chart"></div>
+        </div>
+
+        <div class="section">
+          <h2>兑换码概况</h2>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value" id="statUsed">-</div><div class="stat-label">已使用单次码</div></div>
+            <div class="stat-card green"><div class="stat-value" id="statUnused">-</div><div class="stat-label">未使用单次码</div></div>
+            <div class="stat-card blue"><div class="stat-value" id="statMonthly">-</div><div class="stat-label">月卡总数</div></div>
+            <div class="stat-card orange"><div class="stat-value" id="statMonthlyActive">-</div><div class="stat-label">活跃月卡</div></div>
+          </div>
         </div>
       </div>
 
-      <!-- 兑换码列表 -->
-      <div class="section">
-        <h2>兑换码列表</h2>
-        <div class="action-buttons">
-          <button class="btn" onclick="loadCodes()">刷新列表</button>
-          <button class="btn" onclick="exportCodes()">导出 CSV</button>
+      <div id="tab-codes" class="tab-content">
+        <div class="section">
+          <h2>生成单次兑换码</h2>
+          <div class="generate-form">
+            <div class="form-item">
+              <label>数量</label>
+              <input type="number" id="codeCount" min="1" max="100" value="10">
+            </div>
+            <button class="btn btn-primary" onclick="generateCodes()">生成</button>
+          </div>
+          <div id="codeSuccess" class="success-msg"></div>
+          <div id="generatedCodes" style="display:none;">
+            <h3 style="font-size:14px;margin-bottom:8px;">生成的兑换码:</h3>
+            <textarea id="codesTextarea" readonly style="width:100%;height:120px;padding:10px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:13px;"></textarea>
+            <button class="btn btn-success btn-sm" style="margin-top:8px;" onclick="copyToClipboard()">复制到剪贴板</button>
+          </div>
         </div>
-        <div id="codesContainer" class="loading">加载中...</div>
+
+        <div class="section">
+          <h2>兑换码列表</h2>
+          <div class="action-bar">
+            <button class="btn btn-primary btn-sm" onclick="loadCodes()">刷新列表</button>
+            <button class="btn btn-success btn-sm" onclick="exportCodes()">导出 CSV</button>
+          </div>
+          <div id="codesContainer" class="loading">加载中...</div>
+        </div>
+      </div>
+
+      <div id="tab-results" class="tab-content">
+        <div class="section">
+          <h2>测试结果查询</h2>
+          <div class="filter-bar">
+            <select id="filterTestType">
+              <option value="all">全部测试</option>
+              <option value="mental-age">心理年龄测试</option>
+              <option value="mbti">MBTI测试</option>
+              <option value="sbti">SBTI测试</option>
+              <option value="nbti">NBTI恋爱测试</option>
+              <option value="disc">DISC测试</option>
+              <option value="avoidant">回避型依恋测试</option>
+              <option value="city">性格匹配城市测试</option>
+            </select>
+            <input type="date" id="filterStartDate" title="开始日期">
+            <input type="date" id="filterEndDate" title="结束日期">
+            <button class="btn btn-primary btn-sm" onclick="loadResults()">查询</button>
+            <button class="btn btn-success btn-sm" onclick="exportResults()">导出 CSV</button>
+          </div>
+          <div id="resultsContainer" class="loading">点击查询加载数据</div>
+        </div>
+      </div>
+
+      <div id="tab-monthly" class="tab-content">
+        <div class="section">
+          <h2>创建月卡</h2>
+          <div class="generate-form">
+            <div class="form-item">
+              <label>数量</label>
+              <input type="number" id="monthlyCount" min="1" max="100" value="5">
+            </div>
+            <div class="form-item">
+              <label>有效天数</label>
+              <input type="number" id="monthlyDays" min="1" value="30">
+            </div>
+            <div class="form-item">
+              <label>使用次数限制</label>
+              <input type="number" id="monthlyLimit" min="1" placeholder="不限" value="">
+            </div>
+            <div class="form-item">
+              <label>备注</label>
+              <input type="text" id="monthlyRemark" placeholder="可选">
+            </div>
+            <button class="btn btn-primary" onclick="createMonthlyCards()">创建</button>
+          </div>
+          <div id="monthlySuccess" class="success-msg"></div>
+          <div id="generatedMonthlyCodes" style="display:none;">
+            <h3 style="font-size:14px;margin-bottom:8px;">生成的月卡:</h3>
+            <textarea id="monthlyCodesTextarea" readonly style="width:100%;height:120px;padding:10px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:13px;"></textarea>
+            <button class="btn btn-success btn-sm" style="margin-top:8px;" onclick="copyMonthlyToClipboard()">复制到剪贴板</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>月卡列表</h2>
+          <div class="action-bar">
+            <button class="btn btn-primary btn-sm" onclick="loadMonthlyCards()">刷新列表</button>
+          </div>
+          <div id="monthlyCardsContainer" class="loading">加载中...</div>
+        </div>
+      </div>
+
+      <div id="tab-config" class="tab-content">
+        <div class="section">
+          <h2>已注册的测试项目</h2>
+          <p style="color:#999;font-size:13px;margin-bottom:16px;">新增测试只需在前端添加页面并在此注册typeKey，后端自动适配。禁用的测试将无法提交结果。</p>
+          <div id="testConfigContainer" class="loading">加载中...</div>
+        </div>
+
+        <div class="section">
+          <h2>添加新测试</h2>
+          <div class="generate-form">
+            <div class="form-item">
+              <label>测试名称</label>
+              <input type="text" id="newTestName" placeholder="如：九型人格测试">
+            </div>
+            <div class="form-item">
+              <label>TypeKey（英文标识）</label>
+              <input type="text" id="newTestTypeKey" placeholder="如：enneagram">
+            </div>
+            <div class="form-item">
+              <label>页面文件名</label>
+              <input type="text" id="newTestPage" placeholder="如：enneagram.html">
+            </div>
+            <div class="form-item">
+              <label>排序权重</label>
+              <input type="number" id="newTestOrder" value="0" min="0">
+            </div>
+            <button class="btn btn-primary" onclick="addTestConfig()">添加</button>
+          </div>
+          <div id="addTestSuccess" class="success-msg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultDetailModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <h3>结果详情</h3>
+      <div id="resultDetailContent" class="detail-grid"></div>
+    </div>
+  </div>
+
+  <div id="editTestConfigModal" class="modal-overlay" onclick="if(event.target===this)closeEditModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeEditModal()">&times;</button>
+      <h3>编辑测试配置</h3>
+      <div class="form-group">
+        <label>测试名称</label>
+        <input type="text" id="editTestName">
+      </div>
+      <div class="form-group">
+        <label>页面文件名</label>
+        <input type="text" id="editTestPage">
+      </div>
+      <div class="form-group">
+        <label>排序权重</label>
+        <input type="number" id="editTestOrder" min="0">
+      </div>
+      <input type="hidden" id="editTestId">
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveEditTestConfig()">保存</button>
+        <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
       </div>
     </div>
   </div>

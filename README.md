@@ -4,27 +4,32 @@
 
 ### 1.1 项目简介
 
-这是一个温暖治愈风格的心理年龄测试网站，提供两种主要测试功能：
+这是一个多类型心理测试平台，提供7种专业心理测试功能：
 
 - **心理年龄测试**：20道精心设计的测试题目，覆盖8个心理维度
 - **MBTI人格测试**：70道MBTI标准题目，4个维度的人格类型分析
+- **SBTI测试**：心理年龄+MBTI综合测试
+- **NBTI恋爱性格测试**：基于MBTI的恋爱风格分析
+- **DISC测试**：4维度行为风格分析
+- **回避型依恋测试**：依恋风格评估
+- **性格匹配城市测试**：8维度城市匹配，15座城市数据
 
 ### 1.2 核心功能
 
 ✨ **用户端功能**
 
-- 心理年龄测试（18-60岁）
-- MBTI人格类型测试
-- 兑换码验证系统
+- 7种专业心理测试
+- 兑换码验证系统（单次码 + 月卡）
 - 智能算法计算测试结果
-- 8种人格类型判定
+- 数据可视化（雷达图、进度条、维度条形图）
 - 个性化分析和建议
-- 数据可视化（雷达图、进度条）
 - 结果截图保存功能
+- 晒单领券活动
 
 🔐 **安全特性**
 
 - 兑换码验证系统（支持并发处理）
+- 月卡有效期和次数限制验证
 - 数据库事务确保数据一致性
 - JWT 认证管理员后台
 - 速率限制防止滥用
@@ -32,10 +37,14 @@
 
 📊 **管理功能**
 
-- 生成兑换码（单次最多100个）
-- 查看兑换码使用情况
-- 导出 CSV 对账
-- 管理员账户管理
+- 数据概览仪表盘（总测试量、今日新增、兑换码使用率）
+- 各测试完成量柱状图
+- 生成单次兑换码（单次最多100个）
+- 创建月卡（自定义有效期和使用次数）
+- 测试结果查询（按类型/日期筛选、分页、详情查看）
+- 结果数据导出CSV
+- 兑换码列表（区分单次码/月卡、关联测试信息）
+- 月卡管理（有效期、用量、状态）
 
 ### 1.3 适用场景
 
@@ -61,16 +70,15 @@
 - **速率限制**：express-rate-limit
 - **密码加密**：bcryptjs
 - **CORS处理**：cors
-- **CSV导出**：csv-writer
 - **环境管理**：dotenv
 
 **前端技术栈**
 
 - **基础技术**：原生 HTML5 / CSS3 / JavaScript (ES6+)
-- **数据可视化**：Chart.js (雷达图)
+- **数据可视化**：Canvas API（雷达图）
 - **截图功能**：html2canvas
-- **样式设计**：响应式布局 + CSS变量
-- **设计风格**：温暖治愈风格
+- **样式设计**：响应式布局 + CSS变量 + 主题色系
+- **设计风格**：温暖治愈风格 / 天蓝色系 / 粉色系
 
 **部署技术**
 
@@ -80,188 +88,167 @@
 ### 2.2 系统架构图
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                          用户界面层                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │  心理年龄测试  │  │  MBTI测试    │  │  管理后台     │    │
-│  │  (index.html) │  │ (mbti.html)  │  │ (admin.html) │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                            用户界面层                                  │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐│
+│  │心理年龄   │ │MBTI测试  │ │SBTI测试  │ │NBTI恋爱  │ │DISC测试  ││
+│  │index.html│ │mbti.html │ │sbti.html │ │nbti.html │ │DISC.html ││
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘│
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐                            │
+│  │回避依恋   │ │城市匹配  │ │管理后台  │                            │
+│  │avoidant  │ │city.html │ │admin.html│                            │
+│  └──────────┘ └──────────┘ └──────────┘                            │
+└─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        API网关层                              │
-│                    Express + 中间件                           │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │  限流中间件   │  │  CORS中间件  │  │  错误处理    │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          API网关层                                    │
+│                      Express + 中间件                                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │
+│  │  限流中间件   │  │  CORS中间件  │  │  错误处理    │              │
+│  └──────────────┘  └──────────────┘  └──────────────┘              │
+└─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        业务逻辑层                              │
-│  ┌──────────────────┐  ┌──────────────────┐                  │
-│  │  测试控制器       │  │  管理员控制器     │                  │
-│  │  testController   │  │  adminController  │                  │
-│  └──────────────────┘  └──────────────────┘                  │
-│  ┌──────────────────┐  ┌──────────────────┐                  │
-│  │  评分引擎         │  │  数据库工具       │                  │
-│  │  scoring.js       │  │  database.js      │                  │
-│  └──────────────────┘  └──────────────────┘                  │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          业务逻辑层                                    │
+│  ┌──────────────────┐  ┌──────────────────┐                        │
+│  │  测试控制器       │  │  管理员控制器     │                        │
+│  │  testController   │  │  adminController  │                        │
+│  └──────────────────┘  └──────────────────┘                        │
+│  ┌──────────────────┐  ┌──────────────────┐                        │
+│  │  评分引擎         │  │  数据库工具       │                        │
+│  │  scoring.js       │  │  database.js      │                        │
+│  └──────────────────┘  └──────────────────┘                        │
+└─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        数据访问层                              │
-│                      Prisma ORM                               │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          数据访问层                                    │
+│                        Prisma ORM                                     │
+└─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        数据存储层                              │
-│                      PostgreSQL 数据库                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │   Question   │  │ExchangeCode  │  │  TestResult  │    │
-│  │   (题目)      │  │   (兑换码)    │  │  (测试结果)  │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
-│  ┌──────────────┐                                          │
-│  │    Admin     │                                          │
-│  │  (管理员)     │                                          │
-│  └──────────────┘                                          │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          数据存储层                                    │
+│                        PostgreSQL 数据库                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │
+│  │   Question   │  │ExchangeCode  │  │  TestResult  │              │
+│  │   (题目)      │  │  (兑换码)    │  │  (测试结果)  │              │
+│  └──────────────┘  └──────────────┘  └──────────────┘              │
+│  ┌──────────────┐                                                    │
+│  │    Admin     │                                                    │
+│  │  (管理员)     │                                                    │
+│  └──────────────┘                                                    │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ***
 
 ## 3. 核心功能模块说明
 
-### 3.1 心理年龄测试模块
+### 3.1 测试项目总览
 
-#### 功能概述
+| 测试名称 | 页面文件 | JS文件 | 提交接口 | testType | 主题色 |
+|---------|---------|--------|---------|----------|-------|
+| 心理年龄测试 | `index.html` | `main.js` | `/submit-test` | `mental-age` | 默认 |
+| MBTI测试 | `mbti.html` | `mbti.js` | `/submit-mbti` | `mbti` | 默认 |
+| SBTI测试 | `sbti.html` | `sbti.js` | `/submit-sbti` | `sbti` | 粉色系 |
+| NBTI恋爱测试 | `nbti.html` | `nbti.js` | `/submit-nbti` | `nbti` | 粉色系 |
+| DISC测试 | `DISC.html` | 内嵌JS | `/submit-disc` | `disc` | 默认 |
+| 回避型依恋 | `avoidant.html` | `avoidant.js` | `/submit-avoidant` | `avoidant` | 默认 |
+| 城市匹配 | `city.html` | `city.js` | `/submit-city` | `city` | 天蓝色系 |
+
+### 3.2 心理年龄测试模块
 
 通过20道精心设计的测试题目，评估用户的心理年龄和人格类型。
 
-#### 8个心理维度
+**8个心理维度**：情感稳定性、社交开放性、自我认知度、责任感、好奇心、适应性、乐观倾向、压力应对
 
-1. **情感稳定性** - 情绪控制和心理韧性
-2. **社交开放性** - 社交能力和人际交往
-3. **自我认知度** - 自我了解和内省能力
-4. **责任感** - 承诺和执行力
-5. **好奇心** - 学习欲望和探索精神
-6. **适应性** - 应对变化的能力
-7. **乐观倾向** - 积极心态和希望
-8. **压力应对** - 抗压能力和冷静思考
+**前端文件**：`frontend/index.html` + `frontend/js/main.js`
 
-#### 评分算法
-
-- 每个维度2-3道题目
-- 每道题目得分1-5分
-- 维度得分 = (题目得分总和 / (题目数量 × 5)) × 100
-- 心理年龄 = 各维度加权计算得出（18-60岁）
-
-#### 前端文件
-
-- `frontend/index.html` - 心理年龄测试页面
-- `frontend/js/main.js` - 心理年龄测试逻辑
-- `frontend/css/style.css` - 样式文件
-
-### 3.2 MBTI人格测试模块
-
-#### 功能概述
+### 3.3 MBTI人格测试模块
 
 通过70道MBTI标准题目，分析用户的人格类型（16种类型之一）。
 
-#### 4个维度
+**4个维度**：E/I（外向/内向）、S/N（感觉/直觉）、T/F（思考/情感）、J/P（判断/感知）
 
-1. **E/I 维度** - 外向 (Extraversion) vs 内向 (Introversion) - 10道题
-2. **S/N 维度** - 感觉 (Sensing) vs 直觉 (Intuition) - 20道题
-3. **T/F 维度** - 思考 (Thinking) vs 情感 (Feeling) - 20道题
-4. **J/P 维度** - 判断 (Judging) vs 感知 (Perceiving) - 20道题
+**前端文件**：`frontend/mbti.html` + `frontend/js/mbti.js`
 
-#### 评分算法
+### 3.4 SBTI测试模块
 
-- 统计每个字母出现的次数
-- 计算百分比：
-  - E% = (e的数量 ÷ 10) × 100，I% = 100 - E%
-  - S% = (s的数量 ÷ 20) × 100，N% = 100 - S%
-  - T% = (t的数量 ÷ 20) × 100，F% = 100 - T%
-  - J% = (j的数量 ÷ 20) × 100，P% = 100 - J%
+心理年龄与MBTI综合测试，提供更全面的人格分析。
 
-#### 16种人格类型
+**前端文件**：`frontend/sbti.html` + `frontend/js/sbti.js`
 
-| 类型   | 中文昵称 | 特点                         |
-| ---- | ---- | -------------------------- |
-| INTJ | 建筑师  | 富有想象力和战略性的思想家              |
-| INTP | 逻辑学家 | 具有创造力的发明家，对知识有着止不住的渴望      |
-| ENTJ | 指挥官  | 大胆、富有想象力且意志强大的领导者          |
-| ENTP | 辩论家  | 聪明好奇的思想者，不会放弃任何智力上的挑战      |
-| INFJ | 倡导者  | 安静而神秘，同时鼓舞人心且不知疲倦的理想主义者    |
-| INFP | 调停者  | 诗意、善良的利他主义者，总是热情地为正当理由提供帮助 |
-| ENFJ | 主角   | 富有魅力且鼓舞人心的领导者              |
-| ENFP | 宣传者  | 热情、有创造力、社交自由的人             |
-| ISTJ | 物流师  | 实际且注重事实的个人                 |
-| ISFJ | 守护者  | 非常专注且温暖的保护者                |
-| ESTJ | 执行官  | 出色的管理者                     |
-| ESFJ | 领事   | 极有同情心、爱社交、受欢迎的人            |
-| ISTP | 鉴赏家  | 大胆而实际的实验家                  |
-| ISFP | 探险家  | 灵活且有魅力的艺术家                 |
-| ESTP | 企业家  | 聪明、精力充沛且善于感知的人             |
-| ESFP | 表演者  | 自发的、精力充沛的艺人                |
+### 3.5 NBTI恋爱性格测试模块
 
-#### 前端文件
+基于MBTI的恋爱风格分析，包含爱情语言、明星匹配、恋爱建议等。
 
-- `frontend/mbti.html` - MBTI测试页面
-- `frontend/js/mbti.js` - MBTI测试逻辑
-- `frontend/css/style.css` - 样式文件
+**前端文件**：`frontend/nbti.html` + `frontend/js/nbti.js`
 
-### 3.3 兑换码验证模块
+### 3.6 DISC测试模块
 
-#### 功能概述
+4维度行为风格分析（D支配型/I影响型/S稳定型/C谨慎型）。
 
-使用兑换码系统控制测试访问权限，防止滥用。
+**前端文件**：`frontend/DISC.html`（JS内嵌）
 
-#### 主要特性
+### 3.7 回避型依恋测试模块
 
-- 8位字母数字组合的兑换码
-- 单次使用限制
-- 数据库事务确保数据一致性
-- 并发访问安全处理
+依恋风格评估，分析用户的依恋类型和回避程度。
 
-#### 流程
+**前端文件**：`frontend/avoidant.html` + `frontend/js/avoidant.js`
+
+### 3.8 性格匹配城市测试模块
+
+通过20道生活态度问题，在8个维度上匹配最适合用户的15座中国城市。
+
+**8个匹配维度**：稳定/安稳、配套/便利、节奏/活力、国际/开放、居住/环境、美食/烟火、机遇/收入、生活成本
+
+**15座城市**：上海、北京、深圳、广州、成都、杭州、西安、苏州、重庆、南京、武汉、长沙、厦门、青岛、大理
+
+**结果包含**：灵魂城市Top1 + 匹配度、性格标签（5个）、为什么是你解读、八维度雷达图、城市画像、月度生活场景、数据卡片、适合同城好友城市Top2
+
+**前端文件**：`frontend/city.html` + `frontend/js/city.js`
+
+### 3.9 兑换码验证模块
+
+#### 兑换码类型
+
+| 类型 | 枚举值 | 说明 |
+|------|--------|------|
+| 单次兑换码 | `SINGLE_USE` | 使用一次后标记为已使用 |
+| 月卡 | `MONTHLY_CARD` | 有效期内不限/限次使用 |
+
+#### 验证流程
 
 1. 用户输入兑换码
-2. 后端验证兑换码是否存在且未使用
-3. 用户完成测试后，标记兑换码为已使用
+2. 后端验证兑换码是否存在
+3. 单次码：检查是否已使用
+4. 月卡：检查是否过期 + 使用次数是否达上限
+5. 用户完成测试后，记录使用（单次码标记used，月卡递增usedCount）
 
-### 3.4 管理员后台模块
+#### 月卡验证逻辑
 
-#### 功能概述
+```
+用户输入兑换码 → 查库
+  ├─ SINGLE_USE：used == false → 通过，标记 used=true
+  │                used == true  → "已被使用"
+  └─ MONTHLY_CARD：now > expiresAt → "已过期"
+                    usedCount >= useLimit → "使用次数已达上限"
+                    通过 → usedCount++
+```
 
-提供管理员管理兑换码和查看测试数据的功能。
+### 3.10 管理员后台模块
 
-#### 主要功能
+4个Tab页面：
 
-- 管理员登录（JWT认证）
-- 生成兑换码（单次1-100个）
-- 查看兑换码使用情况
-- 导出CSV数据进行对账
-- 管理员账户管理
+1. **📊 数据概览**：总测试次数、今日新增、兑换码使用率、各测试完成量柱状图、月卡统计
+2. **💳 兑换码管理**：生成单次码、查看列表（区分类型/状态/关联测试）、导出CSV
+3. **📋 结果查询**：按测试类型/日期筛选、分页浏览、查看详情、删除、导出CSV
+4. **📅 月卡管理**：创建月卡（自定义有效期/次数限制/备注）、月卡列表
 
-#### 前端文件
-
-- `frontend/admin.html` - 管理后台页面
-- `frontend/js/admin.js` - 管理后台逻辑
-
-### 3.5 首页模块
-
-#### 功能概述
-
-提供网站入口和导航，包括心理年龄测试和MBTI测试的入口。
-
-#### 前端文件
-
-- `frontend/home.html` - 首页
-- `frontend/css/style.css` - 样式文件
+**前端文件**：`frontend/admin.html` + `frontend/js/admin.js`
 
 ***
 
@@ -273,20 +260,6 @@
 
 ```
 GET /api/questions
-```
-
-**响应示例**：
-
-```json
-[
-  {
-    "id": 1,
-    "title": "当遇到挫折时，我能很快调整心态继续前进",
-    "dimension": 1,
-    "order": 1,
-    "createdAt": "2026-03-24T03:40:50.000Z"
-  }
-]
 ```
 
 #### 4.1.2 验证兑换码
@@ -305,91 +278,48 @@ Content-Type: application/json
 ```json
 {
   "valid": true,
-  "code": "ABC12345"
+  "code": "ABC12345",
+  "codeType": "SINGLE_USE"
 }
 ```
 
-**错误响应**：
+#### 4.1.3 提交测试（通用格式）
 
-```json
-{
-  "error": "兑换码不存在"
-}
-```
-
-#### 4.1.3 提交心理年龄测试
+所有7个测试提交接口遵循统一格式：
 
 ```
-POST /api/submit-test
+POST /api/submit-{testType}
 Content-Type: application/json
 
 {
   "code": "ABC12345",
-  "answers": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-  "realAge": 25
+  "rawAnswers": { "q1": 2, "q2": 0, ... },
+  "resultData": { ... }
 }
 ```
+
+| 接口路径 | testType | resultData主要内容 |
+|---------|----------|------------------|
+| `/submit-test` | `mental-age` | mentalAge, realAge, dimensionScores, personalityType, archetype, keywords |
+| `/submit-mbti` | `mbti` | mbtiType, dimensions, description, strengths, weaknesses |
+| `/submit-sbti` | `sbti` | sbtiType, sbtiName, similarity, rawScores, levels, mbtiMatch |
+| `/submit-nbti` | `nbti` | nbtiType, nbtiName, nbtiAlias, dimScores, dimDetails, summary |
+| `/submit-disc` | `disc` | primaryType, scores, percentages, typeName, typeDesc |
+| `/submit-avoidant` | `avoidant` | attachmentType, score, level, sectionScores, traits, advice |
+| `/submit-city` | `city` | topCity, cityRanking, userDimensionScores, personalityTags |
 
 **成功响应**：
 
 ```json
 {
   "success": true,
-  "result": {
-    "mentalAge": 28,
-    "realAge": 25,
-    "dimensionScores": {
-      "1": 75,
-      "2": 80,
-      "3": 60,
-      "4": 70,
-      "5": 85,
-      "6": 75,
-      "7": 90,
-      "8": 65
-    },
-    "personalityType": "温柔治愈者",
-    "archetype": "暖阳使者",
-    "matchedCelebrity": "特蕾莎修女",
-    "keywords": ["成熟", "稳定", "温暖"],
-    "analysisText": {
-      "coreTraits": "你是一个情感稳定、富有同理心的人...",
-      "blindSpots": "可以留意的是，有时候你可能过于照顾他人...",
-      "growthAdvice": "每周给自己留出一些独处时间..."
-    },
-    "matchText": {
-      "socialType": "温暖陪伴型",
-      "socialStyle": "你倾向于在社交中扮演倾听者和支持者的角色...",
-      "bestMatch": "活力挑战者、理性守望者",
-      "relationshipReminder": "在亲密关系中，记得也要关注自己的需求..."
-    }
-  }
-}
-```
-
-#### 4.1.4 提交MBTI测试
-
-```
-POST /api/submit-mbti
-Content-Type: application/json
-
-{
-  "code": "ABC12345",
-  "answers": ["e", "s", "t", "j", ...],
-  "realAge": 25
-}
-```
-
-**成功响应**：
-
-```json
-{
-  "success": true,
-  "message": "兑换码已成功使用"
+  "message": "提交成功"
 }
 ```
 
 ### 4.2 管理员API
+
+所有管理员API需要在请求头中携带 `Authorization: Bearer <token>`。
 
 #### 4.2.1 管理员登录
 
@@ -403,45 +333,40 @@ Content-Type: application/json
 }
 ```
 
-**成功响应**：
+#### 4.2.2 数据概览统计
+
+```
+GET /api/admin/stats/overview
+```
+
+**响应**：
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "totalResults": 3456,
+  "todayNew": 89,
+  "totalCodes": 2000,
+  "usedCodes": 1560,
+  "codeUsageRate": 78,
+  "monthlyCards": 50,
+  "activeMonthlyCards": 42,
+  "byTestType": [
+    { "testType": "sbti", "count": 1200 },
+    { "testType": "nbti", "count": 800 }
+  ]
 }
 ```
 
-#### 4.2.2 获取兑换码列表
+#### 4.2.3 获取兑换码列表
 
 ```
 GET /api/admin/codes?page=1&limit=50
-Authorization: Bearer <token>
 ```
 
-**成功响应**：
-
-```json
-{
-  "codes": [
-    {
-      "id": 1,
-      "code": "ABC12345",
-      "used": false,
-      "usedAt": null,
-      "createdAt": "2026-03-24T03:40:50.000Z"
-    }
-  ],
-  "total": 100,
-  "page": 1,
-  "limit": 50
-}
-```
-
-#### 4.2.3 生成兑换码
+#### 4.2.4 生成单次兑换码
 
 ```
 POST /api/admin/generate-codes
-Authorization: Bearer <token>
 Content-Type: application/json
 
 {
@@ -449,37 +374,60 @@ Content-Type: application/json
 }
 ```
 
-**成功响应**：
+#### 4.2.5 创建月卡
 
-```json
+```
+POST /api/admin/create-monthly-cards
+Content-Type: application/json
+
 {
-  "count": 10,
-  "codes": ["ABC12345", "DEF67890", ...]
+  "count": 5,
+  "validDays": 30,
+  "useLimit": null,
+  "remark": "客户A"
 }
 ```
 
-#### 4.2.4 导出CSV
+#### 4.2.6 获取月卡列表
+
+```
+GET /api/admin/monthly-cards?page=1&limit=50
+```
+
+#### 4.2.7 查询测试结果
+
+```
+GET /api/admin/results?testType=all&page=1&limit=20&startDate=2026-01-01&endDate=2026-04-19
+```
+
+#### 4.2.8 查看结果详情
+
+```
+GET /api/admin/results/:id
+```
+
+#### 4.2.9 删除结果
+
+```
+DELETE /api/admin/results/:id
+```
+
+#### 4.2.10 导出结果CSV
+
+```
+GET /api/admin/results-export?testType=all&startDate=&endDate=
+```
+
+#### 4.2.11 导出兑换码CSV
 
 ```
 GET /api/admin/export
-Authorization: Bearer <token>
 ```
 
-**响应**：CSV文件下载
-
-#### 4.2.5 健康检查
+#### 4.2.12 健康检查
 
 ```
 GET /health
-```
-
-**响应**：
-
-```json
-{
-  "status": "ok",
-  "message": "服务运行正常"
-}
 ```
 
 ***
@@ -494,7 +442,7 @@ GET /health
 model Question {
   id        Int     @id @default(autoincrement())
   title     String  @db.Text
-  dimension Int     // 1-8 维度
+  dimension Int
   order     Int
   createdAt DateTime @default(now())
 
@@ -502,84 +450,71 @@ model Question {
 }
 ```
 
-**字段说明**：
-
-- `id` - 主键，自增
-- `title` - 题目文本
-- `dimension` - 维度编号（1-8）
-- `order` - 题目显示顺序
-- `createdAt` - 创建时间
-
 #### 5.1.2 ExchangeCode（兑换码）
 
 ```prisma
+enum CodeType {
+  SINGLE_USE
+  MONTHLY_CARD
+}
+
 model ExchangeCode {
   id          Int         @id @default(autoincrement())
   code        String      @unique @db.VarChar(8)
+  codeType    CodeType    @default(SINGLE_USE)
   used        Boolean     @default(false)
   usedAt      DateTime?
+  expiresAt   DateTime?
+  useLimit    Int?
+  usedCount   Int         @default(0)
+  remark      String?
   createdAt   DateTime    @default(now())
-  testResult  TestResult?
+  testResults TestResult[]
 
   @@index([used])
   @@index([code])
+  @@index([codeType])
+  @@index([expiresAt])
 }
 ```
 
 **字段说明**：
 
-- `id` - 主键，自增
-- `code` - 兑换码（8位字母数字，唯一）
-- `used` - 是否已使用
-- `usedAt` - 使用时间
-- `createdAt` - 创建时间
-- `testResult` - 关联的测试结果
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `codeType` | CodeType | 兑换码类型：SINGLE_USE（单次）/ MONTHLY_CARD（月卡） |
+| `expiresAt` | DateTime? | 月卡到期时间（单次码为null） |
+| `useLimit` | Int? | 月卡使用次数上限（null表示不限） |
+| `usedCount` | Int | 已使用次数（月卡递增，单次码0或1） |
+| `remark` | String? | 备注 |
+| `testResults` | TestResult[] | 关联的测试结果（月卡可有多条） |
 
-**索引**：
-
-- `used` - 加速查询未使用的兑换码
-- `code` - 加速兑换码验证
-
-#### 5.1.3 TestResult（测试结果）
+#### 5.1.3 TestResult（测试结果 - 通用）
 
 ```prisma
 model TestResult {
-  id                Int         @id @default(autoincrement())
-  mentalAge         Int
-  realAge           Int
-  dimensionScores   Json        // 8个维度的得分
-  personalityType   String
-  archetype         String
-  matchedCelebrity  String
-  keywords          Json        // 关键词数组
-  analysisText      Json        // 深度分析（对象：coreTraits, blindSpots, growthAdvice）
-  matchText         Json        // 社交匹配（对象：socialType, socialStyle, bestMatch, relationshipReminder）
-  createdAt         DateTime    @default(now())
-  exchangeCodeId    Int         @unique
-  exchangeCode      ExchangeCode @relation(fields: [exchangeCodeId], references: [id])
+  id             Int          @id @default(autoincrement())
+  testType       String
+  rawAnswers     Json?
+  resultData     Json
+  createdAt      DateTime     @default(now())
+  exchangeCodeId Int?
+  exchangeCode   ExchangeCode? @relation(fields: [exchangeCodeId], references: [id])
 
+  @@index([testType])
   @@index([createdAt])
+  @@index([exchangeCodeId])
 }
 ```
 
 **字段说明**：
 
-- `id` - 主键，自增
-- `mentalAge` - 心理年龄
-- `realAge` - 实际年龄
-- `dimensionScores` - 8个维度的得分（JSON对象）
-- `personalityType` - 人格类型名称
-- `archetype` - 原型角色
-- `matchedCelebrity` - 匹配名人
-- `keywords` - 关键词数组（JSON）
-- `analysisText` - 深度分析（JSON对象）
-- `matchText` - 社交匹配（JSON对象）
-- `createdAt` - 创建时间
-- `exchangeCodeId` - 关联的兑换码ID（唯一）
-
-**索引**：
-
-- `createdAt` - 加速按时间查询测试结果
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `testType` | String | 测试类型标识：mental-age / mbti / sbti / nbti / disc / avoidant / city |
+| `rawAnswers` | Json? | 原始答题记录 |
+| `resultData` | Json | 结构化结果数据（各测试格式不同） |
+| `exchangeCodeId` | Int? | 关联兑换码ID（非unique，月卡可产生多条结果） |
 
 #### 5.1.4 Admin（管理员）
 
@@ -592,13 +527,6 @@ model Admin {
 }
 ```
 
-**字段说明**：
-
-- `id` - 主键，自增
-- `username` - 用户名（唯一）
-- `passwordHash` - 密码哈希（bcrypt加密）
-- `createdAt` - 创建时间
-
 ### 5.2 数据库关系图
 
 ```
@@ -606,7 +534,7 @@ model Admin {
 │   Question   │         │ExchangeCode  │
 │   (题目)      │         │   (兑换码)    │
 └──────────────┘         └──────┬───────┘
-                                  │ 1:1
+                                  │ 1:N（月卡可产生多条结果）
                                   │
                                   ▼
                          ┌──────────────┐
@@ -619,13 +547,6 @@ model Admin {
 │  (管理员)     │
 └──────────────┘
 ```
-
-### 5.3 数据初始化
-
-数据库初始化通过 `backend/prisma/seed.js` 文件完成，主要包括：
-
-1. 创建20道心理年龄测试题目
-2. 创建默认管理员账户（用户名：admin，密码：admin123）
 
 ***
 
@@ -668,114 +589,61 @@ NODE_ENV=development
 
 ### 6.3 本地开发（使用 Docker）
 
-#### 步骤
-
-1. 克隆项目
-
 ```bash
+# 克隆项目
 git clone <repository-url>
 cd mental-age
-```
 
-1. 复制环境变量文件
-
-```bash
+# 复制环境变量文件
 cp .env.example .env
-```
 
-1. 启动应用
-
-```bash
+# 启动应用
 docker-compose up
-```
 
-1. 初始化数据库
-
-```bash
+# 初始化数据库
 docker-compose exec app npx prisma migrate deploy
 docker-compose exec app npx prisma db seed
+
+# 访问应用
+# 前端：http://localhost:3000
+# 管理后台：http://localhost:3000/admin.html
+# API：http://localhost:3001/api
 ```
 
-1. 访问应用
-
-- 前端：<http://localhost:3000>
-- 管理后台：<http://localhost:3000/admin.html>
-- API：<http://localhost:3001/api>
-
-**默认管理员账户**：
-
-- 用户名：admin
-- 密码：admin123
+**默认管理员账户**：用户名 `admin`，密码 `admin123`
 
 ### 6.4 本地开发（不使用 Docker）
 
-#### 步骤
-
-1. 安装后端依赖
-
 ```bash
+# 安装后端依赖
 cd backend
 npm install
-```
 
-1. 配置数据库
-
-```bash
-# 创建 .env 文件
+# 配置数据库
 cp ../.env.example .env
-
 # 编辑 .env，设置 DATABASE_URL
-DATABASE_URL="postgresql://user:password@localhost:5432/mental_age_test"
-```
 
-1. 初始化数据库
-
-```bash
-npx prisma migrate deploy
+# 初始化数据库
+npx prisma db push
 npx prisma db seed
-```
 
-1. 启动后端服务
-
-```bash
+# 启动后端服务
 npm run dev
 ```
 
-1. 启动前端
+### 6.5 前端文件清单
 
-- 在浏览器中打开 `frontend/index.html`
-- 或使用 HTTP 服务器：
-
-```bash
-python -m http.server 3000 --directory frontend
-```
-
-### 6.5 前端开发
-
-前端使用原生 HTML/CSS/JavaScript，无需构建工具。主要文件：
-
-**心理年龄测试**：
-
-- `frontend/index.html` - 页面结构
-- `frontend/js/main.js` - 业务逻辑
-- `frontend/css/style.css` - 样式
-
-**MBTI测试**：
-
-- `frontend/mbti.html` - 页面结构
-- `frontend/js/mbti.js` - 业务逻辑
-- `frontend/css/style.css` - 样式
-
-**管理后台**：
-
-- `frontend/admin.html` - 页面结构
-- `frontend/js/admin.js` - 业务逻辑
-- `frontend/css/style.css` - 样式
-
-**首页**：
-
-- `frontend/home.html` - 页面结构
-- `frontend/css/style.css` - 样式
+| 测试 | 页面 | JS | 主题色 |
+|------|------|-----|-------|
+| 心理年龄 | `index.html` | `js/main.js` | 默认 |
+| MBTI | `mbti.html` | `js/mbti.js` | 默认 |
+| SBTI | `sbti.html` | `js/sbti.js` | 粉色系 |
+| NBTI恋爱 | `nbti.html` | `js/nbti.js` | 粉色系 |
+| DISC | `DISC.html` | 内嵌JS | 默认 |
+| 回避型依恋 | `avoidant.html` | `js/avoidant.js` | 默认 |
+| 城市匹配 | `city.html` | `js/city.js` | 天蓝色系 |
+| 管理后台 | `admin.html` | `js/admin.js` | 紫色系 |
+| 首页 | `home.html` | - | 默认 |
 
 ***
 
@@ -783,16 +651,9 @@ python -m http.server 3000 --directory frontend
 
 ### 7.1 Docker 部署
 
-#### 使用 Docker Compose 部署
-
 ```bash
-# 构建镜像
 docker-compose build
-
-# 启动服务
 docker-compose up -d
-
-# 查看日志
 docker-compose logs -f app
 ```
 
@@ -800,45 +661,25 @@ docker-compose logs -f app
 
 1. 连接 GitHub 仓库到 Railway
 2. 添加 PostgreSQL 插件
-3. 设置环境变量：
-   - `DATABASE_URL` - Railway 自动提供
-   - `JWT_SECRET` - 设置强密钥
-   - `INIT_ADMIN_PASSWORD` - 设置管理员密码
-   - `FRONTEND_URL` - 你的前端 URL
+3. 设置环境变量：`DATABASE_URL`、`JWT_SECRET`、`INIT_ADMIN_PASSWORD`、`FRONTEND_URL`
 4. 部署后端服务
 
-### 7.3 Render 部署
+### 7.3 生产环境安全建议
 
-1. 连接 GitHub 仓库
-2. 创建 PostgreSQL 数据库
-3. 创建 Web Service
-4. 设置构建命令：`npm install && npx prisma migrate deploy`
-5. 设置启动命令：`npm start`
-6. 配置环境变量
-
-### 7.4 生产环境安全建议
-
-1. **修改 JWT\_SECRET** 为强密钥
-2. **修改初始管理员密码**
-3. **启用 HTTPS**
-4. **配置适当的 CORS 策略**
-5. **使用环境变量管理敏感信息**
-6. **定期备份数据库**
-7. **使用强密码**
-8. **限制数据库访问权限**
-9. **监控速率限制**
-10. **定期审计日志**
-11. **更新依赖包**
+1. 修改 `JWT_SECRET` 为强密钥
+2. 修改初始管理员密码
+3. 启用 HTTPS
+4. 配置适当的 CORS 策略
+5. 使用环境变量管理敏感信息
+6. 定期备份数据库
+7. 监控速率限制
+8. 定期更新依赖包
 
 ***
 
 ## 8. 常见问题解决方案
 
 ### 8.1 数据库连接失败
-
-**问题**：后端无法连接到 PostgreSQL 数据库
-
-**解决方案**：
 
 1. 检查 PostgreSQL 是否运行
 2. 验证 `DATABASE_URL` 是否正确
@@ -847,69 +688,36 @@ docker-compose logs -f app
 
 ### 8.2 前端无法连接后端
 
-**问题**：前端页面显示网络错误
-
-**解决方案**：
-
-1. 检查后端服务是否运行（访问 <http://localhost:3001/health）>
+1. 检查后端服务是否运行（访问 `http://localhost:3001/health`）
 2. 验证 CORS 配置
 3. 检查防火墙设置
 4. 确认 `FRONTEND_URL` 环境变量设置正确
 
 ### 8.3 兑换码验证失败
 
-**问题**：输入兑换码后提示错误
-
-**解决方案**：
-
 1. 确保兑换码格式正确（8位字母数字）
-2. 检查兑换码是否已被使用
-3. 查看数据库中是否存在该码
+2. 单次码：检查是否已被使用
+3. 月卡：检查是否已过期或使用次数达上限
 4. 确认兑换码没有大小写问题（系统不区分大小写）
 
 ### 8.4 管理员登录失败
 
-**问题**：无法登录管理后台
-
-**解决方案**：
-
 1. 检查用户名和密码是否正确
 2. 确保管理员账户已创建（通过数据库初始化）
 3. 查看 `JWT_SECRET` 是否配置
-4. 检查浏览器是否支持 Cookie
 
-### 8.5 测试结果显示异常
+### 8.5 测试结果未保存到后端
 
-**问题**：测试结果页面显示不正确
+1. 检查提交接口是否返回成功
+2. 确认前端发送了 `resultData` 和 `rawAnswers`
+3. 检查VIP88888测试码不会写入数据库（设计如此）
+4. 查看后端日志确认提交状态
 
-**解决方案**：
+### 8.6 月卡无法使用
 
-1. 检查网络连接
-2. 查看浏览器控制台错误
-3. 确认后端 API 返回正确数据
-4. 清除浏览器缓存
-
-### 8.6 进度条不显示
-
-**问题**：MBTI测试结果页面进度条不显示
-
-**解决方案**：
-
-1. 检查 CSS 样式是否正确加载
-2. 确认 HTML 结构包含进度条元素
-3. 查看浏览器开发者工具中的元素样式
-4. 清除浏览器缓存并强制刷新
-
-### 8.7 MBTI百分比超过100%
-
-**问题**：MBTI测试结果中某个维度的百分比超过100%
-
-**解决方案**：
-
-1. 确认选项的 `onclick` 事件正确设置
-2. 检查 `selectAnswer` 函数是否正确记录答案
-3. 验证 `calculateMBTIResult` 函数的计算逻辑
-4. 确保每个维度的问题数量正确
+1. 检查月卡是否已过期（`expiresAt`）
+2. 检查使用次数是否已达上限（`useLimit`）
+3. 确认月卡的 `codeType` 为 `MONTHLY_CARD`
 
 ***
 
@@ -919,355 +727,115 @@ docker-compose logs -f app
 
 ```
 mental-age/
-├── backend/                      # 后端代码
-│   ├── prisma/                  # Prisma ORM 配置
-│   │   ├── migrations/          # 数据库迁移文件
-│   │   ├── schema.prisma        # 数据库模型定义
-│   │   └── seed.js             # 数据库初始化脚本
-│   ├── src/                     # 源代码
-│   │   ├── config/              # 配置文件
-│   │   │   └── env.js          # 环境变量配置
-│   │   ├── controllers/         # 控制器
-│   │   │   ├── adminController.js   # 管理员控制器
-│   │   │   └── testController.js    # 测试控制器
-│   │   ├── middleware/          # 中间件
-│   │   │   ├── auth.js         # 认证和错误处理
-│   │   │   └── rateLimiter.js  # 速率限制
-│   │   ├── routes/              # 路由
-│   │   │   ├── admin.js        # 管理员路由
-│   │   │   └── api.js          # API路由
-│   │   ├── utils/               # 工具函数
-│   │   │   ├── database.js     # 数据库工具
-│   │   │   └── scoring.js      # 评分引擎
-│   │   └── app.js              # 应用入口
-│   ├── package.json            # 后端依赖
-│   └── Dockerfile              # Docker镜像
-├── frontend/                    # 前端代码
-│   ├── css/                     # 样式文件
-│   │   ├── style.css           # 主样式文件
-│   │   └── style - 备份.css     # 备份样式
-│   ├── js/                      # JavaScript文件
-│   │   ├── admin.js            # 管理后台逻辑
-│   │   ├── main.js             # 心理年龄测试逻辑
-│   │   └── mbti.js             # MBTI测试逻辑
-│   ├── admin.html              # 管理后台页面
-│   ├── home.html               # 首页
-│   ├── index.html              # 心理年龄测试页面
-│   └── mbti.html               # MBTI测试页面
-├── .env.example                # 环境变量示例
-├── docker-compose.yml          # Docker Compose配置
-├── package.json                # 根目录依赖
-├── README.md                   # 项目说明
-└── PROJECT_DOCUMENTATION.md    # 项目文档（本文件）
+├── backend/                          # 后端代码
+│   ├── prisma/                       # Prisma ORM 配置
+│   │   ├── migrations/               # 数据库迁移文件
+│   │   ├── schema.prisma             # 数据库模型定义
+│   │   └── seed.js                   # 数据库初始化脚本
+│   ├── src/                          # 源代码
+│   │   ├── config/                   # 配置文件
+│   │   │   └── env.js                # 环境变量配置
+│   │   ├── controllers/              # 控制器
+│   │   │   ├── adminController.js    # 管理员控制器（统计/结果/月卡/兑换码）
+│   │   │   └── testController.js     # 测试控制器（验证码/提交）
+│   │   ├── middleware/               # 中间件
+│   │   │   ├── auth.js              # 认证和错误处理
+│   │   │   └── rateLimiter.js       # 速率限制
+│   │   ├── routes/                   # 路由
+│   │   │   ├── admin.js             # 管理员路由（统计/结果/月卡/兑换码）
+│   │   │   └── api.js               # 公开API路由（7个submit + validate）
+│   │   ├── utils/                    # 工具函数
+│   │   │   ├── database.js          # 数据库工具
+│   │   │   └── scoring.js           # 评分引擎
+│   │   └── app.js                   # 应用入口
+│   ├── package.json                 # 后端依赖
+│   └── Dockerfile                   # Docker镜像
+├── frontend/                         # 前端代码
+│   ├── css/                          # 样式文件
+│   │   └── style.css                # 主样式文件（含NBTI粉色/城市天蓝变量）
+│   ├── data/                         # 数据文件
+│   │   └── content-v2.md            # 城市测试内容数据
+│   ├── image/                        # 图片资源
+│   ├── js/                           # JavaScript文件
+│   │   ├── admin.js                 # 管理后台逻辑（4Tab）
+│   │   ├── avoidant.js              # 回避型依恋测试逻辑
+│   │   ├── city.js                  # 性格匹配城市测试逻辑
+│   │   ├── html2canvas.min.js       # 截图库
+│   │   ├── main.js                  # 心理年龄测试逻辑
+│   │   ├── mbti.js                  # MBTI测试逻辑
+│   │   ├── nbti.js                  # NBTI恋爱测试逻辑
+│   │   └── sbti.js                  # SBTI测试逻辑
+│   ├── admin.html                   # 管理后台页面（4Tab）
+│   ├── avoidant.html                # 回避型依恋测试页面
+│   ├── city.html                    # 性格匹配城市测试页面
+│   ├── DISC.html                    # DISC测试页面
+│   ├── home.html                    # 首页
+│   ├── index.html                   # 心理年龄测试页面
+│   ├── mbti.html                    # MBTI测试页面
+│   ├── nbti.html                    # NBTI恋爱测试页面
+│   └── sbti.html                    # SBTI测试页面
+├── .env.example                     # 环境变量示例
+├── docker-compose.yml               # Docker Compose配置
+├── package.json                     # 根目录依赖
+└── README.md                        # 项目说明
 ```
 
 ### 9.2 后端核心文件说明
 
 #### `backend/src/app.js`
 
-- **用途**：应用入口文件
-- **功能**：
-  - 初始化 Express 应用
-  - 配置中间件（CORS、JSON解析、限流）
-  - 挂载路由
-  - 启动服务器
-  - 初始化数据库
+应用入口文件，初始化 Express 应用，配置中间件，挂载路由，启动服务器。
 
 #### `backend/src/controllers/testController.js`
 
-- **用途**：测试相关的业务逻辑
-- **功能**：
-  - `getQuestions()` - 获取所有测试题目
-  - `validateCode()` - 验证兑换码
-  - `submitTest()` - 提交心理年龄测试（包含数据库事务）
+测试相关业务逻辑：`getQuestions()`、`validateCode()`（支持月卡验证）、`submitTest()`
 
 #### `backend/src/controllers/adminController.js`
 
-- **用途**：管理员相关的业务逻辑
-- **功能**：
-  - `login()` - 管理员登录
-  - `getCodes()` - 获取兑换码列表
-  - `generateCodes()` - 生成兑换码
-  - `exportCodes()` - 导出兑换码CSV
+管理员相关业务逻辑：
 
-#### `backend/src/utils/scoring.js`
-
-- **用途**：评分引擎
-- **功能**：
-  - `calculateDimensionScores()` - 计算8个维度的得分
-  - `calculateMentalAge()` - 计算心理年龄
-  - `determinePerssonalityType()` - 确定人格类型
-  - `generateKeywords()` - 生成关键词
-  - `generateAnalysisText()` - 生成分析文本
-  - `generateMatchText()` - 生成匹配文本
-  - `PERSONALITY_TYPES` - 8种人格类型定义
+| 函数 | 说明 |
+|------|------|
+| `login()` | 管理员登录 |
+| `getStats()` | 数据概览统计 |
+| `getCodes()` | 获取兑换码列表 |
+| `generateCodes()` | 生成单次兑换码 |
+| `exportCodes()` | 导出兑换码CSV |
+| `getResults()` | 查询测试结果（分页+筛选） |
+| `getResultById()` | 查看结果详情 |
+| `deleteResult()` | 删除结果 |
+| `exportResults()` | 导出结果CSV |
+| `createMonthlyCards()` | 创建月卡 |
+| `getMonthlyCards()` | 获取月卡列表 |
 
 #### `backend/src/routes/api.js`
 
-- **用途**：公开API路由
-- **路由**：
-  - `GET /api/questions` - 获取题目
-  - `POST /api/validate-code` - 验证兑换码
-  - `POST /api/submit-test` - 提交心理年龄测试
-  - `POST /api/submit-mbti` - 提交MBTI测试
-  - `POST /api/submit-sbti` - 提交SBTI测试-可通用，仅验证8位兑换码
+公开API路由，使用 `createSubmitRoute()` 工厂函数统一生成7个submit路由，包含 `consumeCode()` 通用兑换码消费逻辑（区分单次码/月卡）。
 
 #### `backend/src/routes/admin.js`
 
-- **用途**：管理员API路由
-- **路由**：
-  - `POST /api/admin/login` - 管理员登录
-  - `GET /api/admin/codes` - 获取兑换码列表
-  - `POST /api/admin/generate-codes` - 生成兑换码
-  - `GET /api/admin/export` - 导出CSV
-
-#### `backend/prisma/schema.prisma`
-
-- **用途**：数据库模型定义
-- **模型**：
-  - `Question` - 测试题目
-  - `ExchangeCode` - 兑换码
-  - `TestResult` - 测试结果
-  - `Admin` - 管理员
-
-### 9.3 前端核心文件说明
-
-#### `frontend/js/main.js`
-
-- **用途**：心理年龄测试逻辑
-- **功能**：
-  - 显示测试题目
-  - 记录用户答案
-  - 调用API提交测试
-  - 显示测试结果
-  - 生成雷达图
-  - 截图保存功能
-
-#### `frontend/js/mbti.js`
-
-- **用途**：MBTI测试逻辑
-- **功能**：
-  - `MBTI_QUESTIONS` - 70道MBTI题目定义
-  - `MBTI_DATA` - 16种MBTI类型数据
-  - `selectAnswer()` - 记录用户答案
-  - `calculateMBTIResult()` - 计算MBTI结果
-  - `renderResult()` - 渲染结果页面
-  - `saveResultImage()` - 保存结果图片
-  - `copyShareText()` - 复制分享文案
-
-#### `frontend/js/admin.js`
-
-- **用途**：管理后台逻辑
-- **功能**：
-  - 管理员登录
-  - 查看兑换码列表
-  - 生成兑换码
-  - 导出CSV
-
-#### `frontend/css/style.css`
-
-- **用途**：样式文件
-- **功能**：
-  - 心理年龄测试样式
-  - MBTI测试样式
-  - 管理后台样式
-  - 响应式布局
-  - CSS变量定义
+管理员API路由，包含统计、结果查询、月卡管理等全部管理员接口。
 
 ***
 
-## 10. 关键实现逻辑
+## 10. 更新日志
 
-### 10.1 心理年龄评分算法
+### 2026-04-19
 
-#### 维度得分计算
-
-```javascript
-function calculateDimensionScores(answers) {
-  const dimensionQuestions = {
-    1: [0, 8, 16],      // 情感稳定性 (3个问题)
-    2: [1, 9, 17],      // 社交开放性 (3个问题)
-    3: [2, 10, 18],     // 自我认知度 (3个问题)
-    4: [3, 11, 19],     // 责任感 (3个问题)
-    5: [4, 12],         // 好奇心 (2个问题)
-    6: [5, 13],         // 适应性 (2个问题)
-    7: [6, 14],         // 乐观倾向 (2个问题)
-    8: [7, 15]          // 压力应对 (2个问题)
-  };
-
-  const scores = {};
-  for (let dim = 1; dim <= 8; dim++) {
-    const questionIndices = dimensionQuestions[dim];
-    const sum = questionIndices.reduce((acc, idx) => acc + answers[idx], 0);
-    // 百分制计算：(sum / (题目数 * 5)) * 100
-    const dimensionMaxScore = questionIndices.length * 5;
-    scores[dim] = Math.round((sum / dimensionMaxScore) * 100);
-  }
-  return scores;
-}
-```
-
-#### 心理年龄计算
-
-```javascript
-function calculateMentalAge(dimensionScores) {
-  // 基于各维度得分计算心理年龄（18-60岁）
-  const totalScore = Object.values(dimensionScores).reduce((a, b) => a + b, 0);
-  const avgScore = totalScore / 8;
-  
-  // 简单的映射：平均得分50对应心理年龄30岁
-  // 得分越高，心理年龄越成熟
-  const baseAge = 18;
-  const maxAge = 60;
-  const mentalAge = Math.round(baseAge + (avgScore / 100) * (maxAge - baseAge));
-  
-  return Math.max(baseAge, Math.min(maxAge, mentalAge));
-}
-```
-
-### 10.2 MBTI评分算法
-
-#### 答案统计
-
-```javascript
-function calculateMBTIResult(answers) {
-  const counts = { e: 0, i: 0, s: 0, n: 0, t: 0, f: 0, j: 0, p: 0 };
-
-  const dimensionCounts = { e: 10, i: 10, s: 20, n: 20, t: 20, f: 20, j: 20, p: 20 };
-
-  answers.forEach(answer => {
-    if (counts.hasOwnProperty(answer) && counts[answer] < dimensionCounts[answer]) {
-      counts[answer]++;
-    }
-  });
-
-  const percentages = {
-    e: Math.min((counts.e / 10) * 100, 100),
-    i: Math.min(100 - (counts.e / 10) * 100, 100),
-    s: Math.min((counts.s / 20) * 100, 100),
-    n: Math.min(100 - (counts.s / 20) * 100, 100),
-    t: Math.min((counts.t / 20) * 100, 100),
-    f: Math.min(100 - (counts.t / 20) * 100, 100),
-    j: Math.min((counts.j / 20) * 100, 100),
-    p: Math.min(100 - (counts.j / 20) * 100, 100)
-  };
-
-  const type = [
-    counts.e > counts.i ? 'E' : 'I',
-    counts.s > counts.n ? 'S' : 'N',
-    counts.t > counts.f ? 'T' : 'F',
-    counts.j > counts.p ? 'J' : 'P'
-  ].join('');
-
-  return { type, counts, percentages, typeInfo: MBTI_DATA[type] };
-}
-```
-
-### 10.3 数据库事务处理
-
-```javascript
-async function submitTest(code, answers, realAge) {
-  const result = await prisma.$transaction(async (tx) => {
-    // 1. 查找兑换码
-    const exchangeCode = await tx.exchangeCode.findUnique({
-      where: { code }
-    });
-
-    if (!exchangeCode) {
-      throw new Error('兑换码不存在');
-    }
-
-    if (exchangeCode.used) {
-      throw new Error('兑换码已被使用');
-    }
-
-    // 2. 计算得分和人格类型
-    const dimensionScores = calculateDimensionScores(answers);
-    const mentalAge = calculateMentalAge(dimensionScores);
-    const personalityTypeId = determinePerssonalityType(dimensionScores);
-    const personalityType = PERSONALITY_TYPES[personalityTypeId];
-    const keywords = generateKeywords(dimensionScores);
-    const analysisText = generateAnalysisText(mentalAge, realAge, dimensionScores, personalityTypeId);
-    const matchText = generateMatchText(personalityTypeId);
-
-    // 3. 保存测试结果
-    const testResult = await tx.testResult.create({
-      data: {
-        mentalAge,
-        realAge,
-        dimensionScores,
-        personalityType: personalityType.name,
-        archetype: personalityType.archetype,
-        matchedCelebrity: personalityType.celebrity,
-        keywords,
-        analysisText,
-        matchText,
-        exchangeCodeId: exchangeCode.id
-      }
-    });
-
-    // 4. 标记兑换码为已使用
-    await tx.exchangeCode.update({
-      where: { id: exchangeCode.id },
-      data: {
-        used: true,
-        usedAt: new Date()
-      }
-    });
-
-    return { success: true, result: { ... } };
-  });
-
-  return result;
-}
-```
-
-### 10.4 兑换码生成算法
-
-```javascript
-function generateRandomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 排除易混淆字符
-  let code = '';
-  for (let i = 0; i < 8; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
-async function generateCodes(count) {
-  const codes = [];
-  for (let i = 0; i < count; i++) {
-    let code;
-    let attempts = 0;
-    do {
-      code = generateRandomCode();
-      attempts++;
-      if (attempts > 100) {
-        throw new Error('无法生成唯一兑换码');
-      }
-    } while (codes.includes(code));
-    
-    codes.push(code);
-  }
-
-  const createdCodes = await prisma.exchangeCode.createMany({
-    data: codes.map(code => ({ code }))
-  });
-
-  return codes;
-}
-```
-
-***
-
-## 11. 更新日志
+- 数据库Schema改造：ExchangeCode新增codeType/expiresAt/useLimit/usedCount/remark字段，支持月卡
+- TestResult模型通用化：testType + rawAnswers(JSON) + resultData(JSON)，替代旧的固定字段
+- 7个submit接口改写：统一写入TestResult，支持月卡验证逻辑
+- 前端7个测试submit函数：发送rawAnswers和resultData到后端
+- 管理员后台重构：4Tab布局（数据概览/兑换码管理/结果查询/月卡管理）
+- 后端新增7个管理API：统计/结果查询/详情/删除/导出/月卡创建/月卡列表
+- 新增性格匹配城市测试（city.html + city.js）：天蓝色系，20题，15城市，8维度雷达图，性格标签
+- 兑换码系统增强：区分单次码/月卡，月卡支持有效期和次数限制
 
 ### 2026-04-08
 
 - 修复 MBTI 测试选项点击事件问题
 - 修复 MBTI 百分比计算超过 100% 的问题
 - 添加 MBTI 测试进度条样式
-- 移除测试按钮
 - 优化 MBTI 结果页面显示
 
 ### 2026-04-07
@@ -1276,7 +844,6 @@ async function generateCodes(count) {
 - 添加 MBTI 16种人格类型数据
 - 优化结果页面设计
 - 添加分享功能
-- 修复心理年龄测试样式问题
 
 ### 2026-03-24
 
@@ -1288,38 +855,28 @@ async function generateCodes(count) {
 
 ***
 
-## 12. 附录
+## 11. 附录
 
-### 12.1 相关文档
+### 11.1 相关文档
 
-- `README.md` - 项目快速开始指南
 - `FIXES_SUMMARY.md` - 修复总结
 - `MODULE_5_6_REDESIGN.md` - 模块5-6重设计
 - `RESULT_PAGE_REDESIGN.md` - 结果页面重设计
-- `SCORING_10TO5.md` - 评分10到5
 - `DATABASE_MIGRATION.md` - 数据库迁移
-- `译文_skill.txt` - 项目翻译文档
 
-### 12.2 参考资源
+### 11.2 参考资源
 
 - [MBTI 官方网站](https://www.myersbriggs.org/)
 - [Prisma 文档](https://www.prisma.io/docs)
 - [Express.js 文档](https://expressjs.com/)
-- [Chart.js 文档](https://www.chartjs.org/docs/)
 - [html2canvas 文档](https://html2canvas.hertzen.com/)
 
-### 12.3 许可证
+### 11.3 许可证
 
 MIT License
 
 ***
 
-## 13. 联系方式
-
-如有问题或建议，请提交 Issue 或 Pull Request。
-
-***
-
-**文档版本**：1.0\
-**最后更新**：2026-04-08\
+**文档版本**：2.0\
+**最后更新**：2026-04-19\
 **维护者**：项目开发团队

@@ -503,6 +503,20 @@ async function handleSubmitTest() {
     return;
   }
 
+  const userScores = computeUserScores();
+  const cityMatches = computeCityMatches(userScores);
+  const top1 = cityMatches[0];
+  const top2 = cityMatches[1];
+  const top3 = cityMatches[2];
+  const personalityTags = computePersonalityTags(userScores);
+
+  const resultData = {
+    topCity: { key: top1.key, name: top1.name, matchPercent: top1.matchPercent, tier: top1.tier, slogan: top1.slogan },
+    cityRanking: cityMatches.slice(0, 5).map(c => ({ key: c.key, name: c.name, matchPercent: c.matchPercent })),
+    userDimensionScores: userScores,
+    personalityTags: personalityTags.map(t => t.name)
+  };
+
   try {
     if (app.exchangeCode && app.exchangeCode !== 'VIP88888') {
       const response = await fetch(`${API_BASE_URL}/submit-city`, {
@@ -510,7 +524,8 @@ async function handleSubmitTest() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: app.exchangeCode,
-          answers: app.answers
+          rawAnswers: app.answers,
+          resultData
         })
       });
 

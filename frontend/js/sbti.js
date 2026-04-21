@@ -869,16 +869,27 @@ async function handleSubmitTest() {
     return;
   }
 
+  const result = computeResult();
+  const resultData = {
+    sbtiType: result.finalType.code,
+    sbtiName: result.finalType.cn,
+    similarity: result.bestNormal.similarity,
+    exactDimensions: result.bestNormal.exact,
+    rawScores: result.rawScores,
+    levels: result.levels,
+    isSpecial: result.special,
+    mbtiMatch: SBTI_TO_MBTI[result.finalType.code] || null
+  };
+
   try {
-    // 调用后端API标记兑换码为已使用
     if (app.exchangeCode && app.exchangeCode !== 'VIP88888') {
       const response = await fetch(`${API_BASE_URL}/submit-sbti`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: app.exchangeCode,
-          answers: app.answers,
-          realAge: 25 // 为了满足API要求，使用默认值
+          rawAnswers: app.answers,
+          resultData
         })
       });
 
@@ -1163,10 +1174,10 @@ async function validateCode() {
 window.__sbti_select = selectAnswer;
 
 function saveResultImage() {
-  const resultContainer = document.querySelector('.result-container');
-  if (!resultContainer) return;
+  const resultLayout = document.querySelector('.result-layout');
+  if (!resultLayout) return;
 
-  html2canvas(resultContainer, {
+  html2canvas(resultLayout, {
     scale: 2,
     useCORS: true,
     logging: false
@@ -1187,7 +1198,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('prevBtn').addEventListener('click', previousQuestion);
   document.getElementById('nextBtn').addEventListener('click', goToNext);
   document.getElementById('submitTestBtn').addEventListener('click', handleSubmitTest);
-  document.getElementById('toTopBtn').addEventListener('click', () => showScreen('intro'));
   document.getElementById('codeCancelBtn').addEventListener('click', closeCodeModal);
   document.getElementById('codeValidateBtn').addEventListener('click', validateCode);
   const saveBtn = document.getElementById('saveResultBtn');

@@ -584,27 +584,6 @@ async function submitTest() {
       return;
     }
 
-    const response = await fetch(`${API_BASE_URL}/submit-test`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code: state.exchangeCode
-      })
-    });
-
-    // 记录响应状态
-    console.log('提交响应状态:', response.status, response.statusText);
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('后端错误:', errorData);
-      throw new Error(errorData.error || `HTTP ${response.status}: 提交失败`);
-    }
-
-    const data = await response.json();
-    console.log('提交成功:', data);
-
-    // 前端计算测试结果
     const dimensionScores = calculateDimensionScores(state.answers);
     const mentalAge = calculateMentalAge(dimensionScores);
     const personalityTypeId = determinePerssonalityType(dimensionScores);
@@ -613,7 +592,6 @@ async function submitTest() {
     const analysisText = generateAnalysisText(mentalAge, state.realAge, dimensionScores, personalityTypeId);
     const matchText = generateMatchText(personalityTypeId);
 
-    // 构建测试结果
     state.testResult = {
       mentalAge,
       realAge: state.realAge,
@@ -625,6 +603,23 @@ async function submitTest() {
       analysisText,
       matchText
     };
+
+    const response = await fetch(`${API_BASE_URL}/submit-test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code: state.exchangeCode,
+        rawAnswers: state.answers,
+        resultData: state.testResult
+      })
+    });
+
+    console.log('提交响应状态:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('后端错误:', errorData);
+    }
 
     showResultScreen();
   } catch (error) {

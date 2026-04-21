@@ -890,6 +890,16 @@ async function handleSubmitTest() {
     return;
   }
 
+  const result = computeResult();
+  const resultData = {
+    nbtiType: result.typeCode,
+    nbtiName: result.type.cn,
+    nbtiAlias: result.type.alias,
+    dimScores: result.dimScores,
+    dimDetails: result.dimDetails,
+    summary: result.type.summary
+  };
+
   try {
     if (app.exchangeCode && app.exchangeCode !== 'VIP88888') {
       const response = await fetch(`${API_BASE_URL}/submit-nbti`, {
@@ -897,8 +907,8 @@ async function handleSubmitTest() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: app.exchangeCode,
-          answers: app.answers,
-          realAge: 25
+          rawAnswers: app.answers,
+          resultData
         })
       });
 

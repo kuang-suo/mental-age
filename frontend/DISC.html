@@ -1639,7 +1639,6 @@ function submitTest() {
     return;
   }
 
-  // Calculate scores
   const scores = { D: 0, I: 0, S: 0, C: 0 };
   answers.forEach(a => { if (a) scores[a]++; });
 
@@ -1651,11 +1650,17 @@ function submitTest() {
     C: Math.round(scores.C / total * 100)
   };
 
-  // Find dominant type
   const dominant = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
 
-  // Submit result to backend
-  submitDiscResult();
+  const discResultData = {
+    primaryType: dominant,
+    scores: scores,
+    percentages: pcts,
+    typeName: results[dominant].letter,
+    typeDesc: results[dominant].title
+  };
+
+  submitDiscResult(dominant, discResultData);
 
   showResult(dominant, pcts);
 }
@@ -1872,7 +1877,7 @@ async function validateCode() {
   }
 }
 
-async function submitDiscResult() {
+async function submitDiscResult(dominant, resultData) {
   try {
     if (discExchangeCode && discExchangeCode !== 'VIP88888') {
       const response = await fetch(`${DISC_API_BASE_URL}/submit-disc`, {
@@ -1880,7 +1885,8 @@ async function submitDiscResult() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: discExchangeCode,
-          answers: answers
+          rawAnswers: answers,
+          resultData
         })
       });
 

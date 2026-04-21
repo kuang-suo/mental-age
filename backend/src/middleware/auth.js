@@ -3,7 +3,10 @@ import config from '../config/env.js';
 import rateLimit from 'express-rate-limit';
 
 export function authMiddleware(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
+  let token = req.headers.authorization?.split(' ')[1];
+  if (!token && req.query.token) {
+    token = req.query.token;
+  }
 
   if (!token) {
     return res.status(401).json({ error: '未提供认证令牌' });

@@ -1,13 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  calculateDimensionScores,
-  calculateMentalAge,
-  determinePerssonalityType,
-  generateKeywords,
-  generateAnalysisText,
-  generateMatchText,
-  PERSONALITY_TYPES
-} from '../utils/scoring.js';
 
 const prisma = new PrismaClient();
 
@@ -27,17 +18,24 @@ export async function validateCode(code) {
     throw new Error('兑换码不存在');
   }
 
-  if (exchangeCode.used) {
-    throw new Error('兑换码已被使用');
+  if (exchangeCode.codeType === 'SINGLE_USE') {
+    if (exchangeCode.used) {
+      throw new Error('兑换码已被使用');
+    }
+  } else if (exchangeCode.codeType === 'MONTHLY_CARD') {
+    if (exchangeCode.expiresAt && new Date() > exchangeCode.expiresAt) {
+      throw new Error('月卡已过期');
+    }
+    if (exchangeCode.useLimit !== null && exchangeCode.usedCount >= exchangeCode.useLimit) {
+      throw new Error('月卡使用次数已达上限');
+    }
   }
 
-  return { valid: true, code };
+  return { valid: true, code, codeType: exchangeCode.codeType };
 }
 
 export async function submitTest(code, answers, realAge) {
-  // 在事务中处理，确保原子性
   const result = await prisma.$transaction(async (tx) => {
-    // 1. 查找兑换码
     const exchangeCode = await tx.exchangeCode.findUnique({
       where: { code }
     });
@@ -46,58 +44,28 @@ export async function submitTest(code, answers, realAge) {
       throw new Error('兑换码不存在');
     }
 
-    if (exchangeCode.used) {
-      throw new Error('兑换码已被使用');
+    if (exchangeCode.codeType === 'SINGLE_USE') {
+      if (exchangeCode.used) {
+        throw new Error('兑换码已被使用');
+      }
+      await tx.exchangeCode.update({
+        where: { id: exchangeCode.id },
+        data: { used: true, usedAt: new Date() }
+      });
+    } else if (exchangeCode.codeType === 'MONTHLY_CARD') {
+      if (exchangeCode.expiresAt && new Date() > exchangeCode.expiresAt) {
+        throw new Error('月卡已过期');
+      }
+      if (exchangeCode.useLimit !== null && exchangeCode.usedCount >= exchangeCode.useLimit) {
+        throw new Error('月卡使用次数已达上限');
+      }
+      await tx.exchangeCode.update({
+        where: { id: exchangeCode.id },
+        data: { usedCount: { increment: 1 }, usedAt: new Date() }
+      });
     }
 
-    // 2. 计算得分和人格类型
-    const dimensionScores = calculateDimensionScores(answers);
-    const mentalAge = calculateMentalAge(dimensionScores);
-    const personalityTypeId = determinePerssonalityType(dimensionScores);
-    const personalityType = PERSONALITY_TYPES[personalityTypeId];
-    const keywords = generateKeywords(dimensionScores);
-    const analysisText = generateAnalysisText(mentalAge, realAge, dimensionScores, personalityTypeId);
-    const matchText = generateMatchText(personalityTypeId);
-
-    // 3. 保存测试结果
-    const testResult = await tx.testResult.create({
-      data: {
-        mentalAge,
-        realAge,
-        dimensionScores,
-        personalityType: personalityType.name,
-        archetype: personalityType.archetype,
-        matchedCelebrity: personalityType.celebrity,
-        keywords,
-        analysisText,
-        matchText,
-        exchangeCodeId: exchangeCode.id
-      }
-    });
-
-    // 4. 标记兑换码为已使用
-    await tx.exchangeCode.update({
-      where: { id: exchangeCode.id },
-      data: {
-        used: true,
-        usedAt: new Date()
-      }
-    });
-
-    return {
-      success: true,
-      result: {
-        mentalAge,
-        realAge,
-        dimensionScores,
-        personalityType: personalityType.name,
-        archetype: personalityType.archetype,
-        matchedCelebrity: personalityType.celebrity,
-        keywords,
-        analysisText,  // 现在是对象: {coreTraits, blindSpots, growthAdvice}
-        matchText      // 现在是对象: {socialType, socialStyle, bestMatch, relationshipReminder}
-      }
-    };
+    return { success: true };
   });
 
   return result;

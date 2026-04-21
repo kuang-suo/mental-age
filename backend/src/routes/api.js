@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-// 获取所有题目
 router.get('/questions', async (req, res) => {
   try {
     const questions = await getQuestions();
@@ -18,7 +17,6 @@ router.get('/questions', async (req, res) => {
   }
 });
 
-// 验证兑换码
 router.post(
   '/validate-code',
   validateCodeLimiter,
@@ -38,401 +36,117 @@ router.post(
   }
 );
 
-// 提交心理年龄测试
-router.post(
-  '/submit-test',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
+async function consumeCode(tx, code) {
+  const exchangeCode = await tx.exchangeCode.findUnique({
+    where: { code }
+  });
 
-    try {
-      console.log('提交心理年龄测试请求:', {
-        code: req.body.code
-      });
-
-      // 这里我们只需要标记兑换码为已使用，不需要计算心理年龄结果
-      const { code } = req.body;
-      
-      // 在事务中处理，确保原子性
-      const result = await prisma.$transaction(async (tx) => {
-        // 1. 查找兑换码
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        // 2. 标记兑换码为已使用
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交测试失败:', error.message);
-      res.status(400).json({ error: error.message });
-    }
+  if (!exchangeCode) {
+    throw new Error('兑换码不存在');
   }
-);
 
-// 提交MBTI测试
-router.post(
-  '/submit-mbti',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  body('answers').isArray({ min: 70, max: 70 }).withMessage('答案数量必须为70'),
-  body('realAge').isInt({ min: 18, max: 150 }).withMessage('年龄必须在18-150之间'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
+  if (exchangeCode.codeType === 'SINGLE_USE') {
+    if (exchangeCode.used) {
+      throw new Error('兑换码已被使用');
     }
-
-    try {
-      console.log('提交MBTI测试请求:', {
-        code: req.body.code,
-        answersLength: req.body.answers?.length,
-        realAge: req.body.realAge
-      });
-
-      // 这里我们只需要标记兑换码为已使用，不需要计算心理年龄结果
-      const { code, realAge } = req.body;
-      
-      // 在事务中处理，确保原子性
-      const result = await prisma.$transaction(async (tx) => {
-        // 1. 查找兑换码
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        // 2. 标记兑换码为已使用
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交MBTI测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交MBTI测试失败:', error.message);
-      res.status(400).json({ error: error.message });
+    await tx.exchangeCode.update({
+      where: { id: exchangeCode.id },
+      data: { used: true, usedAt: new Date() }
+    });
+  } else if (exchangeCode.codeType === 'MONTHLY_CARD') {
+    if (exchangeCode.expiresAt && new Date() > exchangeCode.expiresAt) {
+      throw new Error('月卡已过期');
     }
+    if (exchangeCode.useLimit !== null && exchangeCode.usedCount >= exchangeCode.useLimit) {
+      throw new Error('月卡使用次数已达上限');
+    }
+    await tx.exchangeCode.update({
+      where: { id: exchangeCode.id },
+      data: { usedCount: { increment: 1 }, usedAt: new Date() }
+    });
   }
-);
 
-// 提交SBTI测试
-router.post(
-  '/submit-sbti',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
+  return exchangeCode;
+}
 
-    try {
-      console.log('提交SBTI测试请求:', {
-        code: req.body.code
-      });
+const TEST_TYPES = {
+  'submit-test': 'mental-age',
+  'submit-mbti': 'mbti',
+  'submit-sbti': 'sbti',
+  'submit-nbti': 'nbti',
+  'submit-disc': 'disc',
+  'submit-avoidant': 'avoidant',
+  'submit-city': 'city'
+};
 
-      const { code } = req.body;
+const TEST_NAMES = {
+  'submit-test': '心理年龄测试',
+  'submit-mbti': 'MBTI测试',
+  'submit-sbti': 'SBTI测试',
+  'submit-nbti': 'NBTI恋爱测试',
+  'submit-disc': 'DISC测试',
+  'submit-avoidant': '回避型依恋测试',
+  'submit-city': '性格匹配城市测试'
+};
 
-      const result = await prisma.$transaction(async (tx) => {
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
+function createSubmitRoute(routePath, extraValidation = []) {
+  router.post(
+    routePath,
+    submitTestLimiter,
+    body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
+    ...extraValidation,
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const testType = TEST_TYPES[routePath.slice(1)];
+      const testName = TEST_NAMES[routePath.slice(1)];
+      const { code, resultData, rawAnswers } = req.body;
+
+      try {
+        const testConfig = await prisma.testConfig.findUnique({
+          where: { typeKey: testType }
         });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
+        if (testConfig && !testConfig.enabled) {
+          return res.status(400).json({ error: '该测试已禁用' });
         }
 
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
+        const result = await prisma.$transaction(async (tx) => {
+          const exchangeCode = await consumeCode(tx, code);
 
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
+          await tx.testResult.create({
+            data: {
+              testType,
+              rawAnswers: rawAnswers || null,
+              resultData: resultData || {},
+              exchangeCodeId: exchangeCode.id
+            }
+          });
+
+          return { success: true, message: '提交成功' };
         });
 
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交SBTI测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交SBTI测试失败:', error.message);
-      res.status(400).json({ error: error.message });
+        console.log(`${testName}提交成功`);
+        res.json(result);
+      } catch (error) {
+        console.error(`${testName}提交失败:`, error.message);
+        res.status(400).json({ error: error.message });
+      }
     }
-  }
-);
+  );
+}
 
-// 提交DISC测试
-router.post(
-  '/submit-disc',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      console.log('提交DISC测试请求:', {
-        code: req.body.code
-      });
-
-      const { code } = req.body;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交DISC测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交DISC测试失败:', error.message);
-      res.status(400).json({ error: error.message });
-    }
-  }
-);
-
-// 提交回避型依恋测试
-router.post(
-  '/submit-avoidant',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      console.log('提交回避型依恋测试请求:', {
-        code: req.body.code
-      });
-
-      const { code } = req.body;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交回避型依恋测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交回避型依恋测试失败:', error.message);
-      res.status(400).json({ error: error.message });
-    }
-  }
-);
-
-// 提交NBTI恋爱性格测试
-router.post(
-  '/submit-nbti',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      console.log('提交NBTI恋爱性格测试请求:', {
-        code: req.body.code
-      });
-
-      const { code } = req.body;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交NBTI恋爱性格测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交NBTI恋爱性格测试失败:', error.message);
-      res.status(400).json({ error: error.message });
-    }
-  }
-);
-
-// 提交性格匹配城市测试
-router.post(
-  '/submit-city',
-  submitTestLimiter,
-  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error('参数验证失败:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      console.log('提交性格匹配城市测试请求:', {
-        code: req.body.code
-      });
-
-      const { code } = req.body;
-
-      const result = await prisma.$transaction(async (tx) => {
-        const exchangeCode = await tx.exchangeCode.findUnique({
-          where: { code }
-        });
-
-        if (!exchangeCode) {
-          throw new Error('兑换码不存在');
-        }
-
-        if (exchangeCode.used) {
-          throw new Error('兑换码已被使用');
-        }
-
-        await tx.exchangeCode.update({
-          where: { id: exchangeCode.id },
-          data: {
-            used: true,
-            usedAt: new Date()
-          }
-        });
-
-        return {
-          success: true,
-          message: '兑换码已成功使用'
-        };
-      });
-
-      console.log('提交性格匹配城市测试成功');
-      res.json(result);
-    } catch (error) {
-      console.error('提交性格匹配城市测试失败:', error.message);
-      res.status(400).json({ error: error.message });
-    }
-  }
-);
+createSubmitRoute('/submit-test');
+createSubmitRoute('/submit-mbti', [
+  body('answers').optional().isArray(),
+  body('realAge').optional().isInt({ min: 18, max: 150 })
+]);
+createSubmitRoute('/submit-sbti');
+createSubmitRoute('/submit-nbti');
+createSubmitRoute('/submit-disc');
+createSubmitRoute('/submit-avoidant');
+createSubmitRoute('/submit-city');
 
 export default router;

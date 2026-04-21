@@ -1,7 +1,5 @@
 // API 基础 URL
-const API_BASE_URL = 'http://localhost:3001/api';
-//线上
-//const API_BASE_URL = '/api';
+const API_BASE_URL = '/api';
 
 // 全局状态
 let state = {
@@ -1748,15 +1746,23 @@ async function submitTest() {
     const result = calculateMBTIResult(state.answers);
     state.testResult = result;
 
-    // 调用后端API标记兑换码为已使用
+    const resultData = {
+      mbtiType: result.type,
+      dimensions: result.dimensions,
+      description: result.description,
+      careerAdvice: result.careerAdvice,
+      strengths: result.strengths,
+      weaknesses: result.weaknesses
+    };
+
     if (state.exchangeCode && state.exchangeCode !== 'VIP88888') {
       const response = await fetch(`${API_BASE_URL}/submit-mbti`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: state.exchangeCode,
-          answers: state.answers,
-          realAge: 25 // 为了满足API要求，使用默认值
+          rawAnswers: state.answers,
+          resultData
         })
       });
 
