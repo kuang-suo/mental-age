@@ -5,7 +5,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import {
   login, generateCodes, getCodes, exportCodes,
   getStats, getResults, getResultById, deleteResult, exportResults,
-  createMonthlyCards, getMonthlyCards,
+  createMonthlyCards, getMonthlyCards, getMonthlyCardResults,
   getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs
 } from '../controllers/adminController.js';
 
@@ -199,6 +199,20 @@ router.get(
       res.json(result);
     } catch (error) {
       console.error('获取月卡列表失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.get(
+  '/monthly-cards/:id/results',
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const results = await getMonthlyCardResults(parseInt(req.params.id));
+      res.json(results);
+    } catch (error) {
+      console.error('获取月卡测试结果失败:', error.message);
       res.status(500).json({ error: error.message });
     }
   }

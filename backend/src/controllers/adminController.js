@@ -347,6 +347,14 @@ export async function getMonthlyCards(page = 1, limit = 50) {
   return { cards, total, page, pages: Math.ceil(total / limit) };
 }
 
+export async function getMonthlyCardResults(exchangeCodeId) {
+  const results = await prisma.testResult.findMany({
+    where: { exchangeCodeId },
+    orderBy: { createdAt: 'desc' }
+  });
+  return results;
+}
+
 export async function getTestConfigs() {
   const configs = await prisma.testConfig.findMany({
     orderBy: { order: 'asc' }

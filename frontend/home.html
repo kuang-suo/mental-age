@@ -129,6 +129,51 @@
       box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
     }
     
+    .wechat-promo {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border-left: 4px solid #07C160;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .wechat-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #07C160;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .wechat-content {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    
+    .wechat-qrcode {
+      text-align: center;
+      margin: 16px 0;
+    }
+    
+    .wechat-qrcode img {
+      max-width: 200px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .wechat-tip {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+    
     /* 响应式设计 */
     @media (max-width: 600px) {
       .home-content {
@@ -169,6 +214,7 @@
         <button class="btn btn-primary" style="background: linear-gradient(135deg, #FF69B4, #E91E8C);" onclick="window.location.href='nbti.html'">NBTI恋爱测试</button>
         <button class="btn btn-primary btn-mbti" onclick="window.location.href='DISC.html'">DISC测试</button>
         <button class="btn btn-primary" style="background: linear-gradient(135deg, #E8B830, #D4A017);" onclick="window.location.href='avoidant.html'">回避型依恋测试</button>
+        <button class="btn btn-primary" style="background: linear-gradient(135deg, #FB923C, #F97316);" onclick="window.location.href='anxious.html'">焦虑型依恋测试</button>
         <button class="btn btn-primary" style="background: linear-gradient(135deg, #38BDF8, #0EA5E9);" onclick="window.location.href='city.html'">性格匹配城市测试</button>
       </div>
       
@@ -179,6 +225,15 @@
           <br>请在小红书购买兑换码，支持我们的创作。
         </p>
         <a href="https://xhslink.com/m/3C1YqoEh1qn" class="xhs-link" target="_blank">🔗 点击前往小红书购买</a>
+      </div>
+
+      <div class="wechat-promo">
+        <h3 class="wechat-title">💳 30次卡购买</h3>
+        <p class="wechat-content">
+          购买30次卡，可使用30次测试仅需9.9，全部可测，更加划算！
+          <br>跳转小红书即可购买。
+        </p>
+        <a href="https://xhslink.com/m/5f65Or9aHvY" class="xhs-link" style="background: linear-gradient(135deg, #07C160, #06AD56);" target="_blank">🔗 点击前往小红书购买</a>
       </div>
 
       <div class="share-activity" id="shareActivity">

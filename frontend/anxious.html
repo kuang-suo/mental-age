@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>焦虑型依恋测试</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/html2canvas.min.js"></script>
+  <style>
+    .anxious-test .start-content {
+      padding: 64px 32px;
+    }
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(249, 115, 22, 0.15);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(249, 115, 22, 0.15);
+    }
+    .anxious-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .anxious-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .anxious-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .anxious-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .anxious-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+    .type-hero {
+      text-align: center;
+      padding: 40px 25px;
+    }
+    .type-hero-emoji {
+      font-size: 72px;
+      margin-bottom: 16px;
+    }
+    .type-hero-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .type-hero-name {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+    }
+    .type-hero-subname {
+      margin-top: 10px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .type-match-badge {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(249, 115, 22, 0.15);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .type-match-score {
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .type-match-label {
+      font-size: 13px;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .score-bar-container {
+      margin: 16px 0;
+    }
+    .score-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 6px;
+      transition: width 0.8s ease;
+    }
+    .score-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #999;
+    }
+    .level-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .level-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: all 0.3s ease;
+    }
+    .level-dot.active {
+      background: var(--primary-color);
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+    }
+    .section-card {
+      background: var(--light-bg);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 16px;
+    }
+    .section-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .section-card-content {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+      white-space: pre-wrap;
+    }
+    .advice-box {
+      background: var(--gradient-bg);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(249, 115, 22, 0.15);
+    }
+    .advice-box .advice-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+    }
+    .advice-box .advice-content {
+      font-size: 15px;
+      line-height: 1.9;
+      color: #666;
+      white-space: pre-wrap;
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+    .analysis-box p {
+      margin: 0;
+      color: #666;
+      font-size: 15px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    @media (max-width: 600px) {
+      .anxious-test .start-content { padding: 40px 20px; }
+      .anxious-test .start-content h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body class="anxious-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">💕</div>
+        <h1>焦虑型依恋测试</h1>
+        <p class="subtitle">你的依恋人格是谁？20道题揭开你在亲密关系里最真实的样子</p>
+        <div class="description">
+          <p>在爱情里，你是不是那个总是患得患失的人？</p>
+          <ul>
+            <li>💕 测出你的依恋类型</li>
+            <li>📊 了解你在亲密关系中的行为模式</li>
+            <li>💡 获得针对性的改善建议</li>
+            <li>🌟 找到更适合你的伴侣类型</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 20</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout" id="resultLayout">
+          <div class="type-hero result-module" id="typeHero">
+            <div class="type-hero-emoji" id="resultEmoji">🟠</div>
+            <div class="type-hero-kicker" id="resultKicker">你的依恋类型</div>
+            <div class="type-hero-name" id="resultTypeName">焦虑型恋人</div>
+            <div class="type-hero-subname" id="resultTypeSub">一句话标签将显示在这里</div>
+            <div class="type-match-badge">
+              <span class="type-match-score" id="resultScore">56</span>
+              <span class="type-match-label">分</span>
+            </div>
+            <div class="score-bar-container">
+              <div class="score-bar-bg">
+                <div class="score-bar-fill" id="scoreBarFill" style="width: 56%"></div>
+              </div>
+              <div class="score-bar-labels">
+                <span>20分</span>
+                <span>100分</span>
+              </div>
+            </div>
+            <div class="level-indicator" id="levelIndicator">
+              <div class="level-dot" data-level="1"></div>
+              <div class="level-dot" data-level="2"></div>
+              <div class="level-dot" data-level="3"></div>
+              <div class="level-dot" data-level="4"></div>
+              <div class="level-dot" data-level="5"></div>
+            </div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">📊 你的依恋画像</h3>
+            <p id="typePortrait" class="analysis-box" style="background: transparent; padding: 0;"></p>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">💡 你的特点</h3>
+            <div id="traitsBox" class="section-card"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🎯 你的天赋与挑战</h3>
+            <div id="giftsChallengesBox"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">📝 给你的建议</h3>
+            <div id="adviceBox" class="advice-box"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">💑 你适合找</h3>
+            <div id="matchBox" class="section-card"></div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p id="funNote">本测试仅供娱乐参考，不构成心理诊断。如果你正在经历严重的情感困扰，建议寻求专业心理咨询师的帮助。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='home.html'">更多测试</button>
+          </div>
+        </div>
+
+        <div class="share-activity" id="shareActivity">
+          <h3 class="share-activity-title">🎁 晒单领大额劵0.1元可测试其它内容</h3>
+          <p class="share-activity-desc">晒单后免费获赠大额优惠券，可0.1元再测任意一个店铺内测试</p>
+          <img class="share-activity-flow" src="image/shaidan.png" alt="晒单流程" onclick="openImageModal(this)" title="点击放大查看">
+          <p class="share-activity-rule">活动规则以店铺内为准</p>
+        </div>
+      </div>
+
+      <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+        <div class="image-modal-content">
+          <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
+          <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/anxious.js"></script>
+</body>
+</html>

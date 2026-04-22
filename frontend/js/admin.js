@@ -393,13 +393,14 @@ async function loadMonthlyCards(page) {
     const res = await apiFetch(`/monthly-cards?page=${monthlyPage}&limit=20`);
     const data = await res.json();
 
-    let html = '<table><thead><tr><th>卡号</th><th>有效期至</th><th>使用次数</th><th>限制</th><th>状态</th><th>关联测试</th><th>创建时间</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>卡号</th><th>有效期至</th><th>使用次数</th><th>限制</th><th>状态</th><th>关联测试</th><th>创建时间</th><th>操作</th></tr></thead><tbody>';
 
     (data.cards || []).forEach(card => {
       const expired = card.expiresAt && new Date() > new Date(card.expiresAt);
       const status = expired ? '<span class="status-badge status-expired">已过期</span>' : '<span class="status-badge status-active">有效</span>';
       const limitText = card.useLimit ? `${card.usedCount}/${card.useLimit}` : `${card.usedCount}/∞`;
       const testInfo = (card.testResults || []).map(r => TEST_TYPE_NAMES[r.testType] || r.testType).join(', ') || '-';
+      const testCount = (card.testResults || []).length;
 
       html += `<tr>
         <td style="font-family:monospace;font-weight:700;">${card.code}</td>
@@ -409,6 +410,12 @@ async function loadMonthlyCards(page) {
         <td>${status}</td>
         <td>${testInfo}</td>
         <td>${new Date(card.createdAt).toLocaleString('zh-CN')}</td>
+        <td>${testCount > 0 ? `<button class="btn-small" onclick="toggleMonthlyResults(${card.id})">查看结果(${testCount})</button>` : '-'}</td>
+      </tr>
+      <tr id="monthly-results-${card.id}" class="monthly-results-row" style="display:none;">
+        <td colspan="8" style="padding:0;background:#f8f9fa;">
+          <div id="monthly-results-content-${card.id}" style="padding:10px;"></div>
+        </td>
       </tr>`;
     });
 
@@ -424,6 +431,59 @@ async function loadMonthlyCards(page) {
   } catch (e) {
     container.innerHTML = '<div class="loading">加载失败</div>';
   }
+}
+
+async function toggleMonthlyResults(cardId) {
+  const row = document.getElementById(`monthly-results-${cardId}`);
+  const content = document.getElementById(`monthly-results-content-${cardId}`);
+  
+  if (row.style.display === 'none') {
+    row.style.display = 'table-row';
+    if (!content.innerHTML) {
+      content.innerHTML = '<div class="loading">加载中...</div>';
+      try {
+        const res = await apiFetch(`/monthly-cards/${cardId}/results`);
+        const results = await res.json();
+        
+        if (results.length === 0) {
+          content.innerHTML = '<div style="color:#999;">暂无测试结果</div>';
+        } else {
+          let html = '<table style="width:100%;font-size:13px;"><thead><tr><th>测试类型</th><th>测试时间</th><th>结果摘要</th><th>操作</th></tr></thead><tbody>';
+          results.forEach(r => {
+            const summary = getTestResultSummary(r);
+            html += `<tr>
+              <td>${TEST_TYPE_NAMES[r.testType] || r.testType}</td>
+              <td>${new Date(r.createdAt).toLocaleString('zh-CN')}</td>
+              <td>${summary}</td>
+              <td><button class="btn-small" onclick="viewResult(${r.id})">详情</button></td>
+            </tr>`;
+          });
+          html += '</tbody></table>';
+          content.innerHTML = html;
+        }
+      } catch (e) {
+        content.innerHTML = '<div style="color:red;">加载失败</div>';
+      }
+    }
+  } else {
+    row.style.display = 'none';
+  }
+}
+
+function getTestResultSummary(result) {
+  const rd = result.resultData || {};
+  if (result.testType === 'mbti' || result.testType === 'sbti' || result.testType === 'nbti') {
+    return rd.type || rd.mbtiType || '-';
+  } else if (result.testType === 'mental-age') {
+    return `心理年龄: ${rd.mentalAge || '-'}`;
+  } else if (result.testType === 'city') {
+    return `匹配城市: ${rd.matchedCity || '-'}`;
+  } else if (result.testType === 'avoidant') {
+    return `依恋类型: ${rd.attachmentStyle || '-'}`;
+  } else if (result.testType === 'disc') {
+    return `DISC类型: ${rd.discType || '-'}`;
+  }
+  return '-';
 }
 
 async function loadTestConfigs() {

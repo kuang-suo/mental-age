@@ -69,6 +69,19 @@
   --city-gradient-primary: linear-gradient(135deg, #38BDF8, #0EA5E9);
   --city-gradient-secondary: linear-gradient(135deg, #E0F2FE, #BAE6FD);
 
+  /* 焦虑型依恋测试样式变量（橙红色系） */
+  --anxious-primary-color: #F97316;
+  --anxious-secondary-color: #FFF7ED;
+  --anxious-accent-color: #FB923C;
+  --anxious-text-color: #5a5a5a;
+  --anxious-light-bg: #FFFAF5;
+  --anxious-border-radius: 32px;
+  --anxious-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --anxious-soft-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+  --anxious-gradient-bg: linear-gradient(145deg, #FFFAF5 0%, #FFF7ED 100%);
+  --anxious-gradient-primary: linear-gradient(135deg, #FB923C, #F97316);
+  --anxious-gradient-secondary: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+
   /* 默认样式（用于心理年龄测试） */
   --primary-color: var(--mental-primary-color);
   --secondary-color: var(--mental-secondary-color);
@@ -2498,4 +2511,362 @@ body {
 @media (max-width: 600px) {
   .city-test .start-content { padding: 40px 20px; }
   .city-test .start-content h1 { font-size: 32px; }
+}
+
+/* 焦虑型依恋测试样式（橙红色系） */
+.anxious-test {
+  --primary-color: var(--anxious-primary-color);
+  --secondary-color: var(--anxious-secondary-color);
+  --accent-color: var(--anxious-accent-color);
+  --text-color: var(--anxious-text-color);
+  --light-bg: var(--anxious-light-bg);
+  --border-radius: var(--anxious-border-radius);
+  --shadow: var(--anxious-shadow);
+  --soft-shadow: var(--anxious-soft-shadow);
+  --gradient-bg: var(--anxious-gradient-bg);
+  --gradient-primary: var(--anxious-gradient-primary);
+  --gradient-secondary: var(--anxious-gradient-secondary);
+}
+
+.anxious-test .start-content {
+  padding: 64px 32px;
+}
+
+.anxious-test .topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  padding: 12px 4px;
+  border-radius: 16px;
+}
+
+.anxious-test .topbar .progress-bar {
+  width: 100%;
+  min-width: 240px;
+  margin-bottom: 0;
+}
+
+.anxious-test .progress-text {
+  color: #999;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.anxious-test .question-area {
+  background: white;
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.anxious-test .question-text {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-color);
+  margin-bottom: 24px;
+  white-space: pre-wrap;
+}
+
+.anxious-test .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--secondary-color);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.anxious-test .option {
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--light-bg);
+  border: 2px solid transparent;
+  position: relative;
+  padding-left: 36px;
+}
+
+.anxious-test .option::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background: #fff;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.anxious-test .option.selected::before {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.anxious-test .option:hover {
+  background: var(--secondary-color);
+  border-color: transparent;
+  box-shadow: var(--soft-shadow);
+}
+
+.anxious-test .option.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.anxious-test .option-code {
+  font-weight: 800;
+  color: var(--primary-color);
+  min-width: 22px;
+}
+
+.anxious-test .actions-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.anxious-test .result-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.anxious-test .result-module {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.anxious-test .module-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--secondary-color);
+  text-align: center;
+}
+
+.anxious-test .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+}
+
+.anxious-test .progress-fill {
+  background: var(--gradient-primary);
+}
+
+.anxious-test .option {
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+}
+
+.anxious-test .option:hover {
+  background: var(--secondary-color);
+  box-shadow: var(--soft-shadow);
+}
+
+.anxious-test .type-hero {
+  text-align: center;
+  padding: 40px 25px;
+}
+
+.anxious-test .type-hero-emoji {
+  font-size: 72px;
+  margin-bottom: 16px;
+}
+
+.anxious-test .type-hero-kicker {
+  font-size: 12px;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+  letter-spacing: .06em;
+}
+
+.anxious-test .type-hero-name {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--primary-color);
+}
+
+.anxious-test .type-hero-subname {
+  margin-top: 10px;
+  color: #999;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.anxious-test .type-match-badge {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--secondary-color);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.anxious-test .type-match-score {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.anxious-test .type-match-label {
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.anxious-test .score-bar-container {
+  margin: 16px 0;
+}
+
+.anxious-test .score-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.anxious-test .score-bar-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 6px;
+  transition: width 0.8s ease;
+}
+
+.anxious-test .score-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #999;
+}
+
+.anxious-test .level-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.anxious-test .level-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.anxious-test .level-dot.active {
+  background: var(--primary-color);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+}
+
+.anxious-test .section-card {
+  background: var(--light-bg);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.anxious-test .section-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.anxious-test .section-card-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #666;
+  white-space: pre-wrap;
+}
+
+.anxious-test .advice-box {
+  background: var(--gradient-bg);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.anxious-test .advice-box .advice-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+}
+
+.anxious-test .advice-box .advice-content {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #666;
+  white-space: pre-wrap;
+}
+
+.anxious-test .analysis-box h3,
+.anxious-test .dim-box h3,
+.anxious-test .note-box h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--secondary-color);
+  text-align: center;
+}
+
+.anxious-test .analysis-box p {
+  margin: 0;
+  color: #666;
+  font-size: 15px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.anxious-test .note-box p {
+  margin: 0;
+  color: #999;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.anxious-test .result-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+@media (max-width: 600px) {
+  .anxious-test .start-content { padding: 40px 20px; }
+  .anxious-test .start-content h1 { font-size: 32px; }
 }

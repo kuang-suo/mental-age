@@ -76,7 +76,8 @@ const TEST_TYPES = {
   'submit-nbti': 'nbti',
   'submit-disc': 'disc',
   'submit-avoidant': 'avoidant',
-  'submit-city': 'city'
+  'submit-city': 'city',
+  'submit-anxious': 'anxious'
 };
 
 const TEST_NAMES = {
@@ -86,7 +87,8 @@ const TEST_NAMES = {
   'submit-nbti': 'NBTI恋爱测试',
   'submit-disc': 'DISC测试',
   'submit-avoidant': '回避型依恋测试',
-  'submit-city': '性格匹配城市测试'
+  'submit-city': '性格匹配城市测试',
+  'submit-anxious': '焦虑型依恋测试'
 };
 
 function createSubmitRoute(routePath, extraValidation = []) {
@@ -148,5 +150,6 @@ createSubmitRoute('/submit-nbti');
 createSubmitRoute('/submit-disc');
 createSubmitRoute('/submit-avoidant');
 createSubmitRoute('/submit-city');
+createSubmitRoute('/submit-anxious');
 
 export default router;
