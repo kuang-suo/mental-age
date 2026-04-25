@@ -6,6 +6,7 @@ import {
   login, generateCodes, getCodes, exportCodes,
   getStats, getResults, getResultById, deleteResult, exportResults,
   createMonthlyCards, getMonthlyCards, getMonthlyCardResults,
+  updateCodeScope, batchUpdateCodeScope,
   getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs
 } from '../controllers/adminController.js';
 
@@ -36,11 +37,21 @@ router.get(
   authMiddleware,
   query('page').optional().isInt({ min: 1 }).toInt(),
   query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
+  query('codeType').optional().trim(),
+  query('status').optional().trim(),
+  query('scope').optional().trim(),
+  query('search').optional().trim(),
   async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 50;
-      const result = await getCodes(page, limit);
+      const filters = {
+        codeType: req.query.codeType || null,
+        status: req.query.status || null,
+        scope: req.query.scope || null,
+        search: req.query.search || null
+      };
+      const result = await getCodes(page, limit, filters);
       res.json(result);
     } catch (error) {
       console.error('获取兑换码列表失败:', error.message);
@@ -60,7 +71,52 @@ router.post(
     }
 
     try {
-      const result = await generateCodes(req.body.count);
+      const result = await generateCodes(req.body.count, req.body.allowedTestTypes || null);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.put(
+  '/codes/:id/scope',
+  authMiddleware,
+  body('allowedTestTypes').optional({ nullable: true }).isArray(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const result = await updateCodeScope(
+        parseInt(req.params.id),
+        req.body.allowedTestTypes || null
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.put(
+  '/codes/batch-scope',
+  authMiddleware,
+  body('ids').isArray({ min: 1, max: 200 }).withMessage('请选择1-200个兑换码'),
+  body('allowedTestTypes').optional({ nullable: true }).isArray(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const result = await batchUpdateCodeScope(
+        req.body.ids,
+        req.body.allowedTestTypes || null
+      );
       res.json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -177,7 +233,8 @@ router.post(
         req.body.count,
         req.body.validDays || 30,
         req.body.useLimit || null,
-        req.body.remark || null
+        req.body.remark || null,
+        req.body.allowedTestTypes || null
       );
       res.json(result);
     } catch (error) {

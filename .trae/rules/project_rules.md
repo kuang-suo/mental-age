@@ -1,0 +1,9 @@
+服务应用：宝塔面板
+服务器ip：124.223.44.24
+服务器域名网页主页面：https://home.quceshi.asia/
+服务器文件安装目录：/www/mental-age
+后端目录：/www/mental-age/backend
+前端目录：/www/mental-age/frontend
+服务器node版本：v20.20.2
+服务器数据库：PostgreSQL
+数据库名：mental_age_test

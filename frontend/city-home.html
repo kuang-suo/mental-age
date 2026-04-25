@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>城市深度调研报告中心</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #D4A017;
+      --gold-light: #FEF3C7;
+      --navy: #1E3A5F;
+      --navy-light: #2D4A6F;
+      --cream: #FFFBF5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 50%, #0F172A 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .city-home-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .city-home-header {
+      text-align: center;
+      padding: 60px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .city-home-header::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(212, 160, 23, 0.2) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+    }
+
+    .city-home-logo {
+      font-size: 80px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .city-home-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .city-home-title span {
+      color: var(--gold);
+    }
+
+    .city-home-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .city-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .city-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+      box-shadow: 0 12px 32px rgba(212, 160, 23, 0.2);
+    }
+
+    .city-card-image {
+      width: 200px;
+      min-height: 200px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      flex-shrink: 0;
+    }
+
+    .city-card-content {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .city-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .city-card-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .city-card-tag {
+      padding: 4px 12px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+    }
+
+    .city-card-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .city-card-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .city-stat {
+      text-align: center;
+    }
+
+    .city-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .city-stat-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .city-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .city-card-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .city-card-price span {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .city-card-btn {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--gold) 0%, #B45309 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .city-card:hover .city-card-btn {
+      transform: scale(1.05);
+    }
+
+    .coming-soon-section {
+      margin-top: 48px;
+    }
+
+    .coming-soon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .coming-soon-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .coming-soon-card:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .coming-soon-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .coming-soon-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 4px;
+    }
+
+    .coming-soon-status {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .promo-section {
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .promo-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .promo-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .promo-link {
+      display: inline-block;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #FF69B4, #E91E8C);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .promo-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    @media (max-width: 700px) {
+      .city-card {
+        flex-direction: column;
+      }
+
+      .city-card-image {
+        width: 100%;
+        min-height: 120px;
+      }
+
+      .coming-soon-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .city-home-title {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="city-home-container">
+    <a href="home.html" class="back-link">← 返回测试中心</a>
+
+    <div class="city-home-header">
+      <div class="city-home-logo">🏙️</div>
+      <h1 class="city-home-title">城市深度<span>调研报告</span></h1>
+      <p class="city-home-subtitle">深入了解每座城市的性格与机遇，找到最适合你的定居之地</p>
+    </div>
+
+    <h2 class="section-title">已上线城市报告</h2>
+    <div class="city-grid">
+      <a href="city/shanghai-report.html" class="city-card">
+        <div class="city-card-image">🌃</div>
+        <div class="city-card-content">
+          <div class="city-card-header">
+            <div class="city-card-name">上海</div>
+            <div class="city-card-tag">已上线</div>
+          </div>
+          <p class="city-card-desc">高机会、高压力、高回报的国际大都市。全国经济中心，适合野心驱动型、追求职业天花板的人群。深度解析房价、就业、生活成本与定居策略。</p>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-value">56,708亿</div>
+              <div class="city-stat-label">GDP全国第1</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">96,842元</div>
+              <div class="city-stat-label">人均可支配收入</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">7 Part</div>
+              <div class="city-stat-label">深度分析</div>
+            </div>
+          </div>
+          <div class="city-card-footer">
+            <div class="city-card-price">¥9.99 <span>/ 份</span></div>
+            <div class="city-card-btn">查看报告</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="city/xiamen-report.html" class="city-card">
+        <div class="city-card-image">🌊</div>
+        <div class="city-card-content">
+          <div class="city-card-header">
+            <div class="city-card-name">厦门</div>
+            <div class="city-card-tag">已上线</div>
+          </div>
+          <p class="city-card-desc">海上花园，宜居与机遇并存的滨海城市。经济特区，适合追求生活品质与职业平衡的人群。深度解析房价、就业、生活舒适度与定居策略。</p>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-value">8,980亿</div>
+              <div class="city-stat-label">GDP</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">77,762元</div>
+              <div class="city-stat-label">人均可支配收入</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">7 Part</div>
+              <div class="city-stat-label">深度分析</div>
+            </div>
+          </div>
+          <div class="city-card-footer">
+            <div class="city-card-price">¥9.99 <span>/ 份</span></div>
+            <div class="city-card-btn">查看报告</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="city/dali-report.html" class="city-card">
+        <div class="city-card-image">🏔️</div>
+        <div class="city-card-content">
+          <div class="city-card-header">
+            <div class="city-card-name">大理</div>
+            <div class="city-card-tag">已上线</div>
+          </div>
+          <p class="city-card-desc">风花雪月，诗意栖居的理想之地。文旅名城，适合向往慢生活、追求精神自由的人群。深度解析生活成本、就业机会、宜居度与定居策略。</p>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-value">2,087亿</div>
+              <div class="city-stat-label">大理州GDP</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">42,341元</div>
+              <div class="city-stat-label">人均可支配收入</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">7 Part</div>
+              <div class="city-stat-label">深度分析</div>
+            </div>
+          </div>
+          <div class="city-card-footer">
+            <div class="city-card-price">¥9.99 <span>/ 份</span></div>
+            <div class="city-card-btn">查看报告</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="city/beijing-report.html" class="city-card">
+        <div class="city-card-image">🏯</div>
+        <div class="city-card-content">
+          <div class="city-card-header">
+            <div class="city-card-name">北京</div>
+            <div class="city-card-tag">已上线</div>
+          </div>
+          <p class="city-card-desc">帝都，机会密度最高、天花板最高、竞争也最激烈的城市。央企总部、头部科技公司、顶尖高校高度聚集，适合追求顶级机会与圈层的野心家。</p>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-value">52,073亿</div>
+              <div class="city-stat-label">GDP全国第2</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">96,292元</div>
+              <div class="city-stat-label">城镇人均可支配收入</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">7 Part</div>
+              <div class="city-stat-label">深度分析</div>
+            </div>
+          </div>
+          <div class="city-card-footer">
+            <div class="city-card-price">¥9.99 <span>/ 份</span></div>
+            <div class="city-card-btn">查看报告</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="city/shenzhen-report.html" class="city-card">
+        <div class="city-card-image">🌆</div>
+        <div class="city-card-content">
+          <div class="city-card-header">
+            <div class="city-card-name">深圳</div>
+            <div class="city-card-tag">已上线</div>
+          </div>
+          <p class="city-card-desc">创新之都，全球科技赛道的天花板。GDP逼近4万亿，PCT专利连续22年全国第一，适合硬科技从业者、创业者和渴望在科技赛道拼一把的野心家。</p>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-value">38,732亿</div>
+              <div class="city-stat-label">GDP全国第3</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">84,945元</div>
+              <div class="city-stat-label">人均可支配收入</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-value">7 Part</div>
+              <div class="city-stat-label">深度分析</div>
+            </div>
+          </div>
+          <div class="city-card-footer">
+            <div class="city-card-price">¥9.99 <span>/ 份</span></div>
+            <div class="city-card-btn">查看报告</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="coming-soon-section">
+      <h2 class="section-title">即将上线</h2>
+      <div class="coming-soon-grid">
+        <div class="coming-soon-card">
+          <div class="coming-soon-icon">🍵</div>
+          <div class="coming-soon-name">杭州</div>
+          <div class="coming-soon-status">筹备中</div>
+        </div>
+        <div class="coming-soon-card">
+          <div class="coming-soon-icon">🐼</div>
+          <div class="coming-soon-name">成都</div>
+          <div class="coming-soon-status">筹备中</div>
+        </div>
+        <div class="coming-soon-card">
+          <div class="coming-soon-icon">🌸</div>
+          <div class="coming-soon-name">广州</div>
+          <div class="coming-soon-status">筹备中</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="promo-section">
+      <h3 class="promo-title">🛍️ 购买兑换码</h3>
+      <p class="promo-desc">
+        城市报告需要兑换码才能查看，兑换码通用所有报告。<br>
+        请在小红书购买兑换码，支持我们的创作。
+      </p>
+      <a href="https://xhslink.com/m/4nwD2BwUK2k" class="promo-link" target="_blank">🔗 点击前往小红书购买</a>
+    </div>
+  </div>
+</body>
+</html>

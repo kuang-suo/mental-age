@@ -583,25 +583,35 @@ function computeCityMatches(userScores) {
 
   Object.entries(CITIES).forEach(([key, city]) => {
     let dotProduct = 0;
-    let cityNormSq = 0;
+    let userNorm = 0;
+    let cityNorm = 0;
 
     DIM_KEYS.forEach(dim => {
       const cityVal = city.dims[dim];
       const userVal = userScores[dim];
+      
+      // 余弦相似度：计算用户偏好向量和城市特征向量的夹角
       dotProduct += userVal * cityVal;
-      cityNormSq += cityVal * cityVal;
+      userNorm += userVal * userVal;
+      cityNorm += cityVal * cityVal;
     });
 
-    const rawScore = cityNormSq > 0 ? dotProduct / Math.sqrt(cityNormSq) : 0;
-    results.push({ key, ...city, rawScore });
+    // 余弦相似度值（-1到1之间，实际应用中通常在0到1之间）
+    const rawScore = (userNorm > 0 && cityNorm > 0) ? dotProduct / (Math.sqrt(userNorm) * Math.sqrt(cityNorm)) : 0;
+    
+    // 转换为百分比（0到100）
+    // 余弦相似度通常在0.5到0.95之间（对于有明确偏好的用户）
+    // 我们将相似度映射到一个合理的百分比范围
+    let matchPercent = Math.round(rawScore * 100);
+    
+    // 确保百分比在合理范围内（不低于50%，因为用户确实有某些偏好）
+    matchPercent = Math.max(50, Math.min(99, matchPercent));
+
+    results.push({ key, ...city, rawScore, matchPercent });
   });
 
-  results.sort((a, b) => b.rawScore - a.rawScore);
-
-  const maxRaw = results[0].rawScore;
-  results.forEach(r => {
-    r.matchPercent = maxRaw > 0 ? Math.round((r.rawScore / maxRaw) * 100) : 0;
-  });
+  // 按匹配度排序
+  results.sort((a, b) => b.matchPercent - a.matchPercent);
 
   return results;
 }
@@ -821,13 +831,9 @@ const PERSONALITY_TAGS = [
 
 function computePersonalityTags(userScores) {
   const matched = [];
-  const sorted = PERSONALITY_TAGS.map(tag => ({
-    ...tag,
-    score: 0,
-    dims: {}
-  })).sort(() => Math.random() - 0.5);
-
-  for (const tag of sorted) {
+  
+  // 直接遍历原始标签数组，保持顺序一致性
+  for (const tag of PERSONALITY_TAGS) {
     if (tag.condition(userScores)) {
       let relevance = 0;
       if (tag.id === 'ambition') { relevance = (userScores.opportunity + userScores.rhythm) / 2; }
@@ -1027,7 +1033,7 @@ async function validateCode() {
     const response = await fetch(`${API_BASE_URL}/validate-code`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({ code, testType: 'city' })
     });
 
     if (!response.ok) {
@@ -1049,20 +1055,60 @@ function saveResultImage() {
   const resultContainer = document.querySelector('.result-layout');
   if (!resultContainer) return;
 
-  html2canvas(resultContainer, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    backgroundColor: '#ffffff'
-  }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `性格匹配城市测试结果-${new Date().getTime()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(error => {
-    console.error('保存图片失败:', error);
-    alert('保存图片失败，请稍后重试');
-  });
+  const matchPercent = document.getElementById('resultMatchPercent');
+  const matchLabel = document.getElementById('resultMatchLabel');
+  const matchBadge = document.querySelector('.city-match-badge');
+
+  const originalPercentText = matchPercent ? matchPercent.textContent : '';
+  const originalLabelText = matchLabel ? matchLabel.textContent : '';
+  const originalPercentStyle = matchPercent ? matchPercent.getAttribute('style') : '';
+  const originalLabelStyle = matchLabel ? matchLabel.getAttribute('style') : '';
+
+  if (matchPercent) {
+    matchPercent.setAttribute('style', originalPercentStyle + ';display:inline-block !important;visibility:visible !important;opacity:1 !important;');
+  }
+  if (matchLabel) {
+    matchLabel.setAttribute('style', originalLabelStyle + ';display:inline-block !important;visibility:visible !important;opacity:1 !important;');
+  }
+  if (matchBadge) {
+    const badgeStyle = matchBadge.getAttribute('style') || '';
+    matchBadge.setAttribute('style', badgeStyle + ';display:flex !important;visibility:visible !important;opacity:1 !important;');
+  }
+
+  setTimeout(() => {
+    html2canvas(resultContainer, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      allowTaint: true
+    }).then(canvas => {
+      if (matchPercent) {
+        matchPercent.setAttribute('style', originalPercentStyle);
+      }
+      if (matchLabel) {
+        matchLabel.setAttribute('style', originalLabelStyle);
+      }
+      if (matchBadge) {
+        const badgeStyle = matchBadge.getAttribute('style') || '';
+        matchBadge.setAttribute('style', badgeStyle.replace(/display:flex !important;visibility:visible !important;opacity:1 !important;/g, ''));
+      }
+
+      const link = document.createElement('a');
+      link.download = `性格匹配城市测试结果-${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(error => {
+      console.error('保存图片失败:', error);
+      if (matchPercent) {
+        matchPercent.setAttribute('style', originalPercentStyle);
+      }
+      if (matchLabel) {
+        matchLabel.setAttribute('style', originalLabelStyle);
+      }
+      alert('保存图片失败，请稍后重试');
+    });
+  }, 100);
 }
 
 function openImageModal(imgElement) {

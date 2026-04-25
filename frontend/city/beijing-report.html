@@ -1,0 +1,2944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 北京城市深度调研报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --crimson: #B91C1C;
+      --crimson-light: #FCA5A5;
+      --crimson-glow: rgba(185, 28, 28, 0.4);
+      --gold: #D97706;
+      --gold-light: #FDE68A;
+      --navy: #0F172A;
+      --navy-light: #1E3A5F;
+      --cream: #FDFBF7;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 50%, #0F172A 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .code-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .code-overlay::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .code-overlay::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .code-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .code-modal-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    .code-modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .code-modal-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .code-input-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .code-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      background: white;
+      color: var(--navy);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: var(--crimson);
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.2);
+    }
+
+    .code-input::placeholder {
+      color: #9CA3AF;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .code-input.error {
+      border-color: #EF4444;
+      animation: shake 0.4s ease;
+    }
+
+    .code-submit-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--crimson) 0%, #7F1D1D 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .code-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(185, 28, 28, 0.3);
+    }
+
+    .code-submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .code-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .code-submit-btn .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .code-error {
+      color: #DC2626;
+      font-size: 13px;
+      margin-top: 16px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .code-hint {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .code-hint a {
+      color: var(--crimson);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .code-hint a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: none;
+    }
+
+    .main-content.visible {
+      display: block;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 50%, #0F172A 100%);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 300px;
+      opacity: 0.15;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: var(--crimson-light);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 10vw, 96px);
+      font-weight: 700;
+      color: white;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--crimson) 0%, var(--gold) 50%, var(--crimson) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .hero-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      font-weight: 300;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .content {
+      background: var(--cream);
+      position: relative;
+    }
+
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253, 251, 247, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 16px 0;
+    }
+
+    .toc-inner {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .toc-inner::-webkit-scrollbar { display: none; }
+
+    .toc-item {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .toc-item:hover, .toc-item.active {
+      background: #7F1D1D;
+      color: white;
+      border-color: #7F1D1D;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+    }
+
+    .section {
+      padding: 80px 0;
+      scroll-margin-top: 100px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-num {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--crimson);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-light);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .radar-section {
+      background: linear-gradient(180deg, #0F172A 0%, #451A03 100%);
+      padding: 80px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .radar-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .radar-canvas-wrap {
+      position: relative;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dim-item {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .dim-item:hover {
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .dim-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dim-info { flex: 1; }
+
+    .dim-name {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .dim-score {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .dim-score span {
+      color: var(--crimson-light);
+    }
+
+    .quote-box {
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+
+    .quote-box::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      color: var(--crimson);
+      opacity: 0.1;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: 18px;
+      line-height: 2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-text strong {
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    .fit-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .fit-card {
+      padding: 32px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fit-card.yes {
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 2px solid #10B981;
+    }
+
+    .fit-card.no {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+      border: 2px solid #EF4444;
+    }
+
+    .fit-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card.yes h3 { color: #059669; }
+    .fit-card.no h3 { color: #DC2626; }
+
+    .fit-list {
+      list-style: none;
+    }
+
+    .fit-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .fit-list li:last-child { border-bottom: none; }
+
+    .fit-list li strong { color: var(--navy); }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .data-card {
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 100%);
+      color: white;
+      padding: 28px 20px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .data-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .data-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--crimson), var(--gold));
+    }
+
+    .data-value {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--crimson-light);
+      margin-bottom: 4px;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .chart-section {
+      margin: 32px 0;
+    }
+
+    .chart-item {
+      margin-bottom: 20px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chart-name {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .chart-value {
+      font-weight: 700;
+      color: var(--crimson);
+    }
+
+    .chart-bar {
+      height: 12px;
+      background: #E5E7EB;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.5s ease;
+    }
+
+    .salary-section {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .salary-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .salary-card:hover {
+      border-color: var(--crimson);
+      box-shadow: 0 8px 24px rgba(185, 28, 28, 0.1);
+    }
+
+    .salary-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .salary-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .salary-dot {
+      width: 10px;
+      height: 10px;
+      background: #10B981;
+      border-radius: 50%;
+    }
+
+    .salary-type {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .salary-range {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-card {
+      background: white;
+      border: 1px solid var(--crimson-light);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .expense-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .expense-title {
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expense-income {
+      font-size: 14px;
+      color: var(--crimson);
+      font-weight: 700;
+    }
+
+    .expense-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .expense-tag {
+      padding: 4px 12px;
+      background: #F3F4F6;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .expense-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px dashed #E5E7EB;
+      font-size: 14px;
+    }
+
+    .expense-amount {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-surplus {
+      color: #10B981;
+      font-weight: 700;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .path-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      border-left: 4px solid var(--crimson);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .path-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .path-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .path-time {
+      font-size: 12px;
+      color: var(--crimson);
+      font-weight: 500;
+    }
+
+    .path-list {
+      list-style: none;
+    }
+
+    .path-list li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .path-list li::before {
+      content: '✓';
+      color: var(--crimson);
+      font-weight: 700;
+    }
+
+    .rating-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 32px 0;
+    }
+
+    .rating-card {
+      background: white;
+      padding: 20px 12px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .rating-card:hover {
+      border-color: var(--crimson);
+      transform: translateY(-4px);
+    }
+
+    .rating-stars {
+      color: var(--crimson);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .rating-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .rating-desc {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .life-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .life-card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .life-card:hover {
+      border-color: var(--crimson);
+      box-shadow: 0 8px 24px rgba(185, 28, 28, 0.1);
+    }
+
+    .life-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .life-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .life-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .user-quote {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .user-quote:hover {
+      border-color: var(--crimson);
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.1);
+    }
+
+    .user-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .user-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 40px;
+      margin: 48px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conclusion-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+    }
+
+    .conclusion-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--crimson-light);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .conclusion-text {
+      font-size: 16px;
+      line-height: 2;
+      position: relative;
+    }
+
+    .conclusion-text strong {
+      color: var(--gold-light);
+    }
+
+    .action-list {
+      counter-reset: action;
+      list-style: none;
+    }
+
+    .action-item {
+      counter-increment: action;
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .action-item:last-child { border-bottom: none; }
+
+    .action-num {
+      width: 40px;
+      height: 40px;
+      background: var(--crimson);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .action-num::before {
+      content: counter(action);
+    }
+
+    .action-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .action-content p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .info-table th, .info-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .info-table th {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .info-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 50%, #FCA5A5 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 0;
+      margin: 24px 0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(185, 28, 28, 0.15);
+      position: relative;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #DC2626, #B91C1C, #7F1D1D);
+    }
+
+    .highlight-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #7F1D1D;
+      padding: 20px 24px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      border-bottom: 1px dashed rgba(185, 28, 28, 0.3);
+    }
+
+    .highlight-content {
+      padding: 20px 24px;
+    }
+
+    .highlight-content p {
+      margin: 0;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #7F1D1D;
+      line-height: 1.7;
+    }
+
+    .highlight-content p strong {
+      color: #7F1D1D;
+      font-size: 15px;
+    }
+
+    .highlight-content p:first-child {
+      padding-top: 0;
+    }
+
+    .highlight-content p:last-child {
+      padding-bottom: 0;
+    }
+
+    .sub-section {
+      margin: 40px 0;
+    }
+
+    .sub-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .guide-section {
+      background: var(--cream);
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .guide-card {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .guide-card:hover {
+      border-color: var(--crimson);
+      box-shadow: 0 8px 24px rgba(185, 28, 28, 0.1);
+    }
+
+    .guide-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .guide-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .guide-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .industry-tree {
+      background: linear-gradient(135deg, #451A03 0%, #0F172A 100%);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      color: white;
+    }
+
+    .industry-tree-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--crimson-light);
+      margin-bottom: 20px;
+    }
+
+    .industry-branch {
+      margin-bottom: 16px;
+      padding-left: 20px;
+      border-left: 2px solid var(--crimson);
+    }
+
+    .industry-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--crimson-light);
+      margin-bottom: 8px;
+    }
+
+    .industry-item {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .industry-item::before {
+      content: '├';
+      position: absolute;
+      left: 0;
+      color: var(--crimson);
+    }
+
+    .industry-item:last-child::before {
+      content: '└';
+    }
+
+    .persona-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .persona-table th, .persona-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .persona-table th {
+      background: #7F1D1D;
+      color: white;
+      font-weight: 600;
+    }
+
+    .persona-table th:first-child {
+      border-radius: 12px 0 0 0;
+    }
+
+    .persona-table th:last-child {
+      border-radius: 0 12px 0 0;
+    }
+
+    .persona-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .persona-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--crimson-light);
+      color: var(--navy);
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .trend-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .trend-card:hover {
+      border-color: var(--crimson);
+      transform: translateY(-4px);
+    }
+
+    .trend-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .trend-icon {
+      font-size: 24px;
+    }
+
+    .trend-name {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .trend-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .trend-insight {
+      font-size: 12px;
+      color: var(--crimson);
+      font-weight: 500;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .culture-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .culture-card:hover {
+      border-color: var(--crimson);
+      transform: translateY(-4px);
+    }
+
+    .culture-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .culture-name {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .culture-data {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--crimson);
+      margin-bottom: 4px;
+    }
+
+    .culture-note {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .appendix-section {
+      background: #F8FAFC;
+      padding: 48px 0;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .appendix-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .source-table th, .source-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .source-table th {
+      background: #7F1D1D;
+      color: white;
+      font-weight: 600;
+    }
+
+    .source-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .disclaimer {
+      background: linear-gradient(135deg, #FECACA 0%, #FCA5A5 100%);
+      border: 2px solid var(--crimson);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .disclaimer-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .download-section {
+      background: linear-gradient(135deg, #0F172A 0%, #451A03 100%);
+      padding: 60px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-section::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      opacity: 0.5;
+    }
+
+    .download-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .download-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .download-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .download-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--crimson) 0%, #7F1D1D 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(185, 28, 28, 0.3);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(185, 28, 28, 0.4);
+    }
+
+    .download-hint {
+      font-size: 13px;
+      font-weight: 400;
+      opacity: 0.8;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .footer {
+      background: var(--navy);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .footer-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 900px) {
+      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .trend-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { scroll-margin-top: 80px; }
+      .radar-container { grid-template-columns: 1fr; }
+      .fit-section { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      .path-grid { grid-template-columns: 1fr; }
+      .rating-grid { grid-template-columns: repeat(2, 1fr); }
+      .life-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: 1fr; }
+      .toc { display: none; }
+      .hero-title { font-size: 36px; }
+      .dim-grid { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="code-overlay" id="codeOverlay">
+    <div class="code-modal">
+      <div class="code-modal-icon">🏯</div>
+      <h2 class="code-modal-title">北京城市深度调研报告</h2>
+      <p class="code-modal-desc">请输入兑换码以查看完整报告内容<br>兑换码为8位字母数字组合</p>
+      <div class="code-input-wrapper">
+        <input type="text" class="code-input" id="codeInput" maxlength="8" placeholder="请输入8位兑换码" autocomplete="off">
+      </div>
+      <button class="code-submit-btn" id="codeSubmitBtn">
+        <span>确认兑换</span>
+      </button>
+      <div class="code-error" id="codeError"></div>
+      <div class="code-hint">
+        没有兑换码？<a href="https://xhslink.com/m/4nwD2BwUK2k">小红书购买链接</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <svg class="skyline" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#B91C1C;stop-opacity:0.8" />
+          <stop offset="100%" style="stop-color:#D97706;stop-opacity:0.2" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#skyGrad)" d="M0,300 L0,220 L80,220 L80,180 L120,180 L120,140 L160,140 L160,100 L200,100 L200,60 L240,60 L240,30 L280,30 L280,60 L320,60 L320,100 L360,100 L360,60 L400,60 L400,30 L440,30 L440,10 L480,10 L480,30 L520,30 L520,60 L560,60 L560,100 L600,100 L600,80 L640,80 L640,40 L680,40 L680,20 L720,20 L720,40 L760,40 L760,80 L800,80 L800,120 L840,120 L840,80 L880,80 L880,40 L920,40 L920,20 L960,20 L960,60 L1000,60 L1000,100 L1040,100 L1040,80 L1080,80 L1080,120 L1120,120 L1120,160 L1160,160 L1160,120 L1200,120 L1200,80 L1240,80 L1240,120 L1280,120 L1280,160 L1320,160 L1320,200 L1360,200 L1360,240 L1400,240 L1400,260 L1440,260 L1440,300 Z"/>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-badge">🏯 城市性格匹配测试 · 付费增值服务</div>
+      <h1 class="hero-title"><span>北京</span></h1>
+      <p class="hero-subtitle">2026 城市深度调研报告</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">📊 政府公报 / 统计年鉴 / 实时数据</div>
+        <div class="hero-meta-item">📅 截止 2026 年 4 月</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      向下滚动
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="container">
+      <div class="guide-grid">
+        <div class="guide-card">
+          <div class="guide-icon">📊</div>
+          <div class="guide-title">数据来源</div>
+          <div class="guide-content">北京市统计局公报、北京市政府官网、各区公示、实时数据</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">📅</div>
+          <div class="guide-title">数据时效</div>
+          <div class="guide-content">人口/经济数据：2025年统计年鉴<br>薪资/房价/租金：2025-2026年实时</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">👥</div>
+          <div class="guide-title">适用人群</div>
+          <div class="guide-content">已完成城市性格测试、结果含北京的用户；计划在北京定居/工作/求学的人群</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">💡</div>
+          <div class="guide-title">特别说明</div>
+          <div class="guide-content">本报告为付费增值服务（9.9元），仅供个人学习参考，不构成定居决策依据</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <nav class="toc">
+      <div class="container">
+        <div class="toc-inner">
+          <div class="toc-item active" data-target="part1">Part 1 · 城市性格画像</div>
+          <div class="toc-item" data-target="part2">Part 2 · 自然地理与人口</div>
+          <div class="toc-item" data-target="part3">Part 3 · 经济就业人才</div>
+          <div class="toc-item" data-target="part4">Part 4 · 交通教育医疗</div>
+          <div class="toc-item" data-target="part5">Part 5 · 生活舒适度</div>
+          <div class="toc-item" data-target="part6">Part 6 · 发展潜力</div>
+          <div class="toc-item" data-target="part7">Part 7 · 定居指南</div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="radar-section" id="part1">
+      <div class="container">
+        <div class="section-header" style="color: white;">
+          <div class="section-num">PART 01</div>
+          <h2 class="section-title" style="color: white;">城市性格画像</h2>
+          <p class="section-desc" style="color: rgba(255,255,255,0.7);">综合评分 · 适合/不适合的人</p>
+        </div>
+        <div class="radar-container">
+          <div class="radar-canvas-wrap">
+            <canvas id="radarCanvas" width="450" height="450"></canvas>
+          </div>
+          <div class="dim-grid">
+            <div class="dim-item"><div class="dim-dot" style="background:#38BDF8"></div><div class="dim-info"><div class="dim-name">教育医疗</div><div class="dim-score"><span>99</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#8B5CF6"></div><div class="dim-info"><div class="dim-name">机遇收入</div><div class="dim-score"><span>98</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F97316"></div><div class="dim-info"><div class="dim-name">文化底蕴</div><div class="dim-score"><span>98</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#38BDF8"></div><div class="dim-info"><div class="dim-name">国际化</div><div class="dim-score"><span>97</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F97316"></div><div class="dim-info"><div class="dim-name">配套便利</div><div class="dim-score"><span>85</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#EF4444"></div><div class="dim-info"><div class="dim-name">生活节奏</div><div class="dim-score"><span>75</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F59E0B"></div><div class="dim-info"><div class="dim-name">宜居环境</div><div class="dim-score"><span>40</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#6B7280"></div><div class="dim-info"><div class="dim-name">生活成本</div><div class="dim-score"><span>15</span> / 100</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="quote-box">
+        <p class="quote-text">北京是全国<strong>机会密度最高、天花板最高、竞争也最激烈</strong>的城市。央企总部、头部科技公司、顶尖高校和医院高度聚集，人均GDP和应届生起薪均稳居全国第一。但也因此，房价、落户门槛和生活成本均处在全国最高梯队。如果你追求知识的浓度、权力的浓度、财富的浓度，且愿意承受激烈的竞争和漫长的通勤——北京是绝无仅有的选择。如果你追求轻松、安稳、慢节奏——这座城市可能让你备受煎熬。</p>
+      </div>
+
+      <div class="fit-section">
+        <div class="fit-card yes">
+          <h3>✅ 这 5 类人适合北京</h3>
+          <ul class="fit-list">
+            <li><strong>高学历技术精英</strong> — 清北/985硕博、AI/芯片/金融从业者，市场定价高，天花板无限</li>
+            <li><strong>体制内与央企目标者</strong> — 绝大多数央企总部在北京，体制内晋升空间全国最大</li>
+            <li><strong>学术与科研追求者</strong> — 国家级实验室、院士密度、科研经费总量全国第一</li>
+            <li><strong>文化创意与传媒从业者</strong> — 全国文化中心，出版/影视/演艺/策展资源无可替代</li>
+            <li><strong>有家庭积累的创业者</strong> — 融资渠道多元，政策支持力度大，但启动成本高于任何城市</li>
+          </ul>
+        </div>
+        <div class="fit-card no">
+          <h3>❌ 这 5 类人不适合北京</h3>
+          <ul class="fit-list">
+            <li><strong>追求安稳慢节奏的人</strong> — 通勤漫长、竞争激烈、节奏快，松弛感稀缺</li>
+            <li><strong>纯靠薪资买房的年轻人</strong> — 房价6万+/㎡，薪资再高也难以单打独斗购房</li>
+            <li><strong>对空气质量极度敏感的人</strong> — 秋冬仍有雾霾过程，PM2.5年均约30+微克/立方米</li>
+            <li><strong>不适应极端干燥寒冷的人</strong> — 冬季干燥刺骨、春季沙尘偶发，南方人需较长适应</li>
+            <li><strong>落户需求迫切的人</strong> — 落户门槛全国最高，积分落户6000人/年</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="highlight-title">⚠️ 特别说明</div>
+        <div class="highlight-content">北京的"城六区"（东城/西城/朝阳/海淀/丰台/石景山）与近郊区（通州/大兴/昌平/顺义/房山）差异极大。房价从西城12.8万/㎡到通州3.76万/㎡，同城价差可达3.4倍。环京通勤族（燕郊/大厂/香河）更是一类特殊存在。本报告以北京市全域为研究对象，重点区分各区域差异。</div>
+      </div>
+    </div>
+
+    <div class="section" id="part2">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 02</div>
+          <h2 class="section-title">自然地理与人口</h2>
+          <p class="section-desc">地理气候 · 四季体验 · 人口结构</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌍 地理与气候基础数据</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">16,410</div><div class="data-label">km² · 总面积</div></div>
+            <div class="data-card"><div class="data-value">12-13℃</div><div class="data-label">年均温 · 暖温带半湿润大陆性季风</div></div>
+            <div class="data-card"><div class="data-value">38%</div><div class="data-label">平原占比 · 西北高东南低</div></div>
+            <div class="data-card"><div class="data-value">7处</div><div class="data-label">世界遗产 · 全国最多</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌸 北京四季真实体验</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌸</div>
+              <div class="life-title">春季 3-5月</div>
+              <div class="life-content">短暂而美，玉渊潭樱花、元大都海棠，但可能遭遇沙尘暴<br>⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🔥</div>
+              <div class="life-title">夏季 6-8月</div>
+              <div class="life-content">高温闷热，35℃+常见，雷阵雨频繁，空调是必需品<br>⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍂</div>
+              <div class="life-title">秋季 9-11月</div>
+              <div class="life-content">北京最美季节，天高云淡，红叶满山，空气一年中最好<br>⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">❄️</div>
+              <div class="life-title">冬季 12-2月</div>
+              <div class="life-content">干燥寒冷，风大，体感温度低，暖气+雾霾是经典记忆<br>⭐⭐</div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 核心差异</div>
+            <div class="highlight-content">北京的春天可能很美也可能很"土"（沙尘），北京的秋天则几乎从不让人失望——这也是为什么老北京人都说"秋天是北京最好的季节"。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 人口结构深度分析</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">2,180万</div><div class="data-label">常住人口（2025年末）</div></div>
+            <div class="data-card"><div class="data-value">88.3%</div><div class="data-label">城镇化率</div></div>
+            <div class="data-card"><div class="data-value">24.3%</div><div class="data-label">60岁以上人口占比</div></div>
+            <div class="data-card"><div class="data-value">-0.73‰</div><div class="data-label">自然增长率 · 人口负增长持续</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>维度</th><th>现状</th><th>影响</th></tr>
+            <tr><td>人口微降</td><td>常住人口连续多年稳中略降</td><td>控人口政策见效，但高端人才竞争依然激烈</td></tr>
+            <tr><td>深度老龄化</td><td>60岁以上人口528.8万人，占比24.3%</td><td>养老/医疗压力持续增大，银发经济兴起</td></tr>
+            <tr><td>高学历聚集</td><td>每10万人中大学以上学历超4万人（全国最高）</td><td>求职竞争极度激烈，学历内卷严重</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 关键对比</div>
+            <div class="highlight-content">北京外来人口约820万，占比约37.6%。城镇新增就业33.0万人，城镇调查失业率均值4.1%。北京是全国高学历人口密度最高的城市——你的竞争者，几乎人人都是名校出身。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part3">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 03</div>
+          <h2 class="section-title">经济就业人才</h2>
+          <p class="section-desc">经济规模 · 产业结构 · 薪资段位 · 人才生态</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💰 经济规模 —— 全国第二，人均第一</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">52,073</div><div class="data-label">亿元 · GDP总量（2025年）</div></div>
+            <div class="data-card"><div class="data-value">23.9万</div><div class="data-label">元 · 人均GDP · 全国省级第一</div></div>
+            <div class="data-card"><div class="data-value">86.0%</div><div class="data-label">第三产业占比 · 服务业高度发达</div></div>
+            <div class="data-card"><div class="data-value">5.4%</div><div class="data-label">GDP增速 · 迈入"五万亿之城"</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💵 居民收入</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">89,090</div><div class="data-label">元/年 · 全市居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">96,292</div><div class="data-label">元/年 · 城镇居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">42,012</div><div class="data-label">元/年 · 农村居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">2.29</div><div class="data-label">城乡居民收入比 · 持续缩小</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 关键对比</div>
+            <div class="highlight-content">北京城镇居民人均可支配收入96,292元/年，略低于上海（96,842元/年）但稳居全国第二，人均GDP则以23.9万元领跑全国省级地区。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏭 产业结构总览</h3>
+          <div class="industry-tree">
+            <div class="industry-tree-title">北京产业结构</div>
+            <div class="industry-branch">
+              <div class="industry-main">第三产业占比 86.0%（服务业高度发达）</div>
+              <div class="industry-item">金融业：金融街聚集国家级金融监管机构和主要银行总部</div>
+              <div class="industry-item">信息服务业：字节跳动/百度/京东/美团等互联网巨头总部</div>
+              <div class="industry-item">科技服务业：中关村、怀柔科学城等创新极</div>
+              <div class="industry-item">文化产业：出版、影视、演艺、艺术品交易全国第一</div>
+              <div class="industry-item">总部经济：绝大多数央企总部 + 跨国公司地区总部</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">第二产业占比 13.8%（高精尖为主）</div>
+              <div class="industry-item">集成电路：全国技术高地</div>
+              <div class="industry-item">新能源汽车：小米汽车、理想汽车等</div>
+              <div class="industry-item">生物医药：大兴生物医药基地、昌平生命科学园</div>
+              <div class="industry-item">智能装备：工业机器人、航空航天</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 重点产业增速</h3>
+          <div class="chart-section">
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">高技术服务业投资</span><span class="chart-value">+64.9%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="100" style="background: linear-gradient(90deg, #DC2626, #B91C1C);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">高技术产业投资</span><span class="chart-value">+40.1%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="62" style="background: linear-gradient(90deg, #D97706, #B45309);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">数字经济增加值</span><span class="chart-value">+8.7%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="13" style="background: linear-gradient(90deg, #8B5CF6, #7C3AED);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">高技术产业增加值</span><span class="chart-value">+7.8%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="12" style="background: linear-gradient(90deg, #3B82F6, #2563EB);"></div></div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 核心结论</div>
+            <div class="highlight-content">北京数字经济增加值24,166.3亿元，占GDP 46.4%。高技术产业增加值16,080.5亿元，占GDP 30.9%。R&D经费投入强度约6%，全国第一，远超全国平均（2.6%）。北京正在从"总部经济"向"创新经济"加速转型。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💼 北京主要薪资段位</h3>
+          <table class="info-table">
+            <tr><th>岗位类型</th><th>薪资区间</th><th>评价</th></tr>
+            <tr><td>AI大模型/算法</td><td>30K-70K</td><td>🟢🟢🟢🟢🟢 全国天花板</td></tr>
+            <tr><td>互联网/芯片/半导体</td><td>25K-55K</td><td>🟢🟢🟢🟢🟢 顶尖</td></tr>
+            <tr><td>金融/咨询</td><td>20K-50K</td><td>🟢🟢🟢🟢 优秀</td></tr>
+            <tr><td>央企/体制内</td><td>10K-30K + 稳定性/福利</td><td>🟢🟢🟢🟢 隐性价值高</td></tr>
+            <tr><td>传统制造/工程</td><td>10K-22K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>传统服务/零售</td><td>6K-14K</td><td>🟢🟢 一般</td></tr>
+            <tr><td>应届生平均</td><td>年薪29.89万（约月薪25K）</td><td>🟢🟢🟢 全国最高</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 注意</div>
+            <div class="highlight-content">以上薪资均为税前，且高度集中于互联网/金融/AI等头部行业。普通岗位与核心岗位薪资差距可达3-5倍，行业间薪资分化极为明显。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📊 四类人群真实月度开支</h3>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🎓 应届生（互联网）</div>
+              <div class="expense-income">税后 18,000-20,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 4,000（合租海淀）</span>
+              <span class="expense-tag">餐饮 2,000</span>
+              <span class="expense-tag">交通 300</span>
+              <span class="expense-tag">社交 1,000</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">7,300 元</span></span>
+              <span>结余：<span class="expense-surplus">约 10,000+ 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🎓 应届生（普通行业）</div>
+              <div class="expense-income">税后 8,000-10,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 3,000（合租昌平/通州）</span>
+              <span class="expense-tag">餐饮 1,500</span>
+              <span class="expense-tag">交通 400</span>
+              <span class="expense-tag">社交 500</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">5,400 元</span></span>
+              <span>结余：<span class="expense-surplus">约 2,600-4,600 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👨‍💼 3-5年经验白领</div>
+              <div class="expense-income">税后 16,000-22,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 6,000（五环边单间/小整租）</span>
+              <span class="expense-tag">餐饮 2,500</span>
+              <span class="expense-tag">交通 300</span>
+              <span class="expense-tag">社交 1,200</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">10,000 元</span></span>
+              <span>结余：<span class="expense-surplus">约 6,000-12,000 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👔 中层管理者</div>
+              <div class="expense-income">税后 30,000-45,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 12,000（两居整租）</span>
+              <span class="expense-tag">餐饮 3,500</span>
+              <span class="expense-tag">社交 2,000</span>
+              <span class="expense-tag">育儿/教育 5,000</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">22,500 元</span></span>
+              <span>结余：<span class="expense-surplus">约 7,500-22,500 元</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏆 创新生态</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">~6%</div><div class="data-label">R&D经费投入强度 · 全国第一</div></div>
+            <div class="data-card"><div class="data-value">24,166</div><div class="data-label">亿元 · 数字经济增加值</div></div>
+            <div class="data-card"><div class="data-value">32.1万</div><div class="data-label">户 · 新设企业 · 增长21.0%</div></div>
+            <div class="data-card"><div class="data-value">15%+</div><div class="data-label">基础研究经费占比 · 全国最高</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">⭐ 就业友好度评价</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">就业机会</div>
+              <div class="rating-desc">央企+头部科技+外企，机会类型最全</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">薪酬天花板</div>
+              <div class="rating-desc">AI/金融/互联网全国最高</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职场规范</div>
+              <div class="rating-desc">央企/外企规范，互联网加班严重</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">职业培训</div>
+              <div class="rating-desc">北大/清华/中科院资源极丰富</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">创业支持</div>
+              <div class="rating-desc">中关村/望京，融资政策全国最密</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part4">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 04</div>
+          <h2 class="section-title">交通教育医疗</h2>
+          <p class="section-desc">基础设施 · 公共服务 · 配套资源</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 交通网络</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">909km</div><div class="data-label">地铁运营里程 · 全国第2</div></div>
+            <div class="data-card"><div class="data-value">30条</div><div class="data-label">运营线路 · 423座车站</div></div>
+            <div class="data-card"><div class="data-value">双枢纽</div><div class="data-label">首都机场+大兴机场</div></div>
+            <div class="data-card"><div class="data-value">22号线</div><div class="data-label">北京首条跨省地铁 · 2026开通</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">🚄 2026年重大工程</div>
+            <div class="highlight-content">北京全面推进9条（段）共150.6公里城市轨道交通线路和2条（段）共90.5公里市郊铁路建设。22号线（平谷线）是北京首条跨市域轨道交通线路，开通后燕郊通勤族将极大受益。2026年新增轨道交通运营里程40公里以上。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎓 教育资源 —— 全国第一</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">92所</div><div class="data-label">普通高等学校 · 全国最多</div></div>
+            <div class="data-card"><div class="data-value">8所</div><div class="data-label">985高校 · 清华/北大/人大/北航等</div></div>
+            <div class="data-card"><div class="data-value">26所</div><div class="data-label">211高校</div></div>
+            <div class="data-card"><div class="data-value">34所</div><div class="data-label">双一流 · 占全国1/4</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 压倒性优势</div>
+            <div class="highlight-content">中国Top 2大学（清华、北大）均在北京，Top 10中北京占3所以上。无论你学什么，北京都有全国最好的学科之一。海淀区是中国乃至全球高等教育资源最密集的区域。在校研究生约46万人，全国第一。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏥 医疗资源 —— 全国第一</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">81家</div><div class="data-label">三甲医院 · 全国城市第一</div></div>
+            <div class="data-card"><div class="data-value">13.5万</div><div class="data-label">执业（助理）医师</div></div>
+            <div class="data-card"><div class="data-value">15.3万</div><div class="data-label">注册护士</div></div>
+            <div class="data-card"><div class="data-value">154,778</div><div class="data-label">张 · 医疗机构编制床位</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>优势科室</th><th>代表医院</th><th>全国排名</th></tr>
+            <tr><td>心血管</td><td>阜外医院 / 安贞医院</td><td>第1</td></tr>
+            <tr><td>神经外科</td><td>天坛医院</td><td>第1</td></tr>
+            <tr><td>眼科</td><td>同仁医院</td><td>第1</td></tr>
+            <tr><td>肿瘤</td><td>中科院肿瘤医院</td><td>第1</td></tr>
+            <tr><td>骨科</td><td>积水潭医院</td><td>第1</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">⚠️ 现实挑战</div>
+            <div class="highlight-content">北京大医院挂号难是全国性课题，尤其是顶尖专家号。外地患者依然大量进京就医，优质资源"人人想用、人人难求"。"十四五"以来已建成安贞医院通州院区、友谊医院顺义院区等9个重大项目，累计投资超184亿元。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part5">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 05</div>
+          <h2 class="section-title">生活舒适度</h2>
+          <p class="section-desc">居住压力 · 城市性格 · 人文社交</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 居住压力 —— 定居北京的终极考验</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">61,482</div><div class="data-label">元/㎡ · 全市住房均价</div></div>
+            <div class="data-card"><div class="data-value">806.3万</div><div class="data-label">元 · 套均总价</div></div>
+            <div class="data-card"><div class="data-value">20+</div><div class="data-label">房价收入比 · 全国最高梯队</div></div>
+            <div class="data-card"><div class="data-value">6,253</div><div class="data-label">元/月 · 套均租金</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>行政区</th><th>均价（元/㎡）</th><th>定位</th></tr>
+            <tr><td>西城区</td><td>12.8万</td><td>学区房核心区，全国房价天花板</td></tr>
+            <tr><td>东城区</td><td>9.61万</td><td>老牌核心区，旧胡同vs高端住宅</td></tr>
+            <tr><td>海淀区</td><td>9.26万</td><td>中关村+学区，程序员与家长共同托市</td></tr>
+            <tr><td>朝阳区</td><td>6.78万</td><td>CBD、望京，外企/互联网聚集</td></tr>
+            <tr><td>丰台区</td><td>5.27万</td><td>南城，性价比之选</td></tr>
+            <tr><td>石景山区</td><td>4.86万</td><td>老工业区转型中</td></tr>
+            <tr><td>大兴区</td><td>4.23万</td><td>大兴机场辐射，南城新中心</td></tr>
+            <tr><td>昌平区</td><td>4.13万</td><td>海淀外溢，回龙观/天通苑是码农第一大宿舍区</td></tr>
+            <tr><td>通州区</td><td>3.76万</td><td>城市副中心，潜力最大</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 购房建议</div>
+            <div class="highlight-content">刚需首选昌平/通州/大兴（3.7-4.2万/㎡，距市中心1小时）；改善首选朝阳/海淀/丰台（5-9万/㎡）；学区需求：西城/海淀顶级学区（12万+/㎡）；环京通勤族：燕郊/大厂/香河（1.2-1.8万/㎡，通勤单程1.5-2小时）。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 租房市场</h3>
+          <table class="info-table">
+            <tr><th>区域</th><th>租金参考（元/月/㎡）</th><th>适合人群</th></tr>
+            <tr><td>西城区</td><td>145.96</td><td>金融街从业者，预算充裕者</td></tr>
+            <tr><td>海淀区</td><td>135.83</td><td>互联网/高校，高学历白领</td></tr>
+            <tr><td>东城区</td><td>132.17</td><td>老北京胡同生活体验</td></tr>
+            <tr><td>朝阳区</td><td>116.44</td><td>外企/传媒/潮流人士</td></tr>
+            <tr><td>丰台区</td><td>96.42</td><td>预算有限但需城六区</td></tr>
+            <tr><td>昌平区</td><td>81.65</td><td>回龙观/天通苑——程序员圣地</td></tr>
+            <tr><td>通州区</td><td>63.56</td><td>城市副中心，潜力+性价比</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 北京租房必知</div>
+            <div class="highlight-content">合租单间3,000-5,000元/月（五环内），整租一居5,000-8,000元/月（五环-六环）。回龙观/天通苑是程序员聚集地（合租2,500-4,000），望京是互联网人首选片区（整租一居7,000+）。北京持续推进保障性租赁住房建设，"十四五"以来累计建设筹集保租房约25万套（间）。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 通勤现状</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚇</div>
+              <div class="life-title">北京的通勤哲学</div>
+              <div class="life-content">住在回龙观的程序员早上挤13号线、骑车去中关村软件园；望京的年轻人走路上班才算人上人；燕郊的"候鸟"每天经历中国最壮观的跨省通勤——这几乎就是北京打工人群像。</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">⏱️</div>
+              <div class="life-title">真实数据</div>
+              <div class="life-content">平均通勤时间约47分钟（单程），全国最长之一。典型模式：昌平/通州——市内（单程1-1.5小时）或燕郊→国贸（跨省通勤约1.5-2小时）。22号线开通后燕郊通勤将缩短至约40分钟。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">☕ 城市"班味"浓度</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🏢</div>
+              <div class="life-title">北京的班味</div>
+              <div class="life-content">海淀咖啡馆里的每一桌都在聊融资、聊跳槽、聊技术路线<br>国贸的金融人西装革履，中午在嘉里中心排队买50元沙拉<br>西二旗晚上10点的滴滴排队200+人，末班车载满凌晨下班的码农<br>望京的韩国烤肉店里，创业者在向投资人画PPT<br>北京的班味 = 权力的浓度 + 知识的浓度 + 财富的浓度</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🏮</div>
+              <div class="life-title">反班味出口</div>
+              <div class="life-content">后海的晚风、胡同里的涮肉<br>香山的红叶、鼓楼东大街的Livehouse<br>秋天的故宫、冬天的什刹海冰场<br>国家图书馆的安静角落</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎭 城市"人设"：北京是什么性格？</h3>
+          <table class="persona-table">
+            <tr><th>人设标签</th><th>描述</th></tr>
+            <tr><td><span class="persona-tag">帝都</span></td><td>全国政治/文化/国际交往/科技创新中心，国家意志的集中体现</td></tr>
+            <tr><td><span class="persona-tag">学霸之城</span></td><td>8所985、34所双一流，全国教育浓度最高</td></tr>
+            <tr><td><span class="persona-tag">圈层分明</span></td><td>体制圈/学院圈/产业圈各有边界，跨界需要身份和资本</td></tr>
+            <tr><td><span class="persona-tag">烟火与秩序</span></td><td>胡同大爷提笼架鸟，中关村码农996——同一座城的两种人生</td></tr>
+            <tr><td><span class="persona-tag">大气磅礴</span></td><td>长安街的宽度、故宫的规模、颐和园的格局——什么都大</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎯 北京专属独特活动</h3>
+          <div class="culture-grid">
+            <div class="culture-card">
+              <div class="culture-icon">🏯</div>
+              <div class="culture-name">故宫/国博/颐和园</div>
+              <div class="culture-data">7处世界遗产</div>
+              <div class="culture-note">全国最多</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🍂</div>
+              <div class="culture-name">香山红叶</div>
+              <div class="culture-data">整个北京城出动</div>
+              <div class="culture-note">秋天限定盛事</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🛤️</div>
+              <div class="culture-name">胡同CityWalk</div>
+              <div class="culture-data">南锣→鼓楼→什刹海</div>
+              <div class="culture-note">老北京烟火气</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🎨</div>
+              <div class="culture-name">798艺术区看展</div>
+              <div class="culture-data">中国最密集当代艺术</div>
+              <div class="culture-note">免费/低价展览</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏮</div>
+              <div class="culture-name">后海/什刹海夜生活</div>
+              <div class="culture-data">市井烟火+酒吧街</div>
+              <div class="culture-note">老北京与新北京共存</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🎸</div>
+              <div class="culture-name">鼓楼东大街Livehouse</div>
+              <div class="culture-data">School/疆进酒/乐空间</div>
+              <div class="culture-note">摇滚乐孵化器</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏃</div>
+              <div class="culture-name">奥森跑步</div>
+              <div class="culture-data">北京中产最爱</div>
+              <div class="culture-note">免费/低成本</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🥟</div>
+              <div class="culture-name">冬天牛街涮羊肉</div>
+              <div class="culture-data">北京人冬季限定幸福</div>
+              <div class="culture-note">人均80-150</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">📚</div>
+              <div class="culture-name">国家图书馆自习</div>
+              <div class="culture-data">亚洲最大图书馆</div>
+              <div class="culture-note">考研/考公/考证圣地</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 社交氛围 — i人友好还是e人天堂？</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>🔵 i人友好度 ⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>国图/咖啡馆/公园——一个人待一天没人觉得奇怪</li>
+                <li>海淀那种"你发论文了吗我发了"的社交，对i人来说反而更轻松</li>
+                <li>798看展、奥森跑步、国博逛展——都是高质量独处场景</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>🔴 e人舒适度 ⭐⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>中国没有任何城市比北京更容易接触到顶级圈层的人</li>
+                <li>但前提是你足够优秀到有入场资格</li>
+                <li>校友圈极为活跃：清华/北大/人大/北航校友会遍布各行业</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌈 文化包容度</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">生活方式多元</div>
+              <div class="rating-desc">胡同大爷与SKP贵妇共处一城</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">外来人口包容</div>
+              <div class="rating-desc">"北京人"本就是移民概念</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">小众文化接受</div>
+              <div class="rating-desc">798/鼓楼/宋庄——文化实验前沿</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">LGBTQ+友好</div>
+              <div class="rating-desc">社群活跃，氛围开放</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">宠物友好</div>
+              <div class="rating-desc">奥森/朝阳公园遛狗</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💳 消费特点</h3>
+          <div class="trend-grid">
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">📚</span>
+                <span class="trend-name">文化消费第一</span>
+              </div>
+              <div class="trend-desc">图书购买力、演出票房、博物馆参观人次均为全国最高</div>
+              <div class="trend-insight">精神消费是北京人的刚需</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🍜</span>
+                <span class="trend-name">餐饮多元务实</span>
+              </div>
+              <div class="trend-desc">卤煮/炸酱面人均30，驻京办餐厅人均80-150，米其林三星人均1,500+</div>
+              <div class="trend-insight">丰俭由人，选择极多</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🤝</span>
+                <span class="trend-name">圈子消费盛行</span>
+              </div>
+              <div class="trend-desc">行业聚会/校友会/创业者社群，消费即社交，社交即人脉</div>
+              <div class="trend-insight">在北京，请客吃饭是最重要的投资</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">💎</span>
+                <span class="trend-name">极简与奢华并存</span>
+              </div>
+              <div class="trend-desc">有人只穿优衣库，有人在SKP刷六位数——两种人可能住同一个小区</div>
+              <div class="trend-insight">消费观分化是北京的常态</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part6">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 06</div>
+          <h2 class="section-title">发展潜力</h2>
+          <p class="section-desc">创新动能 · 京津冀协同 · 十五五规划</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 创新动能</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">~6%</div><div class="data-label">R&D经费投入强度 · 全国第一</div></div>
+            <div class="data-card"><div class="data-value">+40.1%</div><div class="data-label">高技术产业投资增速</div></div>
+            <div class="data-card"><div class="data-value">46.4%</div><div class="data-label">数字经济占GDP比重</div></div>
+            <div class="data-card"><div class="data-value">15%+</div><div class="data-label">基础研究经费占比 · 全国最高</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌐 京津冀协同发展</h3>
+          <table class="info-table">
+            <tr><th>项目</th><th>详情</th></tr>
+            <tr><td>雄安新区</td><td>承接北京非首都功能疏解，央企总部加速向雄安迁移</td></tr>
+            <tr><td>城市副中心</td><td>通州：行政办公区+运河商务区+文化旅游区，M101线一期将通车</td></tr>
+            <tr><td>跨省轨交</td><td>22号线（平谷线）基本具备开通条件，燕郊接入北京地铁网</td></tr>
+            <tr><td>大兴机场临空经济区</td><td>国际交往新门户，京津冀协同发展桥头堡</td></tr>
+            <tr><td>产业协同</td><td>北京研发+天津转化+河北制造，产业链跨省重构加速</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏙️ "十五五"规划纲要（2026-2030）</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">4.5-5%</div><div class="data-label">年均GDP增长目标</div></div>
+            <div class="data-card"><div class="data-value">超万亿</div><div class="data-label">五年新增经济增量</div></div>
+            <div class="data-card"><div class="data-value">100项</div><div class="data-label">重大工程</div></div>
+            <div class="data-card"><div class="data-value">超4万亿</div><div class="data-label">元 · 总投资规模</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">📋 核心目标</div>
+            <div class="highlight-content">《北京市国民经济和社会发展第十五个五年规划纲要》已于2026年1月29日经市人代会批准。战略定位："都""产""人""城""安全"五个维度，率先基本实现社会主义现代化。2035年远景：GDP比2020年翻一番，成为具有全球影响力的大国首都。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💚 环境底色</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">30-32</div><div class="data-label">μg/m³ · PM2.5年均浓度</div></div>
+            <div class="data-card"><div class="data-value">-60%</div><div class="data-label">较2013年下降幅度</div></div>
+            <div class="data-card"><div class="data-value">26.3%</div><div class="data-label">可再生能源装机占比</div></div>
+            <div class="data-card"><div class="data-value">~90%</div><div class="data-label">公园绿地500米服务半径覆盖率</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💚 持续改善</div>
+            <div class="highlight-content">北京空气质量持续改善，PM2.5年均浓度较2013年下降超60%。公园绿地500米服务半径覆盖率提升至约90%，"走出家门就是公园"逐步成为现实。但秋冬仍有雾霾过程，空气质量改善仍是长期任务。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part7">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 07</div>
+          <h2 class="section-title">定居指南</h2>
+          <p class="section-desc">落户政策 · 行动清单 · 真实场景</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📋 北京落户路径对比</h3>
+          <div class="path-grid">
+            <div class="path-card">
+              <div class="path-title">📍 积分落户 <span class="path-time">⭐⭐⭐⭐⭐ 最难</span></div>
+              <ul class="path-list">
+                <li>持有居住证+社保连续7年以上+积分达标</li>
+                <li>2026年规模6,000人，分数线逐年走高</li>
+                <li>社保年限每年3分，住房自有每年1分</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 人才引进 <span class="path-time">⭐⭐⭐⭐</span></div>
+              <ul class="path-list">
+                <li>在重点机构工作+高级职称或博士学历</li>
+                <li>社保满2年，名额有限</li>
+                <li>适合高学历技术人才</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 应届生落户 <span class="path-time">⭐⭐⭐</span></div>
+              <ul class="path-list">
+                <li>985/211/双一流硕博+在京就业单位有落户指标</li>
+                <li>名额竞争激烈，仅一次机会</li>
+                <li>入职前务必确认单位是否有指标</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 留学生落户 <span class="path-time">⭐⭐⭐</span></div>
+              <ul class="path-list">
+                <li>世界前500院校硕士以上</li>
+                <li>回国2年内来京工作+单位有指标</li>
+                <li>时间窗口严格，需提前规划</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">⚠️ 核心认知</div>
+            <div class="highlight-content">北京是全国落户难度最高的城市，没有之一。积分落户每年仅6,000个名额，分数线逐年走高。如果落户对你来说是刚需，请务必在择业前确认单位是否有落户指标。2026年积分落户申报：4月16日-5月15日。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📝 定居北京行动清单</h3>
+          <ol class="action-list">
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>职业定位</h4>
+                <p>锁定目标行业与企业类型——互联网/AI/金融/央企总部/高校科研，优先选取有落户指标的单位</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>落户规划</h4>
+                <p>应届生落户最优先（仅一次机会），否则选择积分落户需做7-10年规划</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>区域选择</h4>
+                <p>码农优先回龙观/天通苑/望京；金融优先朝阳/西城；预算有限选通州/大兴</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>租房避坑</h4>
+                <p>签正规合同+办理居住证；北京群租房清理力度大，勿租隔断房；居住证是积分落户前提条件</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>财务规划</h4>
+                <p>北京套均总价806万，首付30%约242万——没有家庭支援需长期积累</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>建立社交</h4>
+                <p>善用校友圈+行业圈——清华/北大/人大/北航等校友会网络是最高效的社交入场券</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌅 真实生活场景</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚇</div>
+              <div class="life-title">通勤</div>
+              <div class="life-content">回龙观→中关村地铁约50分钟，燕郊→国贸约1.5-2小时（22号线开通后缩短）</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🥞</div>
+              <div class="life-title">早餐</div>
+              <div class="life-content">煎饼果子/豆浆油条/包子粥，路边摊10元管饱，便利店也有</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍱</div>
+              <div class="life-title">午餐</div>
+              <div class="life-content">CBD/中关村外卖30-60元/份，食堂（如有）15-25元。选择极其丰富</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌙</div>
+              <div class="life-title">深夜</div>
+              <div class="life-content">簋街24小时营业，凌晨2点的大排档依然热闹，但深夜便利店密度不如上海</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💬 真实用户自述</h3>
+          <div class="user-quote">
+            <div class="user-header">🧑‍💻 月薪22K AI工程师，应届生</div>
+            <div class="user-content">清华硕毕业，进了海淀一家AI创业公司。税前22K，税后约17K，房租5,000（合租中关村附近）。最大的感受是北京的机会密度真的惊人——同学都在这里，跳槽信息一学期能换好几拨。落户走应届生通道，公司有名额，算是幸运。不幸运的地方是：即使年薪税前近30万，也不太敢看北京的房子。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">👩‍💼 月薪15K 央企员工，工作3年</div>
+            <div class="user-content">硕士毕业后进了某央企总部，月薪15K看着不高，但算上六险二金（公积金比例12%+企业年金）、年终奖（3-6个月）、各种隐性福利，实际年收入近30万。单位有食堂一顿5元、有宿舍月租1,500。北京户口已落。最大的感受是：在北京，选择远比努力重要——进对单位、用对身份，你就能留下来。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">🏃 月薪9K 新媒体运营，应届生</div>
+            <div class="user-content">普通本科毕业，进了一家新媒体公司。月薪9K税后约7K，合租昌平月租2,800。每天通勤往返约2小时。最大的感受是：北京很精彩，但精彩大多是别人的。周末去国博/798免费，这是北京对穷人最后的温柔。不知道能坚持多久，但至少来了不后悔。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💭 年轻人对北京的爱与忧</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>✅ 爱北京的理由</h3>
+              <ul class="fit-list">
+                <li>💼 <strong>机会密度全国第一</strong> — 央企总部+头部科技公司+顶尖高校</li>
+                <li>💰 <strong>薪资天花板全国最高</strong> — 应届生年薪29.89万起</li>
+                <li>🏯 <strong>文化资源无可替代</strong> — 故宫/国博/798/人艺——精神生活极度丰富</li>
+                <li>🏥 <strong>教育医疗全国天花板</strong> — 8所985+81家三甲</li>
+                <li>🤝 <strong>顶级人脉圈层</strong> — 同学/同事/校友可能是未来各行业的领袖</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>❌ 逃离北京的理由</h3>
+              <ul class="fit-list">
+                <li>🔒 <strong>落户太难</strong> — 积分落户6000人/年，很多人等不起</li>
+                <li>🏠 <strong>房价太高</strong> — 套均806万，普通打工人靠自己看不到头</li>
+                <li>🚇 <strong>通勤漫长</strong> — 每天1-2小时在路上是常态</li>
+                <li>🌫️ <strong>气候和环境</strong> — 雾霾虽改善但仍偶发，冬天干燥、春季沙尘</li>
+                <li>⚔️ <strong>竞争极度激烈</strong> — 你的优秀在这里只是入场券，不是优势</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="conclusion-box">
+          <h3 class="conclusion-title">🏯 最终结论：你适合北京吗？</h3>
+          <div class="conclusion-text">
+            <p>✅ <strong>北京适合：</strong>有技术/学历门槛的人，尤其AI/芯片/金融/体制内赛道；愿意承受激烈竞争、追求最顶级机会和圈层的野心家；有家庭积累或单位分房资源的体制内目标者；学术/科研/文化从业者——北京的厚度无可替代；认为"奋斗本身就是意义"的人。</p>
+            <p>❌ <strong>北京不适合：</strong>追求安稳慢节奏、对气候和生活成本敏感的人；月薪低于1万且无家庭支援、纯靠薪资存钱买房的年轻人；对空气质量有较高要求、不适应干燥气候的人；有急切落户需求但无单位指标的人。</p>
+            <p style="margin-top: 20px; font-style: italic; opacity: 0.9;">北京是一座"来了可能后悔，但不来一定不甘心"的城市——它不负责治愈你，它只负责让你成为更强的人。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appendix-section">
+      <div class="container">
+        <h3 class="appendix-title">📋 附录 · 数据来源</h3>
+        <table class="source-table">
+          <tr><th>数据类型</th><th>来源</th></tr>
+          <tr><td>GDP数据</td><td>北京市统计局·2025年统计公报（2026年3月25日发布）</td></tr>
+          <tr><td>人口数据</td><td>北京市统计局·2025年/2024年统计公报</td></tr>
+          <tr><td>居民收入</td><td>首都之窗/北京市统计局·2025年数据（2026年3月发布）</td></tr>
+          <tr><td>薪资数据</td><td>前程无忧2026年春招报告、BOSS直聘/智联招聘年度报告、jobui（2026年）</td></tr>
+          <tr><td>房价数据</td><td>中国房价行情平台·2025年9月房地产数据报告</td></tr>
+          <tr><td>教育数据</td><td>教育部·2025年全国高等学校名单</td></tr>
+          <tr><td>医疗数据</td><td>北京市卫生健康委·2025年统计、北京卫生健康工作概况（2026年1月）</td></tr>
+          <tr><td>交通数据</td><td>百度百科·北京地铁（截至2026年2月）、2026年轨道交通建设计划</td></tr>
+          <tr><td>落户政策</td><td>北京市人社局·2026年积分落户申报通告（2026年4月15日）</td></tr>
+          <tr><td>城市规划</td><td>《北京市国民经济和社会发展第十五个五年规划纲要》（2026年1月批准）</td></tr>
+          <tr><td>数字经济/产业数据</td><td>北京市统计局·2025年统计公报</td></tr>
+        </table>
+
+        <div class="disclaimer">
+          <div class="disclaimer-icon">⚠️</div>
+          <div class="disclaimer-text">
+            本报告为城市性格匹配测试付费增值服务（9.9元），仅供个人参考，不构成定居决策依据。<br>
+            报告内容基于公开数据整理，数据截止2026年4月。城市数据存在动态变化，建议读者以最新官方数据为准。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-section">
+      <div class="container">
+        <div class="download-card">
+          <div class="download-icon">📄</div>
+          <h3 class="download-title">下载完整PDF报告</h3>
+          <p class="download-desc">离线阅读 · 随时查阅 · 分享收藏</p>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="download-btn">
+            <span>📥</span>
+            <span>下载PDF报告</span>
+            <span class="download-hint">即将上线</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">💙 感谢阅读 · 祝你找到真正适合的城市 💙</p>
+      <p class="footer-sub">城市性格匹配测试 | 更多城市报告陆续上线</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    const CODE_STORAGE_KEY = 'beijing_report_verified';
+    const CODE_EXPIRY_KEY = 'beijing_report_expiry';
+    const SESSION_DURATION = 24 * 60 * 60 * 1000;
+
+    const codeOverlay = document.getElementById('codeOverlay');
+    const mainContent = document.getElementById('mainContent');
+    const codeInput = document.getElementById('codeInput');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+    const codeError = document.getElementById('codeError');
+
+    function isVerified() {
+      const verified = localStorage.getItem(CODE_STORAGE_KEY);
+      const expiry = localStorage.getItem(CODE_EXPIRY_KEY);
+      if (verified === 'true' && expiry && Date.now() < parseInt(expiry)) {
+        return true;
+      }
+      localStorage.removeItem(CODE_STORAGE_KEY);
+      localStorage.removeItem(CODE_EXPIRY_KEY);
+      return false;
+    }
+
+    function setVerified() {
+      localStorage.setItem(CODE_STORAGE_KEY, 'true');
+      localStorage.setItem(CODE_EXPIRY_KEY, (Date.now() + SESSION_DURATION).toString());
+    }
+
+    function showReport() {
+      codeOverlay.classList.add('hidden');
+      mainContent.classList.add('visible');
+      document.body.style.overflow = '';
+      initReport();
+    }
+
+    function showError(message) {
+      codeError.innerHTML = `<span>⚠️</span> ${message}`;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    function getCode() {
+      return codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    function clearCode() {
+      codeInput.value = '';
+      codeInput.focus();
+    }
+
+    async function validateCode(code) {
+      codeSubmitBtn.disabled = true;
+      codeSubmitBtn.innerHTML = '<div class="spinner"></div><span>验证中...</span>';
+      codeError.textContent = '';
+
+      try {
+        const response = await fetch(`${API_BASE}/validate-city-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cityKey: 'beijing' })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.errors?.[0]?.msg || '验证失败');
+        }
+
+        setVerified();
+        showReport();
+      } catch (error) {
+        showError(error.message);
+        clearCode();
+      } finally {
+        codeSubmitBtn.disabled = false;
+        codeSubmitBtn.innerHTML = '<span>确认兑换</span>';
+      }
+    }
+
+    codeInput.addEventListener('input', (e) => {
+      const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      e.target.value = value;
+      codeError.textContent = '';
+
+      if (value.length === 8) {
+        validateCode(value);
+      }
+    });
+
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const code = getCode();
+        if (code.length === 8) {
+          validateCode(code);
+        } else {
+          showError('请输入完整的8位兑换码');
+        }
+      }
+    });
+
+    codeSubmitBtn.addEventListener('click', () => {
+      const code = getCode();
+      if (code.length !== 8) {
+        showError('请输入完整的8位兑换码');
+        return;
+      }
+      validateCode(code);
+    });
+
+    if (isVerified()) {
+      showReport();
+    } else {
+      document.body.style.overflow = 'hidden';
+      codeInput.focus();
+    }
+
+    function initReport() {
+      const dims = [
+        { name: '教育医疗', value: 99, color: '#38BDF8' },
+        { name: '机遇收入', value: 98, color: '#8B5CF6' },
+        { name: '文化底蕴', value: 98, color: '#F97316' },
+        { name: '国际化', value: 97, color: '#38BDF8' },
+        { name: '配套便利', value: 85, color: '#F97316' },
+        { name: '生活节奏', value: 75, color: '#EF4444' },
+        { name: '宜居环境', value: 40, color: '#F59E0B' },
+        { name: '生活成本', value: 15, color: '#6B7280' }
+      ];
+
+      function drawRadar() {
+        const canvas = document.getElementById('radarCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+        const R = Math.min(W, H) / 2 - 60;
+        const n = dims.length;
+        const angleStep = (2 * Math.PI) / n;
+        const startAngle = -Math.PI / 2;
+
+        ctx.clearRect(0, 0, W, H);
+
+        for (let level = 1; level <= 5; level++) {
+          const r = (R / 5) * level;
+          ctx.beginPath();
+          for (let i = 0; i <= n; i++) {
+            const angle = startAngle + angleStep * (i % n);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < n; i++) {
+          const angle = startAngle + angleStep * i;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+          const dim = dims[i % n];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * (i % n);
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        gradient.addColorStop(0, 'rgba(185, 28, 28, 0.4)');
+        gradient.addColorStop(1, 'rgba(185, 28, 28, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.strokeStyle = '#B91C1C';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * i;
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, 2 * Math.PI);
+          ctx.fillStyle = dim.color;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.font = '14px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const angle = startAngle + angleStep * i;
+          const labelR = R + 35;
+          const x = cx + labelR * Math.cos(angle);
+          const y = cy + labelR * Math.sin(angle);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillText(dim.name, x, y - 8);
+          ctx.fillStyle = '#FCA5A5';
+          ctx.font = 'bold 16px "Noto Sans SC"';
+          ctx.fillText(dim.value, x, y + 10);
+          ctx.font = '14px "Noto Sans SC"';
+        }
+      }
+
+      drawRadar();
+
+      const tocInner = document.querySelector('.toc-inner');
+      const tocItems = document.querySelectorAll('.toc-item');
+      let isClicking = false;
+      let clickTarget = null;
+      let lastActiveId = null;
+      let scrollTimeout = null;
+
+      function centerTocItem(item, immediate = false) {
+        if (!item || !tocInner) return;
+        const itemOffsetLeft = item.offsetLeft;
+        const innerWidth = tocInner.clientWidth;
+        const itemWidth = item.offsetWidth;
+        const targetScroll = itemOffsetLeft - (innerWidth / 2) + (itemWidth / 2);
+        tocInner.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: immediate ? 'auto' : 'smooth'
+        });
+      }
+
+      function setActiveItem(targetId) {
+        if (lastActiveId === targetId) return;
+        lastActiveId = targetId;
+        tocItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.target === targetId);
+        });
+      }
+
+      tocItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.dataset.target;
+          const target = document.getElementById(targetId);
+          if (target) {
+            isClicking = true;
+            clickTarget = targetId;
+            setActiveItem(targetId);
+            centerTocItem(item, true);
+
+            const tocHeight = document.querySelector('.toc')?.offsetHeight || 0;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - tocHeight - 20;
+
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+              isClicking = false;
+            }, 1000);
+          }
+        });
+      });
+
+      let observerCallback = (entries) => {
+        if (isClicking) return;
+
+        const visibleEntries = entries.filter(e => e.isIntersecting);
+        if (visibleEntries.length === 0) return;
+
+        visibleEntries.sort((a, b) => {
+          const rectA = a.boundingClientRect;
+          const rectB = b.boundingClientRect;
+          return Math.abs(rectA.top) - Math.abs(rectB.top);
+        });
+
+        const mostVisible = visibleEntries[0];
+        const tocTarget = mostVisible.target.id;
+
+        if (tocTarget && tocTarget !== lastActiveId) {
+          setActiveItem(tocTarget);
+          const activeItem = document.querySelector(`.toc-item[data-target="${tocTarget}"]`);
+          if (activeItem) {
+            centerTocItem(activeItem);
+          }
+        }
+
+        mostVisible.target.classList.add('visible');
+
+        const charts = mostVisible.target.querySelectorAll('.chart-fill');
+        charts.forEach(chart => {
+          const width = chart.dataset.width;
+          if (width && !chart.style.width) {
+            setTimeout(() => {
+              chart.style.width = width + '%';
+            }, 200);
+          }
+        });
+
+        const counters = mostVisible.target.querySelectorAll('.data-value[data-count]');
+        counters.forEach(counter => {
+          if (counter.dataset.animated) return;
+          counter.dataset.animated = 'true';
+          const target = parseFloat(counter.dataset.count);
+          const decimal = parseInt(counter.dataset.decimal) || 0;
+          let current = 0;
+          const increment = target / 50;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            counter.textContent = decimal > 0 ? current.toFixed(decimal) : Math.floor(current);
+          }, 30);
+        });
+      };
+
+      const sections = document.querySelectorAll('.section');
+      const observer = new IntersectionObserver(observerCallback, {
+        threshold: [0, 0.1, 0.2, 0.3],
+        rootMargin: '-80px 0px -50% 0px'
+      });
+
+      sections.forEach(section => observer.observe(section));
+    }
+  </script>
+</body>
+</html>

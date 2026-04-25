@@ -1847,7 +1847,7 @@ async function validateCode() {
     const response = await fetch(`${DISC_API_BASE_URL}/validate-code`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({ code, testType: 'disc' })
     });
 
     const data = await response.json();

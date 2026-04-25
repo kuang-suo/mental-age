@@ -9,10 +9,26 @@ const TEST_TYPE_NAMES = {
   'nbti': 'NBTI恋爱',
   'disc': 'DISC',
   'avoidant': '回避型依恋',
-  'city': '城市匹配'
+  'city': '城市匹配',
+  'anxious': '焦虑型依恋',
+  'city-report': '城市报告'
 };
 
 const BAR_COLORS = ['#667eea', '#e74c3c', '#28a745', '#fd7e14', '#0ea5e9', '#6f42c1', '#20c997'];
+
+function getSelectedTestTypes(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return [];
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+  return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function formatAllowedTestTypes(allowedTestTypes) {
+  if (!allowedTestTypes || !Array.isArray(allowedTestTypes) || allowedTestTypes.length === 0) {
+    return '<span style="color:#999;">全部</span>';
+  }
+  return allowedTestTypes.map(t => TEST_TYPE_NAMES[t] || t).join(', ');
+}
 
 function renderPagination(currentPage, totalPages, onClickCallback) {
   if (totalPages <= 1) return '';
@@ -47,6 +63,11 @@ function headers() {
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers: { ...headers(), ...options.headers } });
   if (res.status === 401) { logout(); throw new Error('登录已过期'); }
+  if (!res.ok) {
+    let msg = `请求失败(${res.status})`;
+    try { const data = await res.json(); msg = data.error || msg; } catch {}
+    throw new Error(msg);
+  }
   return res;
 }
 
@@ -150,10 +171,12 @@ async function generateCodes() {
   const count = parseInt(document.getElementById('codeCount').value);
   if (!count || count < 1 || count > 100) { alert('数量必须在1-100之间'); return; }
 
+  const allowedTestTypes = getSelectedTestTypes('codeScope');
+
   try {
     const res = await apiFetch('/generate-codes', {
       method: 'POST',
-      body: JSON.stringify({ count })
+      body: JSON.stringify({ count, allowedTestTypes: allowedTestTypes.length > 0 ? allowedTestTypes : null })
     });
     const data = await res.json();
 
@@ -180,34 +203,92 @@ function copyToClipboard() {
 }
 
 let codesPage = 1;
+let selectedCodeIds = new Set();
+
+function isCodeEditable(code) {
+  if (code.codeType === 'SINGLE_USE' && code.used) return false;
+  if (code.codeType === 'MONTHLY_CARD' && code.expiresAt && new Date() > new Date(code.expiresAt)) return false;
+  return true;
+}
+
+function updateBatchUI() {
+  const btn = document.getElementById('batchScopeBtn');
+  const countEl = document.getElementById('selectedCount');
+  if (selectedCodeIds.size > 0) {
+    btn.style.display = 'inline-flex';
+    countEl.textContent = `已选 ${selectedCodeIds.size} 个`;
+  } else {
+    btn.style.display = 'none';
+    countEl.textContent = '';
+  }
+}
+
+function toggleCodeSelect(codeId, el) {
+  if (selectedCodeIds.has(codeId)) {
+    selectedCodeIds.delete(codeId);
+  } else {
+    selectedCodeIds.add(codeId);
+  }
+  updateBatchUI();
+}
+
+function clearCodeFilters() {
+  document.getElementById('codeSearch').value = '';
+  document.getElementById('filterCodeType').value = '';
+  document.getElementById('filterCodeStatus').value = '';
+  document.getElementById('filterCodeScope').value = '';
+  selectedCodeIds.clear();
+  updateBatchUI();
+  loadCodes();
+}
 
 async function loadCodes(page) {
   if (page) codesPage = page;
   const container = document.getElementById('codesContainer');
   container.innerHTML = '<div class="loading">加载中...</div>';
 
+  const search = document.getElementById('codeSearch').value.trim();
+  const codeType = document.getElementById('filterCodeType').value;
+  const status = document.getElementById('filterCodeStatus').value;
+  const scope = document.getElementById('filterCodeScope').value;
+
+  let url = `/codes?page=${codesPage}&limit=20`;
+  if (search) url += `&search=${encodeURIComponent(search)}`;
+  if (codeType) url += `&codeType=${codeType}`;
+  if (status) url += `&status=${status}`;
+  if (scope) url += `&scope=${scope}`;
+
   try {
-    const res = await apiFetch(`/codes?page=${codesPage}&limit=20`);
+    const res = await apiFetch(url);
     const data = await res.json();
 
-    let html = '<table><thead><tr><th>兑换码</th><th>类型</th><th>状态</th><th>使用次数</th><th>关联测试</th><th>创建时间</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th><input type="checkbox" id="selectAllCodes" onchange="toggleSelectAll(this)"></th><th>兑换码</th><th>类型</th><th>状态</th><th>使用范围</th><th>使用次数</th><th>关联测试</th><th>创建时间</th></tr></thead><tbody>';
 
     (data.codes || []).forEach(code => {
       const isMonthly = code.codeType === 'MONTHLY_CARD';
-      let status = '';
+      const editable = isCodeEditable(code);
+      let statusHtml = '';
       if (isMonthly) {
         const expired = code.expiresAt && new Date() > new Date(code.expiresAt);
-        status = expired ? '<span class="status-badge status-expired">已过期</span>' : '<span class="status-badge status-active">有效</span>';
+        statusHtml = expired ? '<span class="status-badge status-expired">已过期</span>' : '<span class="status-badge status-active">有效</span>';
       } else {
-        status = code.used ? '<span class="status-badge status-used">已使用</span>' : '<span class="status-badge status-unused">未使用</span>';
+        statusHtml = code.used ? '<span class="status-badge status-used">已使用</span>' : '<span class="status-badge status-unused">未使用</span>';
       }
 
       const testInfo = (code.testResults || []).map(r => TEST_TYPE_NAMES[r.testType] || r.testType).join(', ') || '-';
+      const scopeStr = formatAllowedTestTypes(code.allowedTestTypes);
+      const checked = selectedCodeIds.has(code.id) ? 'checked' : '';
+
+      const scopeEditBtn = editable
+        ? `<button class="btn-small" onclick="editCodeScope(${code.id}, ${JSON.stringify(code.allowedTestTypes || []).replace(/"/g, '&quot;')})" style="float:right;">改</button>`
+        : '';
 
       html += `<tr>
+        <td><input type="checkbox" ${checked} ${!editable ? 'disabled title="已使用/已过期不可选"' : ''} onchange="toggleCodeSelect(${code.id}, this)"></td>
         <td style="font-family:monospace;font-weight:700;">${code.code}</td>
         <td>${isMonthly ? '月卡' : '单次'}</td>
-        <td>${status}</td>
+        <td>${statusHtml}</td>
+        <td>${scopeEditBtn}${scopeStr}</td>
         <td>${code.usedCount}</td>
         <td>${testInfo}</td>
         <td>${new Date(code.createdAt).toLocaleString('zh-CN')}</td>
@@ -215,6 +296,10 @@ async function loadCodes(page) {
     });
 
     html += '</tbody></table>';
+
+    if ((data.codes || []).length === 0) {
+      html = '<div class="loading">暂无数据</div>';
+    }
 
     const totalPages = data.pages || 1;
     html += renderPagination(codesPage, totalPages, 'loadCodes');
@@ -224,8 +309,71 @@ async function loadCodes(page) {
   }
 }
 
+function toggleSelectAll(el) {
+  const checkboxes = document.querySelectorAll('#codesContainer tbody input[type="checkbox"]:not(:disabled)');
+  checkboxes.forEach(cb => {
+    cb.checked = el.checked;
+    const id = parseInt(cb.getAttribute('onchange').match(/toggleCodeSelect\((\d+)/)[1]);
+    if (el.checked) {
+      selectedCodeIds.add(id);
+    } else {
+      selectedCodeIds.delete(id);
+    }
+  });
+  updateBatchUI();
+}
+
+function batchEditScope() {
+  if (selectedCodeIds.size === 0) { alert('请先选择兑换码'); return; }
+  document.getElementById('editScopeCheckboxes').querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+  });
+  document.getElementById('editScopeCodeId').value = '';
+  document.getElementById('editScopeModal').classList.add('active');
+}
+
 function exportCodes() {
   window.open(`${API_BASE}/export?token=${token}`, '_blank');
+}
+
+function editCodeScope(codeId, currentTypes) {
+  document.getElementById('editScopeCodeId').value = codeId;
+  const container = document.getElementById('editScopeCheckboxes');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = currentTypes.includes(cb.value);
+  });
+  document.getElementById('editScopeModal').classList.add('active');
+}
+
+function closeEditScopeModal() {
+  document.getElementById('editScopeModal').classList.remove('active');
+}
+
+async function saveCodeScope() {
+  const codeIdStr = document.getElementById('editScopeCodeId').value;
+  const allowedTestTypes = getSelectedTestTypes('editScopeCheckboxes');
+  const scopeValue = allowedTestTypes.length > 0 ? allowedTestTypes : null;
+
+  try {
+    if (codeIdStr) {
+      await apiFetch(`/codes/${codeIdStr}/scope`, {
+        method: 'PUT',
+        body: JSON.stringify({ allowedTestTypes: scopeValue })
+      });
+    } else {
+      await apiFetch('/codes/batch-scope', {
+        method: 'PUT',
+        body: JSON.stringify({ ids: Array.from(selectedCodeIds), allowedTestTypes: scopeValue })
+      });
+      selectedCodeIds.clear();
+      updateBatchUI();
+    }
+    closeEditScopeModal();
+    loadCodes();
+    loadMonthlyCards();
+  } catch (e) {
+    alert('修改失败: ' + e.message);
+  }
 }
 
 let resultsPage = 1;
@@ -350,13 +498,14 @@ async function createMonthlyCards() {
   const useLimitVal = document.getElementById('monthlyLimit').value;
   const useLimit = useLimitVal ? parseInt(useLimitVal) : null;
   const remark = document.getElementById('monthlyRemark').value || null;
+  const allowedTestTypes = getSelectedTestTypes('monthlyScope');
 
   if (!count || count < 1 || count > 100) { alert('数量必须在1-100之间'); return; }
 
   try {
     const res = await apiFetch('/create-monthly-cards', {
       method: 'POST',
-      body: JSON.stringify({ count, validDays, useLimit, remark })
+      body: JSON.stringify({ count, validDays, useLimit, remark, allowedTestTypes: allowedTestTypes.length > 0 ? allowedTestTypes : null })
     });
     const data = await res.json();
 
@@ -393,7 +542,7 @@ async function loadMonthlyCards(page) {
     const res = await apiFetch(`/monthly-cards?page=${monthlyPage}&limit=20`);
     const data = await res.json();
 
-    let html = '<table><thead><tr><th>卡号</th><th>有效期至</th><th>使用次数</th><th>限制</th><th>状态</th><th>关联测试</th><th>创建时间</th><th>操作</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>卡号</th><th>有效期至</th><th>使用范围</th><th>使用次数</th><th>限制</th><th>状态</th><th>关联测试</th><th>创建时间</th><th>操作</th></tr></thead><tbody>';
 
     (data.cards || []).forEach(card => {
       const expired = card.expiresAt && new Date() > new Date(card.expiresAt);
@@ -401,10 +550,12 @@ async function loadMonthlyCards(page) {
       const limitText = card.useLimit ? `${card.usedCount}/${card.useLimit}` : `${card.usedCount}/∞`;
       const testInfo = (card.testResults || []).map(r => TEST_TYPE_NAMES[r.testType] || r.testType).join(', ') || '-';
       const testCount = (card.testResults || []).length;
+      const scopeStr = formatAllowedTestTypes(card.allowedTestTypes);
 
       html += `<tr>
         <td style="font-family:monospace;font-weight:700;">${card.code}</td>
         <td>${card.expiresAt ? new Date(card.expiresAt).toLocaleDateString('zh-CN') : '永久'}</td>
+        <td><button class="btn-small" onclick="editCodeScope(${card.id}, ${JSON.stringify(card.allowedTestTypes || []).replace(/"/g, '&quot;')})" style="float:right;">改</button>${scopeStr}</td>
         <td>${limitText}</td>
         <td>${card.useLimit ? card.useLimit + '次' : '不限'}</td>
         <td>${status}</td>
@@ -413,7 +564,7 @@ async function loadMonthlyCards(page) {
         <td>${testCount > 0 ? `<button class="btn-small" onclick="toggleMonthlyResults(${card.id})">查看结果(${testCount})</button>` : '-'}</td>
       </tr>
       <tr id="monthly-results-${card.id}" class="monthly-results-row" style="display:none;">
-        <td colspan="8" style="padding:0;background:#f8f9fa;">
+        <td colspan="9" style="padding:0;background:#f8f9fa;">
           <div id="monthly-results-content-${card.id}" style="padding:10px;"></div>
         </td>
       </tr>`;

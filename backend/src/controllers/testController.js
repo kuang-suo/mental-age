@@ -9,13 +9,19 @@ export async function getQuestions() {
   return questions;
 }
 
-export async function validateCode(code) {
+export async function validateCode(code, testType) {
   const exchangeCode = await prisma.exchangeCode.findUnique({
     where: { code }
   });
 
   if (!exchangeCode) {
     throw new Error('兑换码不存在');
+  }
+
+  if (exchangeCode.allowedTestTypes && Array.isArray(exchangeCode.allowedTestTypes) && exchangeCode.allowedTestTypes.length > 0) {
+    if (!testType || !exchangeCode.allowedTestTypes.includes(testType)) {
+      throw new Error('该兑换码不适用于当前测试');
+    }
   }
 
   if (exchangeCode.codeType === 'SINGLE_USE') {

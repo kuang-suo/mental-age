@@ -37,7 +37,7 @@ export async function login(username, password) {
   return { token };
 }
 
-export async function generateCodes(count) {
+export async function generateCodes(count, allowedTestTypes) {
   if (count < 1 || count > 100) {
     throw new Error('生成数量必须在1-100之间');
   }
@@ -59,7 +59,10 @@ export async function generateCodes(count) {
   }
 
   const created = await prisma.exchangeCode.createMany({
-    data: codes.map(code => ({ code }))
+    data: codes.map(code => ({
+      code,
+      allowedTestTypes: allowedTestTypes && allowedTestTypes.length > 0 ? allowedTestTypes : null
+    }))
   });
 
   return {
@@ -68,11 +71,75 @@ export async function generateCodes(count) {
   };
 }
 
-export async function getCodes(page = 1, limit = 50) {
+export async function getCodes(page = 1, limit = 50, filters = {}) {
   const skip = (page - 1) * limit;
+  const conditions = [];
+
+  if (filters.codeType) {
+    conditions.push({ codeType: filters.codeType });
+  }
+
+  if (filters.status === 'used') {
+    conditions.push({ used: true, codeType: 'SINGLE_USE' });
+  } else if (filters.status === 'unused') {
+    conditions.push({ used: false, codeType: 'SINGLE_USE' });
+  } else if (filters.status === 'active') {
+    conditions.push({
+      codeType: 'MONTHLY_CARD',
+      OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }]
+    });
+  } else if (filters.status === 'expired') {
+    conditions.push({ codeType: 'MONTHLY_CARD', expiresAt: { lt: new Date() } });
+  }
+
+  let scopeConditionApplied = false;
+  if (filters.scope === 'all') {
+    scopeConditionApplied = true;
+  } else if (filters.scope === 'limited') {
+    conditions.push({
+      allowedTestTypes: { not: null }
+    });
+  }
+
+  if (filters.search) {
+    conditions.push({ code: { contains: filters.search, mode: 'insensitive' } });
+  }
+
+  const where = conditions.length > 0 ? { AND: conditions } : {};
+
+  if (scopeConditionApplied) {
+    const allCodes = await prisma.exchangeCode.findMany({
+      where,
+      include: {
+        testResults: {
+          select: {
+            id: true,
+            testType: true,
+            resultData: true,
+            createdAt: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const filtered = allCodes.filter(c =>
+      c.allowedTestTypes === null || (Array.isArray(c.allowedTestTypes) && c.allowedTestTypes.length === 0)
+    );
+    const total = filtered.length;
+    const paged = filtered.slice(skip, skip + limit);
+
+    return {
+      codes: paged,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
+    };
+  }
 
   const [codes, total] = await Promise.all([
     prisma.exchangeCode.findMany({
+      where,
       skip,
       take: limit,
       include: {
@@ -87,7 +154,7 @@ export async function getCodes(page = 1, limit = 50) {
       },
       orderBy: { createdAt: 'desc' }
     }),
-    prisma.exchangeCode.count()
+    prisma.exchangeCode.count({ where })
   ]);
 
   return {
@@ -112,17 +179,21 @@ export async function exportCodes() {
     orderBy: { createdAt: 'desc' }
   });
 
-  const headers = ['兑换码', '类型', '状态', '使用时间', '使用次数', '关联测试', '创建时间'];
+  const headers = ['兑换码', '类型', '状态', '使用范围', '使用时间', '使用次数', '关联测试', '创建时间'];
   const rows = codes.map(code => {
     const testInfo = code.testResults.length > 0
       ? code.testResults.map(r => r.testType).join('; ')
       : '-';
+    const scopeInfo = code.allowedTestTypes && Array.isArray(code.allowedTestTypes) && code.allowedTestTypes.length > 0
+      ? code.allowedTestTypes.join('; ')
+      : '全部';
     return [
       code.code,
       code.codeType === 'MONTHLY_CARD' ? '月卡' : '单次',
       code.codeType === 'MONTHLY_CARD'
         ? (code.expiresAt && new Date() > code.expiresAt ? '已过期' : '有效')
         : (code.used ? '已使用' : '未使用'),
+      scopeInfo,
       code.usedAt ? new Date(code.usedAt).toLocaleString('zh-CN') : '-',
       String(code.usedCount),
       testInfo,
@@ -289,7 +360,7 @@ export async function exportResults(testType, startDate, endDate) {
   return csv;
 }
 
-export async function createMonthlyCards(count, validDays, useLimit, remark) {
+export async function createMonthlyCards(count, validDays, useLimit, remark, allowedTestTypes) {
   if (count < 1 || count > 100) {
     throw new Error('生成数量必须在1-100之间');
   }
@@ -319,7 +390,8 @@ export async function createMonthlyCards(count, validDays, useLimit, remark) {
       codeType: 'MONTHLY_CARD',
       expiresAt,
       useLimit: useLimit || null,
-      remark: remark || null
+      remark: remark || null,
+      allowedTestTypes: allowedTestTypes && allowedTestTypes.length > 0 ? allowedTestTypes : null
     }))
   });
 
@@ -353,6 +425,58 @@ export async function getMonthlyCardResults(exchangeCodeId) {
     orderBy: { createdAt: 'desc' }
   });
   return results;
+}
+
+export async function updateCodeScope(id, allowedTestTypes) {
+  const code = await prisma.exchangeCode.findUnique({
+    where: { id }
+  });
+  if (!code) {
+    throw new Error('兑换码不存在');
+  }
+  if (code.codeType === 'SINGLE_USE' && code.used) {
+    throw new Error('已使用的兑换码不能修改使用范围');
+  }
+  if (code.codeType === 'MONTHLY_CARD' && code.expiresAt && new Date() > code.expiresAt) {
+    throw new Error('已过期的月卡不能修改使用范围');
+  }
+  return prisma.exchangeCode.update({
+    where: { id },
+    data: {
+      allowedTestTypes: allowedTestTypes && allowedTestTypes.length > 0 ? allowedTestTypes : null
+    }
+  });
+}
+
+export async function batchUpdateCodeScope(ids, allowedTestTypes) {
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    throw new Error('请选择要修改的兑换码');
+  }
+  if (ids.length > 200) {
+    throw new Error('单次最多修改200个兑换码');
+  }
+
+  const codes = await prisma.exchangeCode.findMany({
+    where: { id: { in: ids } }
+  });
+
+  const blocked = codes.filter(c =>
+    (c.codeType === 'SINGLE_USE' && c.used) ||
+    (c.codeType === 'MONTHLY_CARD' && c.expiresAt && new Date() > c.expiresAt)
+  );
+  if (blocked.length > 0) {
+    throw new Error(`以下兑换码已使用或已过期，不能修改：${blocked.map(c => c.code).join(', ')}`);
+  }
+
+  const validIds = codes.map(c => c.id);
+  const scopeValue = allowedTestTypes && allowedTestTypes.length > 0 ? allowedTestTypes : null;
+
+  await prisma.exchangeCode.updateMany({
+    where: { id: { in: validIds } },
+    data: { allowedTestTypes: scopeValue }
+  });
+
+  return { updated: validIds.length };
 }
 
 export async function getTestConfigs() {

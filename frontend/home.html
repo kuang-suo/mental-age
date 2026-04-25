@@ -54,22 +54,39 @@
       margin-bottom: 40px;
     }
     
-    .test-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
+    .test-category {
       margin-bottom: 40px;
-      flex-wrap: wrap;
+    }
+    
+    .test-category-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #FF69B4;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #FFB6C1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .test-category-title .icon {
+      font-size: 28px;
+    }
+    
+    .test-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
     }
     
     .test-buttons .btn {
-      flex: 1;
-      min-width: 200px;
-      padding: 16px 32px;
-      font-size: 18px;
+      padding: 16px 24px;
+      font-size: 16px;
       border-radius: 30px;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
       transition: all 0.3s ease;
+      width: 100%;
     }
     
     .test-buttons .btn:hover {
@@ -83,6 +100,14 @@
     
     .test-buttons .btn-mbti:hover {
       box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+    }
+    
+    .test-buttons.full-width {
+      grid-template-columns: 1fr;
+    }
+    
+    .test-buttons.full-width .btn {
+      max-width: 100%;
     }
     
     .xhs-promo {
@@ -188,14 +213,12 @@
         font-size: 36px;
       }
       
-      .test-buttons {
-        flex-direction: column;
-        align-items: center;
+      .test-category-title {
+        font-size: 20px;
       }
       
-      .test-buttons .btn {
-        width: 100%;
-        max-width: 300px;
+      .test-buttons {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -207,15 +230,25 @@
       <h1 class="home-title">心理测试中心</h1>
       <p class="home-subtitle">探索内心世界，了解真实的自己</p>
       
-      <div class="test-buttons">
-        <button class="btn btn-primary" onclick="window.location.href='index.html'">心理年龄测试</button>
-        <button class="btn btn-primary btn-mbti" onclick="window.location.href='mbti.html'">MBTI性格测试</button>
-        <button class="btn btn-primary btn-mbti" onclick="window.location.href='sbti.html'">SBTI测试</button>
-        <button class="btn btn-primary" style="background: linear-gradient(135deg, #FF69B4, #E91E8C);" onclick="window.location.href='nbti.html'">NBTI恋爱测试</button>
-        <button class="btn btn-primary btn-mbti" onclick="window.location.href='DISC.html'">DISC测试</button>
-        <button class="btn btn-primary" style="background: linear-gradient(135deg, #E8B830, #D4A017);" onclick="window.location.href='avoidant.html'">回避型依恋测试</button>
-        <button class="btn btn-primary" style="background: linear-gradient(135deg, #FB923C, #F97316);" onclick="window.location.href='anxious.html'">焦虑型依恋测试</button>
-        <button class="btn btn-primary" style="background: linear-gradient(135deg, #38BDF8, #0EA5E9);" onclick="window.location.href='city.html'">性格匹配城市测试</button>
+      <div class="test-category">
+        <h2 class="test-category-title"><span class="icon">🎮</span>趣味测试</h2>
+        <div class="test-buttons">
+          <button class="btn btn-primary" onclick="window.location.href='index.html'">心理年龄测试</button>
+          <button class="btn btn-primary btn-mbti" onclick="window.location.href='mbti.html'">MBTI性格测试</button>
+          <button class="btn btn-primary btn-mbti" onclick="window.location.href='sbti.html'">SBTI测试</button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #FF69B4, #E91E8C);" onclick="window.location.href='nbti.html'">NBTI恋爱测试</button>
+          <button class="btn btn-primary btn-mbti" onclick="window.location.href='DISC.html'">DISC测试</button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #E8B830, #D4A017);" onclick="window.location.href='avoidant.html'">回避型依恋测试</button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #FB923C, #F97316);" onclick="window.location.href='anxious.html'">焦虑型依恋测试</button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #38BDF8, #0EA5E9);" onclick="window.location.href='city.html'">性格匹配城市测试</button>
+        </div>
+      </div>
+      
+      <div class="test-category">
+        <h2 class="test-category-title"><span class="icon">📊</span>深度报告</h2>
+        <div class="test-buttons full-width">
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #D4A017, #B45309);" onclick="window.location.href='city-home.html'">🏙️ 城市深度报告</button>
+        </div>
       </div>
       
       <div class="xhs-promo">
@@ -230,7 +263,7 @@
       <div class="wechat-promo">
         <h3 class="wechat-title">💳 30次卡购买</h3>
         <p class="wechat-content">
-          购买30次卡，可使用30次测试仅需9.9，全部可测，更加划算！
+          购买30次卡，可使用30次测试仅需19.9，全部可测，更加划算！
           <br>跳转小红书即可购买。
         </p>
         <a href="https://xhslink.com/m/5f65Or9aHvY" class="xhs-link" style="background: linear-gradient(135deg, #07C160, #06AD56);" target="_blank">🔗 点击前往小红书购买</a>

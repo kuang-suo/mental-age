@@ -198,6 +198,20 @@
             </div>
             <button class="btn btn-primary" onclick="generateCodes()">生成</button>
           </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px;color:#666;margin-bottom:8px;display:block;">使用范围（不选则全部可用）</label>
+            <div id="codeScope" style="display:flex;flex-wrap:wrap;gap:8px;">
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
+            </div>
+          </div>
           <div id="codeSuccess" class="success-msg"></div>
           <div id="generatedCodes" style="display:none;">
             <h3 style="font-size:14px;margin-bottom:8px;">生成的兑换码:</h3>
@@ -208,9 +222,33 @@
 
         <div class="section">
           <h2>兑换码列表</h2>
+          <div class="filter-bar" style="margin-bottom:12px;">
+            <input type="text" id="codeSearch" placeholder="搜索兑换码..." style="width:160px;">
+            <select id="filterCodeType">
+              <option value="">全部类型</option>
+              <option value="SINGLE_USE">单次码</option>
+              <option value="MONTHLY_CARD">月卡</option>
+            </select>
+            <select id="filterCodeStatus">
+              <option value="">全部状态</option>
+              <option value="unused">未使用</option>
+              <option value="used">已使用</option>
+              <option value="active">有效月卡</option>
+              <option value="expired">已过期</option>
+            </select>
+            <select id="filterCodeScope">
+              <option value="">全部范围</option>
+              <option value="all">通用(全部可用)</option>
+              <option value="limited">限定范围</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="loadCodes()">筛选</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearCodeFilters()">清除</button>
+          </div>
           <div class="action-bar">
             <button class="btn btn-primary btn-sm" onclick="loadCodes()">刷新列表</button>
             <button class="btn btn-success btn-sm" onclick="exportCodes()">导出 CSV</button>
+            <button class="btn btn-primary btn-sm" id="batchScopeBtn" style="display:none;" onclick="batchEditScope()">批量修改范围</button>
+            <span id="selectedCount" style="font-size:13px;color:#666;"></span>
           </div>
           <div id="codesContainer" class="loading">加载中...</div>
         </div>
@@ -260,6 +298,20 @@
               <input type="text" id="monthlyRemark" placeholder="可选">
             </div>
             <button class="btn btn-primary" onclick="createMonthlyCards()">创建</button>
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px;color:#666;margin-bottom:8px;display:block;">使用范围（不选则全部可用）</label>
+            <div id="monthlyScope" style="display:flex;flex-wrap:wrap;gap:8px;">
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
+            </div>
           </div>
           <div id="monthlySuccess" class="success-msg"></div>
           <div id="generatedMonthlyCodes" style="display:none;">
@@ -340,6 +392,30 @@
       <div style="margin-top:16px;display:flex;gap:10px;">
         <button class="btn btn-primary" onclick="saveEditTestConfig()">保存</button>
         <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editScopeModal" class="modal-overlay" onclick="if(event.target===this)closeEditScopeModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeEditScopeModal()">&times;</button>
+      <h3>修改使用范围</h3>
+      <p style="color:#999;font-size:13px;margin-bottom:12px;">不选择任何测试则表示全部可用</p>
+      <input type="hidden" id="editScopeCodeId">
+      <div id="editScopeCheckboxes" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveCodeScope()">保存</button>
+        <button class="btn btn-secondary" onclick="closeEditScopeModal()">取消</button>
       </div>
     </div>
   </div>

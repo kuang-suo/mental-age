@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 深圳城市深度调研报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --indigo: #6366F1;
+      --indigo-light: #C7D2FE;
+      --indigo-glow: rgba(99, 102, 241, 0.4);
+      --navy: #0F172A;
+      --navy-light: #1E293B;
+      --cream: #FDFBF7;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 50%, #0F172A 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .code-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .code-overlay::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--indigo-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .code-overlay::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .code-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .code-modal-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    .code-modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .code-modal-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .code-input-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .code-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      background: white;
+      color: var(--navy);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .code-input::placeholder {
+      color: #9CA3AF;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .code-input.error {
+      border-color: #EF4444;
+      animation: shake 0.4s ease;
+    }
+
+    .code-submit-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--indigo) 0%, #4338CA 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .code-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .code-submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .code-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .code-submit-btn .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .code-error {
+      color: #DC2626;
+      font-size: 13px;
+      margin-top: 16px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .code-hint {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .code-hint a {
+      color: var(--indigo);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .code-hint a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: none;
+    }
+
+    .main-content.visible {
+      display: block;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 50%, #0F172A 100%);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--indigo-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 300px;
+      opacity: 0.15;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: var(--indigo-light);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 10vw, 96px);
+      font-weight: 700;
+      color: white;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--indigo) 0%, #A5B4FC 50%, var(--indigo) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .hero-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      font-weight: 300;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .content {
+      background: var(--cream);
+      position: relative;
+    }
+
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253, 251, 247, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 16px 0;
+    }
+
+    .toc-inner {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .toc-inner::-webkit-scrollbar { display: none; }
+
+    .toc-item {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .toc-item:hover, .toc-item.active {
+      background: #312E81;
+      color: white;
+      border-color: #312E81;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .section {
+      padding: 80px 0;
+      scroll-margin-top: 100px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-num {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--indigo);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-light);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .radar-section {
+      background: linear-gradient(180deg, #0F172A 0%, #312E81 100%);
+      padding: 80px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .radar-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .radar-canvas-wrap {
+      position: relative;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dim-item {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .dim-item:hover {
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .dim-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dim-info { flex: 1; }
+
+    .dim-name {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .dim-score {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .dim-score span {
+      color: var(--indigo-light);
+    }
+
+    .quote-box {
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+
+    .quote-box::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      color: var(--indigo);
+      opacity: 0.1;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: 18px;
+      line-height: 2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-text strong {
+      color: var(--indigo-light);
+      font-weight: 700;
+    }
+
+    .fit-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .fit-card {
+      padding: 32px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fit-card.yes {
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 2px solid #10B981;
+    }
+
+    .fit-card.no {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+      border: 2px solid #EF4444;
+    }
+
+    .fit-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card.yes h3 { color: #059669; }
+    .fit-card.no h3 { color: #DC2626; }
+
+    .fit-list {
+      list-style: none;
+    }
+
+    .fit-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .fit-list li:last-child { border-bottom: none; }
+
+    .fit-list li strong { color: var(--navy); }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .data-card {
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 100%);
+      color: white;
+      padding: 28px 20px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .data-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .data-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--indigo);
+    }
+
+    .data-value {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--indigo-light);
+      margin-bottom: 4px;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .chart-section {
+      margin: 32px 0;
+    }
+
+    .chart-item {
+      margin-bottom: 20px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chart-name {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .chart-value {
+      font-weight: 700;
+      color: var(--indigo);
+    }
+
+    .chart-bar {
+      height: 12px;
+      background: #E5E7EB;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.5s ease;
+    }
+
+    .salary-section {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .salary-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .salary-card:hover {
+      border-color: var(--indigo);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+    }
+
+    .salary-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .salary-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .salary-dot {
+      width: 10px;
+      height: 10px;
+      background: #6366F1;
+      border-radius: 50%;
+    }
+
+    .salary-type {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .salary-range {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-card {
+      background: white;
+      border: 1px solid var(--indigo-light);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .expense-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .expense-title {
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expense-income {
+      font-size: 14px;
+      color: var(--indigo);
+      font-weight: 700;
+    }
+
+    .expense-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .expense-tag {
+      padding: 4px 12px;
+      background: #F3F4F6;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .expense-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px dashed #E5E7EB;
+      font-size: 14px;
+    }
+
+    .expense-amount {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-surplus {
+      color: #10B981;
+      font-weight: 700;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .path-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      border-left: 4px solid var(--indigo);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .path-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .path-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .path-time {
+      font-size: 12px;
+      color: var(--indigo);
+      font-weight: 500;
+    }
+
+    .path-list {
+      list-style: none;
+    }
+
+    .path-list li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .path-list li::before {
+      content: '✓';
+      color: var(--indigo);
+      font-weight: 700;
+    }
+
+    .rating-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 32px 0;
+    }
+
+    .rating-card {
+      background: white;
+      padding: 20px 12px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .rating-card:hover {
+      border-color: var(--indigo);
+      transform: translateY(-4px);
+    }
+
+    .rating-stars {
+      color: var(--indigo);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .rating-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .rating-desc {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .life-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .life-card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .life-card:hover {
+      border-color: var(--indigo);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+    }
+
+    .life-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .life-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .life-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .user-quote {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .user-quote:hover {
+      border-color: var(--indigo);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    }
+
+    .user-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .user-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 40px;
+      margin: 48px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conclusion-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, var(--indigo-glow) 0%, transparent 70%);
+    }
+
+    .conclusion-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--indigo-light);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .conclusion-text {
+      font-size: 16px;
+      line-height: 2;
+      position: relative;
+    }
+
+    .conclusion-text strong {
+      color: var(--indigo-light);
+    }
+
+    .action-list {
+      counter-reset: action;
+      list-style: none;
+    }
+
+    .action-item {
+      counter-increment: action;
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .action-item:last-child { border-bottom: none; }
+
+    .action-num {
+      width: 40px;
+      height: 40px;
+      background: var(--indigo);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .action-num::before {
+      content: counter(action);
+    }
+
+    .action-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .action-content p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .info-table th, .info-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .info-table th {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .info-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 50%, #C7D2FE 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 0;
+      margin: 24px 0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+      position: relative;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #818CF8, #6366F1, #4338CA);
+    }
+
+    .highlight-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #3730A3;
+      padding: 20px 24px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      border-bottom: 1px dashed rgba(99, 102, 241, 0.3);
+    }
+
+    .highlight-content {
+      padding: 20px 24px;
+    }
+
+    .highlight-content p {
+      margin: 0;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #3730A3;
+      line-height: 1.7;
+    }
+
+    .highlight-content p strong {
+      color: #3730A3;
+      font-size: 15px;
+    }
+
+    .highlight-content p:first-child {
+      padding-top: 0;
+    }
+
+    .highlight-content p:last-child {
+      padding-bottom: 0;
+    }
+
+    .sub-section {
+      margin: 40px 0;
+    }
+
+    .sub-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .guide-section {
+      background: var(--cream);
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .guide-card {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .guide-card:hover {
+      border-color: var(--indigo);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+    }
+
+    .guide-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .guide-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .guide-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .industry-tree {
+      background: linear-gradient(135deg, #312E81 0%, #0F172A 100%);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      color: white;
+    }
+
+    .industry-tree-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--indigo-light);
+      margin-bottom: 20px;
+    }
+
+    .industry-branch {
+      margin-bottom: 16px;
+      padding-left: 20px;
+      border-left: 2px solid var(--indigo);
+    }
+
+    .industry-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--indigo-light);
+      margin-bottom: 8px;
+    }
+
+    .industry-item {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .industry-item::before {
+      content: '├';
+      position: absolute;
+      left: 0;
+      color: var(--indigo);
+    }
+
+    .industry-item:last-child::before {
+      content: '└';
+    }
+
+    .persona-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .persona-table th, .persona-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .persona-table th {
+      background: #312E81;
+      color: white;
+      font-weight: 600;
+    }
+
+    .persona-table th:first-child {
+      border-radius: 12px 0 0 0;
+    }
+
+    .persona-table th:last-child {
+      border-radius: 0 12px 0 0;
+    }
+
+    .persona-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .persona-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--indigo-light);
+      color: var(--navy);
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .trend-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .trend-card:hover {
+      border-color: var(--indigo);
+      transform: translateY(-4px);
+    }
+
+    .trend-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .trend-icon {
+      font-size: 24px;
+    }
+
+    .trend-name {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .trend-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .trend-insight {
+      font-size: 12px;
+      color: var(--indigo);
+      font-weight: 500;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .culture-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .culture-card:hover {
+      border-color: var(--indigo);
+      transform: translateY(-4px);
+    }
+
+    .culture-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .culture-name {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .culture-data {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--indigo);
+      margin-bottom: 4px;
+    }
+
+    .culture-note {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .appendix-section {
+      background: #F8FAFC;
+      padding: 48px 0;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .appendix-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .source-table th, .source-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .source-table th {
+      background: #312E81;
+      color: white;
+      font-weight: 600;
+    }
+
+    .source-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .disclaimer {
+      background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%);
+      border: 2px solid var(--indigo);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .disclaimer-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .download-section {
+      background: linear-gradient(135deg, #0F172A 0%, #312E81 100%);
+      padding: 60px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-section::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--indigo-glow) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      opacity: 0.5;
+    }
+
+    .download-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .download-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .download-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .download-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--indigo) 0%, #4338CA 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+    }
+
+    .download-hint {
+      font-size: 13px;
+      font-weight: 400;
+      opacity: 0.8;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .footer {
+      background: var(--navy);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .footer-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 900px) {
+      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .trend-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { scroll-margin-top: 80px; }
+      .radar-container { grid-template-columns: 1fr; }
+      .fit-section { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      .path-grid { grid-template-columns: 1fr; }
+      .rating-grid { grid-template-columns: repeat(2, 1fr); }
+      .life-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: 1fr; }
+      .toc { display: none; }
+      .hero-title { font-size: 36px; }
+      .dim-grid { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="code-overlay" id="codeOverlay">
+    <div class="code-modal">
+      <div class="code-modal-icon">🌆</div>
+      <h2 class="code-modal-title">深圳城市深度调研报告</h2>
+      <p class="code-modal-desc">请输入兑换码以查看完整报告内容<br>兑换码为8位字母数字组合</p>
+      <div class="code-input-wrapper">
+        <input type="text" class="code-input" id="codeInput" maxlength="8" placeholder="请输入8位兑换码" autocomplete="off">
+      </div>
+      <button class="code-submit-btn" id="codeSubmitBtn">
+        <span>确认兑换</span>
+      </button>
+      <div class="code-error" id="codeError"></div>
+      <div class="code-hint">
+        没有兑换码？<a href="https://xhslink.com/m/4nwD2BwUK2k">小红书购买链接</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <svg class="skyline" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.8" />
+          <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.2" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#skyGrad)" d="M0,300 L0,240 L40,240 L40,200 L80,200 L80,160 L120,160 L120,120 L160,120 L160,80 L200,80 L200,40 L240,40 L240,20 L280,20 L280,40 L320,40 L320,60 L360,60 L360,40 L400,40 L400,20 L440,20 L440,40 L480,40 L480,80 L520,80 L520,60 L560,60 L560,40 L600,40 L600,20 L640,20 L640,60 L680,60 L680,100 L720,100 L720,60 L760,60 L760,40 L800,40 L800,20 L840,20 L840,40 L880,40 L880,80 L920,80 L920,60 L960,60 L960,40 L1000,40 L1000,20 L1040,20 L1040,60 L1080,60 L1080,100 L1120,100 L1120,80 L1160,80 L1160,60 L1200,60 L1200,100 L1240,100 L1240,140 L1280,140 L1280,120 L1320,120 L1320,160 L1360,160 L1360,200 L1400,200 L1400,240 L1440,240 L1440,300 Z"/>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-badge">🌆 城市性格匹配测试 · 付费增值服务</div>
+      <h1 class="hero-title"><span>深圳</span></h1>
+      <p class="hero-subtitle">2026 城市深度调研报告</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">📊 政府公报 / 统计年鉴 / 实时数据</div>
+        <div class="hero-meta-item">📅 截止 2026 年 4 月</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      向下滚动
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="container">
+      <div class="guide-grid">
+        <div class="guide-card">
+          <div class="guide-icon">📊</div>
+          <div class="guide-title">数据来源</div>
+          <div class="guide-content">深圳市统计局公报、深圳市政府官网、各区公示、实时数据</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">📅</div>
+          <div class="guide-title">数据时效</div>
+          <div class="guide-content">人口/经济数据：2025年统计年鉴<br>薪资/房价/租金：2025-2026年实时</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">👥</div>
+          <div class="guide-title">适用人群</div>
+          <div class="guide-content">已完成城市性格测试、结果含深圳的用户；计划在深圳定居/工作/求学的人群</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">💡</div>
+          <div class="guide-title">特别说明</div>
+          <div class="guide-content">本报告为付费增值服务（9.9元），仅供个人学习参考，不构成定居决策依据</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <nav class="toc">
+      <div class="container">
+        <div class="toc-inner">
+          <div class="toc-item active" data-target="part1">Part 1 · 城市性格画像</div>
+          <div class="toc-item" data-target="part2">Part 2 · 自然地理与人口</div>
+          <div class="toc-item" data-target="part3">Part 3 · 经济就业人才</div>
+          <div class="toc-item" data-target="part4">Part 4 · 交通教育医疗</div>
+          <div class="toc-item" data-target="part5">Part 5 · 生活舒适度</div>
+          <div class="toc-item" data-target="part6">Part 6 · 发展潜力</div>
+          <div class="toc-item" data-target="part7">Part 7 · 定居指南</div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="radar-section" id="part1">
+      <div class="container">
+        <div class="section-header" style="color: white;">
+          <div class="section-num">PART 01</div>
+          <h2 class="section-title" style="color: white;">城市性格画像</h2>
+          <p class="section-desc" style="color: rgba(255,255,255,0.7);">综合评分 · 适合/不适合的人</p>
+        </div>
+        <div class="radar-container">
+          <div class="radar-canvas-wrap">
+            <canvas id="radarCanvas" width="450" height="450"></canvas>
+          </div>
+          <div class="dim-grid">
+            <div class="dim-item"><div class="dim-dot" style="background:#8B5CF6"></div><div class="dim-info"><div class="dim-name">机遇收入</div><div class="dim-score"><span>99</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#3B82F6"></div><div class="dim-info"><div class="dim-name">创新活力</div><div class="dim-score"><span>99</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#06B6D4"></div><div class="dim-info"><div class="dim-name">国际化</div><div class="dim-score"><span>95</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F97316"></div><div class="dim-info"><div class="dim-name">美食烟火</div><div class="dim-score"><span>85</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F59E0B"></div><div class="dim-info"><div class="dim-name">配套便利</div><div class="dim-score"><span>83</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#10B981"></div><div class="dim-info"><div class="dim-name">宜居环境</div><div class="dim-score"><span>82</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#EF4444"></div><div class="dim-info"><div class="dim-name">生活节奏</div><div class="dim-score"><span>78</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#6B7280"></div><div class="dim-info"><div class="dim-name">生活成本</div><div class="dim-score"><span>18</span> / 100</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="quote-box">
+        <p class="quote-text">深圳是一座"年轻即资本、创新即信仰"的城市。它用44年从小渔村蜕变为GDP逼近4万亿的全球科技之都，以0.5个百分点的增速优势领跑一线城市。这里的产业更新速度全国最快——战新产业占比43%、PCT专利连续22年全国第一，"深圳—香港—广州"创新集群跃居全球首位。但房价套均905万、房价收入比超26倍，让大多数打工人望而却步。如果你有技术、有野心、渴望在科技赛道拼一把，深圳会给你最好的舞台；如果你希望安稳、慢节奏、低门槛定居，这座城市可能让你备受煎熬。</p>
+      </div>
+
+      <div class="fit-section">
+        <div class="fit-card yes">
+          <h3>✅ 这 5 类人适合深圳</h3>
+          <ul class="fit-list">
+            <li><strong>硬科技从业者</strong> — 半导体/AI/新能源/无人机/机器人从业者，深圳产业生态全国最完整</li>
+            <li><strong>创业者和冒险家</strong> — 从"一张桌"到"一间办公室"，深圳提供免租办公空间和最高100万研发资助</li>
+            <li><strong>年轻单身奋斗者</strong> — 25-35岁无家庭羁绊，愿意合租城中村、为长期收益短期吃苦</li>
+            <li><strong>粤港澳跨境人士</strong> — 深港通勤族、大湾区创业/投资人群，深圳是规则对接最前沿</li>
+            <li><strong>向往"搞钱文化"的人</strong> — 深圳不看出身，只看能力。这里的社交货币是你的能力和产出</li>
+          </ul>
+        </div>
+        <div class="fit-card no">
+          <h3>❌ 这 5 类人不适合深圳</h3>
+          <ul class="fit-list">
+            <li><strong>纯靠薪资买房的年轻人</strong> — 套均总价905万，房价收入比26倍+，家庭不支援几乎无望</li>
+            <li><strong>追求安稳慢节奏的人</strong> — 深圳的慢是海滩散步式的慢，不是工作节奏的慢</li>
+            <li><strong>对教育资源极度焦虑的家长</strong> — 名校资源与京沪差距悬殊，中考普高率约50%是真实焦虑</li>
+            <li><strong>不适应湿热气候的人</strong> — 夏季长达6个月，高温高湿+台风季，空调全年运转</li>
+            <li><strong>对医疗资源有较高要求的人</strong> — 三甲医院约30+家，顶尖科室仍与京沪有差距，大病有时转广州</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="highlight-title">⚠️ 特别说明</div>
+        <div class="highlight-content">深圳"关内"（南山/福田/罗湖/盐田）与"关外"（宝安/龙华/龙岗/光明/坪山）差异极大。南山房价12万/㎡，坪山仅2.87万/㎡。本报告以深圳市全域为研究对象，重点区分各区域差异。</div>
+      </div>
+    </div>
+
+    <div class="section" id="part2">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 02</div>
+          <h2 class="section-title">自然地理与人口</h2>
+          <p class="section-desc">地理气候 · 四季体验 · 人口结构</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌍 地理与气候基础数据</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1,997</div><div class="data-label">km² · 总面积（一线最小）</div></div>
+            <div class="data-card"><div class="data-value">23.5℃</div><div class="data-label">年均温 · 亚热带海洋性季风</div></div>
+            <div class="data-card"><div class="data-value">90%+</div><div class="data-label">空气质量优良率</div></div>
+            <div class="data-card"><div class="data-value">16μg</div><div class="data-label">m³ · PM2.5浓度（2025年1-9月）</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌸 深圳四季真实体验</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌸</div>
+              <div class="life-title">春季 3-4月</div>
+              <div class="life-content">温暖宜人，市花簕杜鹃盛放，但潮湿"回南天"令人抓狂<br>⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🔥</div>
+              <div class="life-title">夏季 5-10月</div>
+              <div class="life-content">长达半年，35℃+高温频繁，台风季带来暴雨和"桑拿天"<br>⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍂</div>
+              <div class="life-title">秋季 11-12月</div>
+              <div class="life-content">深圳最美季节，天高云淡，气温18-25℃，宜出行<br>⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">❄️</div>
+              <div class="life-title">冬季 1-2月</div>
+              <div class="life-content">12-20℃，温暖舒适，北方人的"过冬天堂"，但偶有冷锋<br>⭐⭐⭐⭐</div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 核心差异</div>
+            <div class="highlight-content">2025年深圳气候持续呈变暖趋势，全市年平均气温23.5℃，较常年偏高0.2℃。盐田区全年舒适天数达260天，为全市之最。2025年1-9月灰霾天数累计为0天，"深圳蓝"已成为城市名片。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 人口结构深度分析</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1,799万</div><div class="data-label">常住人口（2024年末）</div></div>
+            <div class="data-card"><div class="data-value">65%</div><div class="data-label">非户籍人口占比 · 全国最高</div></div>
+            <div class="data-card"><div class="data-value">9,004</div><div class="data-label">人/km² · 人口密度全国前列</div></div>
+            <div class="data-card"><div class="data-value">99.8%</div><div class="data-label">城镇化率 · 全国第一</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>维度</th><th>现状</th><th>影响</th></tr>
+            <tr><td>移民之城</td><td>非户籍人口占比约65%，"来了就是深圳人"深入人心</td><td>城市包容度高，不排外是深圳的文化底色</td></tr>
+            <tr><td>年轻城市</td><td>老龄化程度远低于京沪，劳动力充沛</td><td>城市有活力，创新动力充足，养老压力小</td></tr>
+            <tr><td>劳动力引擎</td><td>就业人口超1200万，劳动参与率全国领先</td><td>"搞钱文化"的根基——人人都在这座城市工作</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part3">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 03</div>
+          <h2 class="section-title">经济就业人才</h2>
+          <p class="section-desc">经济规模 · 产业结构 · 薪资段位 · 人才生态</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💰 经济规模 —— 全国第三，增速一线第一</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">38,732</div><div class="data-label">亿元 · GDP（2025年）</div></div>
+            <div class="data-card"><div class="data-value">5.5%</div><div class="data-label">GDP增速 · 一线首位</div></div>
+            <div class="data-card"><div class="data-value">21.53万</div><div class="data-label">元 · 人均GDP（约3万美元）</div></div>
+            <div class="data-card"><div class="data-value">10,102</div><div class="data-label">亿元 · 南山区GDP（首个万亿区）</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💵 居民收入</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">84,945</div><div class="data-label">元/年 · 居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">4.7%</div><div class="data-label">同比增长</div></div>
+            <div class="data-card"><div class="data-value">45,534</div><div class="data-label">亿元 · 进出口总额</div></div>
+            <div class="data-card"><div class="data-value">10,260</div><div class="data-label">亿元 · 社零总额</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 关键对比</div>
+            <div class="highlight-content">深圳居民人均可支配收入84,945元/年，低于上海（96,842元/年）和北京（89,090元/年），但深圳个人所得税税率相对优惠、部分科技企业薪资溢价明显。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏭 "20+8"产业集群格局</h3>
+          <div class="industry-tree">
+            <div class="industry-tree-title">战略性新兴产业占比 43.0%（增加值1.67万亿元）</div>
+            <div class="industry-branch">
+              <div class="industry-main">新一代信息技术</div>
+              <div class="industry-item">华为/腾讯/中兴总部，模拟芯片设计月薪31,595元领跑</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">新能源汽车</div>
+              <div class="industry-item">比亚迪全球销量突破百万辆，智能驾驶工程师月薪20,434元</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">低空经济与空天</div>
+              <div class="industry-item">大疆为龙头，按"2025年产值破千亿"目标推进</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">人工智能</div>
+              <div class="industry-item">数百个"城市+AI"应用场景落地，月薪20,804元</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">智能机器人</div>
+              <div class="industry-item">年产工业机器人13.39万套、服务机器人711.29万套</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 高技术产品产量增速</h3>
+          <div class="chart-section">
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">3D打印设备</span><span class="chart-value">+45.1%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="100" style="background: linear-gradient(90deg, #818CF8, #6366F1);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">工业机器人</span><span class="chart-value">+43.1%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="96" style="background: linear-gradient(90deg, #3B82F6, #2563EB);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">民用无人机</span><span class="chart-value">+40.1%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="89" style="background: linear-gradient(90deg, #06B6D4, #0891B2);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">金融业</span><span class="chart-value">+12.1%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="27" style="background: linear-gradient(90deg, #F59E0B, #D97706);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">信息传输/软件/IT</span><span class="chart-value">+10.3%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="23" style="background: linear-gradient(90deg, #EC4899, #DB2777);"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💼 深圳主要薪资段位</h3>
+          <table class="info-table">
+            <tr><th>岗位类型</th><th>薪资区间</th><th>评价</th></tr>
+            <tr><td>AI大模型/模拟芯片</td><td>25K-60K</td><td>🟢🟢🟢🟢🟢 全国天花板</td></tr>
+            <tr><td>半导体/集成电路</td><td>20K-45K</td><td>🟢🟢🟢🟢🟢 顶尖</td></tr>
+            <tr><td>新能源汽车/智驾</td><td>18K-40K</td><td>🟢🟢🟢🟢 优秀</td></tr>
+            <tr><td>互联网/金融</td><td>18K-38K</td><td>🟢🟢🟢🟢 良好</td></tr>
+            <tr><td>传统制造/工程</td><td>10K-22K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>传统服务/零售</td><td>6K-12K</td><td>🟢🟢 一般</td></tr>
+            <tr><td>应届生平均</td><td>年薪27.57万</td><td>🟢🟢🟢 全国第三</td></tr>
+            <tr><td>应届生本科（1年以下）</td><td>月薪8,279元</td><td>🟢🟢 起步</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 注意</div>
+            <div class="highlight-content">以上薪资均为税前，且高度集中于半导体/AI/新能源汽车等头部产业。普通岗位薪资与核心岗位差距可达3-5倍，行业间薪资分化明显。薪资中位数远低于平均数，两极分化是深圳薪资生态的真实写照。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📊 三类人群真实月度开支</h3>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🎓 应届生</div>
+              <div class="expense-income">税后 16,000-18,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 3,500（合租宝安/龙华）</span>
+              <span class="expense-tag">餐饮 1,800</span>
+              <span class="expense-tag">交通 300</span>
+              <span class="expense-tag">社交 600</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">6,200 元</span></span>
+              <span>结余：<span class="expense-surplus">约 10,000-12,000 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👨‍💻 3-5年经验工程师</div>
+              <div class="expense-income">税后 20,000-28,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 6,000（南山/福田合租或龙华整租）</span>
+              <span class="expense-tag">餐饮 2,500</span>
+              <span class="expense-tag">交通 300</span>
+              <span class="expense-tag">社交 1,000</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">9,800 元</span></span>
+              <span>结余：<span class="expense-surplus">约 10,000-18,000 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👔 中层管理者</div>
+              <div class="expense-income">税后 35,000-50,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 12,000（整租南山/福田）</span>
+              <span class="expense-tag">餐饮 3,500</span>
+              <span class="expense-tag">社交 2,000</span>
+              <span class="expense-tag">育儿/教育 5,000</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">22,500 元</span></span>
+              <span>结余：<span class="expense-surplus">约 12,500-27,500 元</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏆 创新生态 —— 全国第一</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">214,539</div><div class="data-label">件 · 专利授权量（连续8年全国首位）</div></div>
+            <div class="data-card"><div class="data-value">19,660</div><div class="data-label">件 · PCT国际专利（连续22年首位）</div></div>
+            <div class="data-card"><div class="data-value">119.70</div><div class="data-label">件 · 每万人高价值发明专利</div></div>
+            <div class="data-card"><div class="data-value">6.46%</div><div class="data-label">研发投入强度 · 全国第一梯队</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 全球第一</div>
+            <div class="highlight-content">2025年全球创新指数世界百强创新集群榜单中，"深圳—香港—广州"创新集群首次成为全球第一大创新集群。深圳每万人口高价值发明专利拥有量是全国平均水平的近7.5倍——你身边的同事大概率都有专利。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">⭐ 就业友好度评价</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">就业机会</div>
+              <div class="rating-desc">半导体/新能源/AI岗位密度全国最高</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">薪酬天花板</div>
+              <div class="rating-desc">核心技术岗应届生30-70万/年</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职场规范</div>
+              <div class="rating-desc">科技企业加班文化依然严重</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职业培训</div>
+              <div class="rating-desc">龙头企业自带培训体系</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">创业支持</div>
+              <div class="rating-desc">免租办公+最高100万研发资助</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part4">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 04</div>
+          <h2 class="section-title">交通教育医疗</h2>
+          <p class="section-desc">基础设施 · 公共服务 · 配套资源</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚄 交通网络</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">657.84</div><div class="data-label">公里 · 地铁运营里程（2026年底预计）</div></div>
+            <div class="data-card"><div class="data-value">849</div><div class="data-label">公里 · 2030年远期规划里程</div></div>
+            <div class="data-card"><div class="data-value">11条</div><div class="data-label">2026年在建城市轨道线路</div></div>
+            <div class="data-card"><div class="data-value">+8.1%</div><div class="data-label">机场旅客吞吐量增速</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 交通亮点</div>
+            <div class="highlight-content">13号线二期（北延）已通过竣工验收，2026年内正式开通运营，将成为串联南山、宝安、光明三个行政区的城市轨道交通干线。13号线还预留了未来与东莞地铁衔接的条件，助力深莞一体化交通联系。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎓 教育资源</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">15所</div><div class="data-label">已开办高校</div></div>
+            <div class="data-card"><div class="data-value">1所</div><div class="data-label">双一流高校（南方科技大学）</div></div>
+            <div class="data-card"><div class="data-value">17+所</div><div class="data-label">985校区/研究生院</div></div>
+            <div class="data-card"><div class="data-value">228万</div><div class="data-label">座 · 2035年保障基础教育学位</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 理性看待</div>
+            <div class="highlight-content">深圳高等教育正在"弯道超车"，但相比京沪仍有明显差距——顶尖学科覆盖度、双一流数量、在校研究生规模均不可同日而语。基础教育的学位供给在快速增加，但名校资源和中考竞争压力依然是真实痛点。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏥 医疗资源</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">32家</div><div class="data-label">三甲医院（目标数）</div></div>
+            <div class="data-card"><div class="data-value">4.5张</div><div class="data-label">每千人口病床数目标</div></div>
+            <div class="data-card"><div class="data-value">3.0人</div><div class="data-label">每千人口执业医师数目标</div></div>
+            <div class="data-card"><div class="data-value">1,000+</div><div class="data-label">家 · 社康机构目标总数</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">⚠️ 关键风险</div>
+            <div class="highlight-content">深圳医疗在快速追赶，但顶尖医疗资源与京沪差距依然显著。重症、疑难病有时需要转至广州（广深高铁约30分钟，高铁极为便利），这是有较高医疗需求的人群需要考虑的风险点。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part5">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 05</div>
+          <h2 class="section-title">生活舒适度</h2>
+          <p class="section-desc">居住压力 · 城市性格 · 人文社交</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 居住压力 — "搞钱圣地，定居极难"</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">70,796</div><div class="data-label">元/㎡ · 二手房均价</div></div>
+            <div class="data-card"><div class="data-value">905万</div><div class="data-label">元 · 套均总价</div></div>
+            <div class="data-card"><div class="data-value">92.67</div><div class="data-label">元/月/㎡ · 租金均价</div></div>
+            <div class="data-card"><div class="data-value">26倍+</div><div class="data-label">房价收入比</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>行政区</th><th>均价（元/㎡）</th><th>定位</th></tr>
+            <tr><td>南山区</td><td>12.0万</td><td>科技总部+前海，全国房价高地之一</td></tr>
+            <tr><td>福田区</td><td>8.74万</td><td>CBD+金融中心+市政配套最成熟</td></tr>
+            <tr><td>宝安区</td><td>6.39万</td><td>大空港+前海扩容区，近年涨幅明显</td></tr>
+            <tr><td>龙华区</td><td>5.96万</td><td>华为/富士康产业辐射，北站枢纽</td></tr>
+            <tr><td>罗湖区</td><td>5.31万</td><td>老牌商业中心，旧改推进中</td></tr>
+            <tr><td>盐田区</td><td>5.18万</td><td>海滨生活区，规模较小</td></tr>
+            <tr><td>龙岗区</td><td>4.24万</td><td>刚需主力区，华为基地所在地</td></tr>
+            <tr><td>光明区</td><td>3.78万</td><td>科学城加持，仍在成长期</td></tr>
+            <tr><td>坪山区</td><td>2.87万</td><td>比亚迪+生物医药，深圳房价洼地</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📉 购房建议</div>
+            <div class="highlight-content">
+              <p><strong>刚需首选：</strong>坪山/光明/龙岗（2.87-4.24万/㎡，首付80-150万）</p>
+              <p><strong>通勤平衡：</strong>龙华/宝安（6万/㎡左右，距南山/福田约0.5-1小时）</p>
+              <p><strong>品质升级：</strong>南山/福田（9-12万/㎡，预算900万+）</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 租房市场</h3>
+          <table class="info-table">
+            <tr><th>区域</th><th>租金参考（元/月/㎡）</th><th>适合人群</th></tr>
+            <tr><td>南山区</td><td>140.28</td><td>科技从业者，高收入白领</td></tr>
+            <tr><td>福田区</td><td>123.02</td><td>金融/商务人士，预算充裕</td></tr>
+            <tr><td>罗湖区</td><td>89.80</td><td>深港通勤族，老牌生活圈</td></tr>
+            <tr><td>宝安区</td><td>76.15</td><td>科技园外溢，职住平衡</td></tr>
+            <tr><td>龙华区</td><td>74.77</td><td>华为/富士康产业圈，预算友好</td></tr>
+            <tr><td>龙岗区</td><td>64.54</td><td>刚需租房首选</td></tr>
+            <tr><td>光明区</td><td>47.82</td><td>科学城加持，性价比高</td></tr>
+            <tr><td>坪山区</td><td>40.16</td><td>比亚迪+生物医药产业人群，全市最低</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 深圳租房必知</div>
+            <div class="highlight-content">合租单间1,500-3,500元/月（龙岗/龙华/宝安），整租一居4,000-8,000元/月。城中村是深圳租房江湖的独特存在——租金低（单间800-1,500元/月），但居住品质参差。福田/南山的城中村（上下沙、白石洲等）是大量初来深圳者的第一站。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 保障性住房与人才安居</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">15天</div><div class="data-label">应届毕业生免费住宿</div></div>
+            <div class="data-card"><div class="data-value">60%</div><div class="data-label">人才住房租金为市场价</div></div>
+            <div class="data-card"><div class="data-value">1,000元</div><div class="data-label">/月 · 租房补贴（最长24个月）</div></div>
+            <div class="data-card"><div class="data-value">10万</div><div class="data-label">元 · 博士入户补贴</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 通勤现状</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚇</div>
+              <div class="life-title">深圳的通勤哲学</div>
+              <div class="life-content">龙华/宝安→南山科技园（单程约0.7-1.2小时），龙岗→福田（约1-1.5小时）。4号线早高峰比北上广还挤。</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌐</div>
+              <div class="life-title">跨境通勤</div>
+              <div class="life-content">深港通勤（福田口岸/深圳湾口岸→香港约45-60分钟）。13号线预留与东莞地铁衔接条件，未来将贯通。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">☕ 城市"班味"浓度</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌆</div>
+              <div class="life-title">深圳的班味</div>
+              <div class="life-content">南山科技园凌晨两点的灯光比白天还亮——不是加班，是调休<br>科兴科学园星巴克，人人都在聊"我这边要融资2000万"<br>早高峰的4号线比北上广还要挤，龙华码农元气满满地出发<br>"你做什么赛道？"是深圳社交的标准开场白<br>深圳的班味 = 搞钱 + 创新 + 效率</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌊</div>
+              <div class="life-title">反班味出口</div>
+              <div class="life-content">深圳湾公园的落日<br>大鹏半岛的海滩<br>华侨城的绿道<br>蛇口的海风</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎭 城市"人设"：深圳是什么性格？</h3>
+          <table class="persona-table">
+            <tr><th>人设标签</th><th>描述</th></tr>
+            <tr><td><span class="persona-tag">搞钱之都</span></td><td>深圳人不聊八卦，聊的是赛道、风口、融资</td></tr>
+            <tr><td><span class="persona-tag">创新机器</span></td><td>PCT专利22年全国第一，每一天都在创造"首次"</td></tr>
+            <tr><td><span class="persona-tag">移民之城</span></td><td>"来了就是深圳人"——65%非户籍人口，全国最不排外的城市</td></tr>
+            <tr><td><span class="persona-tag">效率至上</span></td><td>深圳做事不讲虚的，谈生意直奔主题</td></tr>
+            <tr><td><span class="persona-tag">年轻即资本</span></td><td>44年从渔村到全球创新中心，没有历史包袱只有未来野心</td></tr>
+            <tr><td><span class="persona-tag">山海之城</span></td><td>1300+公园，推窗见绿、开门进园不是口号</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎯 深圳专属独特活动</h3>
+          <div class="culture-grid">
+            <div class="culture-card">
+              <div class="culture-icon">🚴</div>
+              <div class="culture-name">深圳湾公园绿道骑行</div>
+              <div class="culture-data">15公里</div>
+              <div class="culture-note">滨海长廊，面朝香港</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🌊</div>
+              <div class="culture-name">大鹏半岛看海</div>
+              <div class="culture-data">较场尾/杨梅坑</div>
+              <div class="culture-note">深圳人的"远方"</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏔️</div>
+              <div class="culture-name">梧桐山徒步</div>
+              <div class="culture-data">深圳最高峰</div>
+              <div class="culture-note">往返4-5小时</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">☕</div>
+              <div class="culture-name">蛇口海上世界+南海意库</div>
+              <div class="culture-data">咖啡馆密度极高</div>
+              <div class="culture-note">文艺氛围浓</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🎨</div>
+              <div class="culture-name">华侨城创意文化园</div>
+              <div class="culture-data">深圳版"798"</div>
+              <div class="culture-note">周末市集+艺术展</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🐚</div>
+              <div class="culture-name">深圳湾赶海</div>
+              <div class="culture-data">免费亲子活动</div>
+              <div class="culture-note">退潮后挖蛤蜊、抓螃蟹</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 社交氛围 — i人友好还是e人天堂？</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>🔵 i人友好度 ⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>咖啡馆/图书馆/公园可以独处，但深圳社交文化更偏外向</li>
+                <li>职场社交为主旋律：同事、客户、行业会议、创业路演</li>
+                <li>圈子社交文化：科技圈/金融圈/出海圈/Web3圈各成一个世界</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>🔴 e人舒适度 ⭐⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>创业路演+行业沙龙+深港跨境派对——社交达人的天堂</li>
+                <li>跨境社交丰富：深港双城生活族+外籍人士+华侨社群</li>
+                <li>小众兴趣社群遍地：飞盘/冲浪/徒步/咖啡/精酿/脱口秀</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌈 文化包容度</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">生活方式多元</div>
+              <div class="rating-desc">深圳是全国最包容的城市之一</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">外来人口包容</div>
+              <div class="rating-desc">"来了就是深圳人"不是口号</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div class="rating-label">小众文化接受</div>
+              <div class="rating-desc">年轻人的亚文化自由生长</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">消费多元</div>
+              <div class="rating-desc">搞钱文化驱动，科技消费活跃</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">周末微度假</div>
+              <div class="rating-desc">大湾区1-2小时旅游圈</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part6">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 06</div>
+          <h2 class="section-title">发展潜力</h2>
+          <p class="section-desc">创新动能 · 粤港澳大湾区 · 2035规划</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 创新动能</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">2,236.6</div><div class="data-label">亿元 · 全社会研发投入（+18.9%）</div></div>
+            <div class="data-card"><div class="data-value">6.46%</div><div class="data-label">R&D投入强度 · 全国最高水平之一</div></div>
+            <div class="data-card"><div class="data-value">1.67万亿</div><div class="data-label">元 · 战新产业增加值（占GDP 43%）</div></div>
+            <div class="data-card"><div class="data-value">全球#1</div><div class="data-label">"深圳-香港-广州"创新集群排名</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌐 粤港澳大湾区核心引擎</h3>
+          <table class="info-table">
+            <tr><th>项目</th><th>详情</th></tr>
+            <tr><td>深港合作</td><td>前海深港现代服务业合作区、河套深港科技创新合作区双平台驱动</td></tr>
+            <tr><td>跨城轨交</td><td>深大城际、深惠城际在建；13号线预留与东莞地铁衔接条件</td></tr>
+            <tr><td>国际门户</td><td>宝安机场+香港机场+广州白云机场——三机场群覆盖全球300+城市</td></tr>
+            <tr><td>产业协同</td><td>深圳研发+东莞制造+香港金融+广州商贸——大湾区完整产业链闭环</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏙️ 2035城市总体规划</h3>
+          <table class="info-table">
+            <tr><th>目标</th><th>详情</th></tr>
+            <tr><td>全球标杆城市</td><td>建成具有全球影响力的创新创业创意之都</td></tr>
+            <tr><td>住房保障</td><td>2035年新增各类住房200万套以上；"十四五"阶段计划供应65万套</td></tr>
+            <tr><td>教育保障</td><td>2035年保障基础教育学位228万座，幼儿园学位不少于76万座</td></tr>
+            <tr><td>轨道交通</td><td>2030年线网运营里程达849公里</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💚 环境底色</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1,300+</div><div class="data-label">个 · 公园总数</div></div>
+            <div class="data-card"><div class="data-value">16μg</div><div class="data-label">m³ · PM2.5浓度（2025年1-9月）</div></div>
+            <div class="data-card"><div class="data-value">0天</div><div class="data-label">2025年1-9月灰霾天数</div></div>
+            <div class="data-card"><div class="data-value">90%+</div><div class="data-label">空气质量优良率</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💚 深圳蓝</div>
+            <div class="highlight-content">深圳的空气质量在一线城市中表现优异，"深圳蓝"已成为城市名片。全市公园总数超1,300个，是名副其实的"公园里的城市"。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part7">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 07</div>
+          <h2 class="section-title">定居指南</h2>
+          <p class="section-desc">落户政策 · 行动清单 · 真实场景</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📋 深圳落户路径对比（2026年最新）</h3>
+          <div class="path-grid">
+            <div class="path-card">
+              <div class="path-title">📍 应届生落户 <span class="path-time">⏱ 最简单</span></div>
+              <ul class="path-list">
+                <li>全日制大专及以上应届毕业生</li>
+                <li>通过"i深圳"App"秒批入户"</li>
+                <li>最快24分钟成为深圳人</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 学历落户</div>
+              <ul class="path-list">
+                <li>全日制大专35岁以下/本科及以上45岁以下</li>
+                <li>深圳社保在缴</li>
+                <li>一线城市中门槛最低</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 职称落户</div>
+              <ul class="path-list">
+                <li>中专及以上+中级职称+45岁以下</li>
+                <li>深圳社保在缴</li>
+                <li>适合技能型人才</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 留学生落户</div>
+              <ul class="path-list">
+                <li>境外本科及以上学历+45岁以下</li>
+                <li>深圳社保在缴</li>
+                <li>归国人才优先通道</li>
+              </ul>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 关键认知</div>
+            <div class="highlight-content">深圳是全国四大一线城市中落户门槛最低的——"来了就是深圳人"在落户层面名副其实。应届生可走"秒批入户"通道，最快24分钟成为深圳人。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎁 深圳青年人才大礼包</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">15天</div><div class="data-label">应届毕业生免费住宿</div></div>
+            <div class="data-card"><div class="data-value">60%</div><div class="data-label">人才住房租金为市场价（最长3年）</div></div>
+            <div class="data-card"><div class="data-value">100万</div><div class="data-label">元 · 鲲鹏项目最高研发资助</div></div>
+            <div class="data-card"><div class="data-value">300万</div><div class="data-label">元 · 定制化金融贷款最高额度</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 2026年新政策</div>
+            <div class="highlight-content">
+              <p><strong>安居保障：</strong>应届毕业生最长15天免费住宿→人才住房（租金为市场价60%，最长3年）→或租房补贴1,000元/月（最长24个月）</p>
+              <p><strong>创业支持：</strong>个人创业者不超过10㎡免租6个月；团队创业不超过50㎡免租12个月</p>
+              <p><strong>入户补贴：</strong>博士10万元/硕士最高5万元/本科最高3万元</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📝 定居深圳行动清单</h3>
+          <ol class="action-list">
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>职业定位</h4>
+                <p>优先深圳核心赛道：AI/半导体/新能源/智驾/无人机/机器人/低空经济</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>落户规划</h4>
+                <p>入职后立即办理——应届生走"秒批入户"，其他走学历落户，深圳是一线城市中门槛最低的</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>区域选择</h4>
+                <p>南山/福田上班→龙华/宝安居住；坪山/光明上班→就地安家（房价2.87-3.78万/㎡）</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>租房/安家</h4>
+                <p>应届生免费住宿15天→人才住房（租金打6折）→市场租房补贴1,000元/月</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>财务规划</h4>
+                <p>套均总价905万，首付约271万——需要较长时间积累或家庭支援</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>建立社交</h4>
+                <p>参加行业沙龙/技术社区/创业社群——"在深圳，人脉就是生产力"</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌅 真实生活场景</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚇</div>
+              <div class="life-title">通勤</div>
+              <div class="life-content">龙华→科技园约45-60分钟，4号线高峰比北上广还挤</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍜</div>
+              <div class="life-title">早餐</div>
+              <div class="life-content">肠粉/炒米粉/糯米鸡+豆浆，8-15元，遍布街角的早餐店</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍱</div>
+              <div class="life-title">午餐</div>
+              <div class="life-content">科技园外卖25-50元/份，丰俭由人；便利店15-30元也是标配</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌙</div>
+              <div class="life-title">深夜</div>
+              <div class="life-content">科兴科学园凌晨依然灯火通明；蛇口/华侨城也有不眠的酒吧和深夜食堂</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💬 真实用户自述</h3>
+          <div class="user-quote">
+            <div class="user-header">🧑‍💻 月薪25K 半导体工程师，应届生</div>
+            <div class="user-content">硕士毕业后进了南山一家芯片公司。税前25K，年终3-6个月。房租4,500（合租南山），每天骑车上班20分钟。深圳半导体产业链太完整了——产业链上的客户、供应商、合作方都在一条街上。落户走的应届生通道，两天就办完了。最大的焦虑是：即使年薪35万+，也买不起900万的房子。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">👩‍💻 月薪18K 互联网运营，工作3年</div>
+            <div class="user-content">税后约14K，在龙华整租月租5,500。每天4号线通勤1小时。深圳聚集了太多全国最聪明的人，这是动力也是压力。周末去大鹏海边是最治愈的时刻——深圳湾的海风吹过来，就觉得这座城市的奋斗是有回报的。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">🏃 创业者，跨境电商</div>
+            <div class="user-content">从湖南来深圳第三年。租了宝安一个小办公室，靠亚马逊和TikTok做电子产品跨境。旺季月利润8-10万，淡季3-5万。深圳最牛的是供应链——从华强北拿货到包装到发货，全在一个小时车程内搞定。深圳是我的福地，暂时不想买房，把钱投在生意上更重要。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💭 年轻人对深圳的爱与忧</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>✅ 爱深圳的理由</h3>
+              <ul class="fit-list">
+                <li>🏭 <strong>产业生态最完整</strong> — 半导体/AI/无人机/新能源一站配齐</li>
+                <li>📋 <strong>落户全国最友好</strong> — 秒批入户，最快24分钟成为深圳人</li>
+                <li>🤝 <strong>"来了就是深圳人"</strong> — 全国最不排外的城市</li>
+                <li>💰 <strong>搞钱文化纯粹</strong> — 赛道/风口就是深圳人的日常话题</li>
+                <li>🌊 <strong>山海之间松弛有道</strong> — 深圳湾/大鹏/梧桐山的治愈力</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>❌ 逃离深圳的理由</h3>
+              <ul class="fit-list">
+                <li>🏠 <strong>房价击碎梦想</strong> — 套均总价905万，收入再高也焦虑</li>
+                <li>📚 <strong>教育医疗在追赶</strong> — 基础教育抗压程度高，顶尖医疗不如京沪</li>
+                <li>🚇 <strong>通勤漫长</strong> — 龙华到科技园近一小时是常态</li>
+                <li>🔥 <strong>夏季太漫长</strong> — 高温高湿，空调是生存必需品</li>
+                <li>😔 <strong>孤独感</strong> — 移民城市，深层次关系难以建立</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="conclusion-box">
+          <h3 class="conclusion-title">🌆 最终结论：你适合深圳吗？</h3>
+          <div class="conclusion-text">
+            <p>✅ <strong>深圳适合：</strong>有技术/创业意愿的人，尤其是AI/半导体/新能源/机器人赛道；愿意为长期收益接受短期高压力、快速迭代的人；创业者——深圳的产业配套和政策扶持全国无人能敌；向往"搞钱文化"、用能力说话的人。</p>
+            <p>❌ <strong>深圳不适合：</strong>纯靠薪资买房的年轻人（套均905万，房价收入比26倍+）；追求安稳慢节奏、对教育/医疗有较高要求的人；不适应湿热气候的人（夏季长达6个月）；需要顶尖医疗资源的人（大病有时仍需转广州）。</p>
+            <p style="margin-top: 20px; font-style: italic; opacity: 0.9;">深圳是一座"来了可能焦虑房子，但从不焦虑机会"的城市——它会在最短时间内，让你变成更强版本的自己。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appendix-section">
+      <div class="container">
+        <h3 class="appendix-title">📋 附录 · 数据来源</h3>
+        <table class="source-table">
+          <tr><th>数据类型</th><th>来源</th></tr>
+          <tr><td>GDP数据</td><td>深圳市统计局·2025年统计公报（2026年1月30日发布）</td></tr>
+          <tr><td>人口数据</td><td>深圳市统计局·2024年统计公报、红黑统计公报库</td></tr>
+          <tr><td>居民收入</td><td>深圳市统计局·2025年数据（深圳本地宝引用）</td></tr>
+          <tr><td>产业数据</td><td>深圳市统计局·2025年经济运行情况、深圳特区报、第一财经</td></tr>
+          <tr><td>薪资数据</td><td>前程无忧2026年春招报告、智联招聘·2026新质生产力人才发展报告、BOSS直聘</td></tr>
+          <tr><td>房价数据</td><td>中国房价行情平台·2025年数据（creprice.cn）、深圳房地产数据报告</td></tr>
+          <tr><td>专利数据</td><td>深圳市知识产权局·2026年知识产权白皮书</td></tr>
+          <tr><td>交通数据</td><td>深圳地铁集团官方、深圳市发改委2026年重大项目计划清单</td></tr>
+          <tr><td>人才政策</td><td>《关于加强青年人才来深发展服务保障的若干措施》（2026年1月1日施行）</td></tr>
+          <tr><td>落户政策</td><td>深圳市人社局·2026年落户指南</td></tr>
+          <tr><td>环境数据</td><td>深圳市气象局/生态环境局·2025年数据</td></tr>
+          <tr><td>城市规划</td><td>《深圳市国土空间总体规划（2021-2035年）》</td></tr>
+        </table>
+
+        <div class="disclaimer">
+          <div class="disclaimer-icon">⚠️</div>
+          <div class="disclaimer-text">
+            本报告为城市性格匹配测试付费增值服务（9.9元），仅供个人参考，不构成定居决策依据。<br>
+            报告内容基于公开数据整理，数据截止2026年4月。城市数据存在动态变化，建议读者以最新官方数据为准。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-section">
+      <div class="container">
+        <div class="download-card">
+          <div class="download-icon">📄</div>
+          <h3 class="download-title">下载完整PDF报告</h3>
+          <p class="download-desc">离线阅读 · 随时查阅 · 分享收藏</p>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="download-btn">
+            <span>📥</span>
+            <span>下载PDF报告</span>
+            <span class="download-hint">即将上线</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">💙 感谢阅读 · 祝你找到真正适合的城市 💙</p>
+      <p class="footer-sub">城市性格匹配测试 | 更多城市报告陆续上线</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    const CODE_STORAGE_KEY = 'shenzhen_report_verified';
+    const CODE_EXPIRY_KEY = 'shenzhen_report_expiry';
+    const SESSION_DURATION = 24 * 60 * 60 * 1000;
+
+    const codeOverlay = document.getElementById('codeOverlay');
+    const mainContent = document.getElementById('mainContent');
+    const codeInput = document.getElementById('codeInput');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+    const codeError = document.getElementById('codeError');
+
+    function isVerified() {
+      const verified = localStorage.getItem(CODE_STORAGE_KEY);
+      const expiry = localStorage.getItem(CODE_EXPIRY_KEY);
+      if (verified === 'true' && expiry && Date.now() < parseInt(expiry)) {
+        return true;
+      }
+      localStorage.removeItem(CODE_STORAGE_KEY);
+      localStorage.removeItem(CODE_EXPIRY_KEY);
+      return false;
+    }
+
+    function setVerified() {
+      localStorage.setItem(CODE_STORAGE_KEY, 'true');
+      localStorage.setItem(CODE_EXPIRY_KEY, (Date.now() + SESSION_DURATION).toString());
+    }
+
+    function showReport() {
+      codeOverlay.classList.add('hidden');
+      mainContent.classList.add('visible');
+      document.body.style.overflow = '';
+      initReport();
+    }
+
+    function showError(message) {
+      codeError.innerHTML = `<span>⚠️</span> ${message}`;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    function getCode() {
+      return codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    function clearCode() {
+      codeInput.value = '';
+      codeInput.focus();
+    }
+
+    async function validateCode(code) {
+      codeSubmitBtn.disabled = true;
+      codeSubmitBtn.innerHTML = '<div class="spinner"></div><span>验证中...</span>';
+      codeError.textContent = '';
+
+      try {
+        const response = await fetch(`${API_BASE}/validate-city-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cityKey: 'shenzhen' })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.errors?.[0]?.msg || '验证失败');
+        }
+
+        setVerified();
+        showReport();
+      } catch (error) {
+        showError(error.message);
+        clearCode();
+      } finally {
+        codeSubmitBtn.disabled = false;
+        codeSubmitBtn.innerHTML = '<span>确认兑换</span>';
+      }
+    }
+
+    codeInput.addEventListener('input', (e) => {
+      const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      e.target.value = value;
+      codeError.textContent = '';
+      
+      if (value.length === 8) {
+        validateCode(value);
+      }
+    });
+
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const code = getCode();
+        if (code.length === 8) {
+          validateCode(code);
+        } else {
+          showError('请输入完整的8位兑换码');
+        }
+      }
+    });
+
+    codeSubmitBtn.addEventListener('click', () => {
+      const code = getCode();
+      if (code.length !== 8) {
+        showError('请输入完整的8位兑换码');
+        return;
+      }
+      validateCode(code);
+    });
+
+    if (isVerified()) {
+      showReport();
+    } else {
+      document.body.style.overflow = 'hidden';
+      codeInput.focus();
+    }
+
+    function initReport() {
+      const dims = [
+        { name: '机遇收入', value: 99, color: '#8B5CF6' },
+        { name: '创新活力', value: 99, color: '#3B82F6' },
+        { name: '国际化', value: 95, color: '#06B6D4' },
+        { name: '美食烟火', value: 85, color: '#F97316' },
+        { name: '配套便利', value: 83, color: '#F59E0B' },
+        { name: '宜居环境', value: 82, color: '#10B981' },
+        { name: '生活节奏', value: 78, color: '#EF4444' },
+        { name: '生活成本', value: 18, color: '#6B7280' }
+      ];
+
+      function drawRadar() {
+        const canvas = document.getElementById('radarCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+        const R = Math.min(W, H) / 2 - 60;
+        const n = dims.length;
+        const angleStep = (2 * Math.PI) / n;
+        const startAngle = -Math.PI / 2;
+
+        ctx.clearRect(0, 0, W, H);
+
+        for (let level = 1; level <= 5; level++) {
+          const r = (R / 5) * level;
+          ctx.beginPath();
+          for (let i = 0; i <= n; i++) {
+            const angle = startAngle + angleStep * (i % n);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < n; i++) {
+          const angle = startAngle + angleStep * i;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+          const dim = dims[i % n];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * (i % n);
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.strokeStyle = '#6366F1';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * i;
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, 2 * Math.PI);
+          ctx.fillStyle = dim.color;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.font = '14px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const angle = startAngle + angleStep * i;
+          const labelR = R + 35;
+          const x = cx + labelR * Math.cos(angle);
+          const y = cy + labelR * Math.sin(angle);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillText(dim.name, x, y - 8);
+          ctx.fillStyle = '#A5B4FC';
+          ctx.font = 'bold 16px "Noto Sans SC"';
+          ctx.fillText(dim.value, x, y + 10);
+          ctx.font = '14px "Noto Sans SC"';
+        }
+      }
+
+      drawRadar();
+
+      const tocInner = document.querySelector('.toc-inner');
+      const tocItems = document.querySelectorAll('.toc-item');
+      let isClicking = false;
+      let clickTarget = null;
+      let lastActiveId = null;
+      let scrollTimeout = null;
+
+      function centerTocItem(item, immediate = false) {
+        if (!item || !tocInner) return;
+        const itemOffsetLeft = item.offsetLeft;
+        const innerWidth = tocInner.clientWidth;
+        const itemWidth = item.offsetWidth;
+        const targetScroll = itemOffsetLeft - (innerWidth / 2) + (itemWidth / 2);
+        tocInner.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: immediate ? 'auto' : 'smooth'
+        });
+      }
+
+      function setActiveItem(targetId) {
+        if (lastActiveId === targetId) return;
+        lastActiveId = targetId;
+        tocItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.target === targetId);
+        });
+      }
+
+      tocItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.dataset.target;
+          const target = document.getElementById(targetId);
+          if (target) {
+            isClicking = true;
+            clickTarget = targetId;
+            setActiveItem(targetId);
+            centerTocItem(item, true);
+            
+            const tocHeight = document.querySelector('.toc')?.offsetHeight || 0;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - tocHeight - 20;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+              isClicking = false;
+            }, 1000);
+          }
+        });
+      });
+
+      let observerCallback = (entries) => {
+        if (isClicking) return;
+        
+        const visibleEntries = entries.filter(e => e.isIntersecting);
+        if (visibleEntries.length === 0) return;
+        
+        visibleEntries.sort((a, b) => {
+          const rectA = a.boundingClientRect;
+          const rectB = b.boundingClientRect;
+          return Math.abs(rectA.top) - Math.abs(rectB.top);
+        });
+        
+        const mostVisible = visibleEntries[0];
+        const tocTarget = mostVisible.target.id;
+        
+        if (tocTarget && tocTarget !== lastActiveId) {
+          setActiveItem(tocTarget);
+          const activeItem = document.querySelector(`.toc-item[data-target="${tocTarget}"]`);
+          if (activeItem) {
+            centerTocItem(activeItem);
+          }
+        }
+        
+        mostVisible.target.classList.add('visible');
+        
+        const charts = mostVisible.target.querySelectorAll('.chart-fill');
+        charts.forEach(chart => {
+          const width = chart.dataset.width;
+          if (width && !chart.style.width) {
+            setTimeout(() => {
+              chart.style.width = width + '%';
+            }, 200);
+          }
+        });
+
+        const counters = mostVisible.target.querySelectorAll('.data-value[data-count]');
+        counters.forEach(counter => {
+          if (counter.dataset.animated) return;
+          counter.dataset.animated = 'true';
+          const target = parseFloat(counter.dataset.count);
+          const decimal = parseInt(counter.dataset.decimal) || 0;
+          let current = 0;
+          const increment = target / 50;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            counter.textContent = decimal > 0 ? current.toFixed(decimal) : Math.floor(current);
+          }, 30);
+        });
+      };
+
+      const sections = document.querySelectorAll('.section');
+      const observer = new IntersectionObserver(observerCallback, { 
+        threshold: [0, 0.1, 0.2, 0.3],
+        rootMargin: '-80px 0px -50% 0px'
+      });
+
+      sections.forEach(section => observer.observe(section));
+    }
+  </script>
+</body>
+</html>

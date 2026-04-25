@@ -28,17 +28,18 @@ model Question {
 
 // 兑换码
 model ExchangeCode {
-  id          Int         @id @default(autoincrement())
-  code        String      @unique @db.VarChar(8)
-  codeType    CodeType    @default(SINGLE_USE)
-  used        Boolean     @default(false)
-  usedAt      DateTime?
-  expiresAt   DateTime?
-  useLimit    Int?
-  usedCount   Int         @default(0)
-  remark      String?
-  createdAt   DateTime    @default(now())
-  testResults TestResult[]
+  id              Int         @id @default(autoincrement())
+  code            String      @unique @db.VarChar(8)
+  codeType        CodeType    @default(SINGLE_USE)
+  used            Boolean     @default(false)
+  usedAt          DateTime?
+  expiresAt       DateTime?
+  useLimit        Int?
+  usedCount       Int         @default(0)
+  remark          String?
+  allowedTestTypes Json?       @db.Json
+  createdAt       DateTime    @default(now())
+  testResults     TestResult[]
 
   @@index([used])
   @@index([code])

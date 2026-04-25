@@ -1155,7 +1155,7 @@ async function validateCode() {
     const response = await fetch(`${API_BASE_URL}/validate-code`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({ code, testType: 'sbti' })
     });
 
     if (!response.ok) {

@@ -21,6 +21,7 @@ router.post(
   '/validate-code',
   validateCodeLimiter,
   body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
+  body('testType').optional().trim().isString(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -28,7 +29,7 @@ router.post(
     }
 
     try {
-      const result = await validateCode(req.body.code);
+      const result = await validateCode(req.body.code, req.body.testType || null);
       res.json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -36,13 +37,91 @@ router.post(
   }
 );
 
-async function consumeCode(tx, code) {
+router.post(
+  '/validate-city-report',
+  validateCodeLimiter,
+  body('code').trim().isLength({ min: 8, max: 8 }).withMessage('兑换码格式错误'),
+  body('cityKey').optional().trim().isString(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { code, cityKey } = req.body;
+
+    try {
+      const result = await prisma.$transaction(async (tx) => {
+        const exchangeCode = await tx.exchangeCode.findUnique({
+          where: { code }
+        });
+
+        if (!exchangeCode) {
+          throw new Error('兑换码不存在');
+        }
+
+        if (exchangeCode.allowedTestTypes && Array.isArray(exchangeCode.allowedTestTypes) && exchangeCode.allowedTestTypes.length > 0) {
+          if (!exchangeCode.allowedTestTypes.includes('city-report')) {
+            throw new Error('该兑换码不适用于当前测试');
+          }
+        }
+
+        if (exchangeCode.codeType === 'SINGLE_USE') {
+          if (exchangeCode.used) {
+            throw new Error('兑换码已被使用');
+          }
+          await tx.exchangeCode.update({
+            where: { id: exchangeCode.id },
+            data: { used: true, usedAt: new Date() }
+          });
+        } else if (exchangeCode.codeType === 'MONTHLY_CARD') {
+          if (exchangeCode.expiresAt && new Date() > exchangeCode.expiresAt) {
+            throw new Error('月卡已过期');
+          }
+          if (exchangeCode.useLimit !== null && exchangeCode.usedCount >= exchangeCode.useLimit) {
+            throw new Error('月卡使用次数已达上限');
+          }
+          await tx.exchangeCode.update({
+            where: { id: exchangeCode.id },
+            data: { usedCount: { increment: 1 }, usedAt: new Date() }
+          });
+        }
+
+        await tx.testResult.create({
+          data: {
+            testType: 'city-report',
+            resultData: { cityKey: cityKey || 'shanghai', accessedAt: new Date().toISOString() },
+            exchangeCodeId: exchangeCode.id
+          }
+        });
+
+        return { 
+          success: true, 
+          message: '验证成功',
+          codeType: exchangeCode.codeType 
+        };
+      });
+
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+async function consumeCode(tx, code, testType) {
   const exchangeCode = await tx.exchangeCode.findUnique({
     where: { code }
   });
 
   if (!exchangeCode) {
     throw new Error('兑换码不存在');
+  }
+
+  if (exchangeCode.allowedTestTypes && Array.isArray(exchangeCode.allowedTestTypes) && exchangeCode.allowedTestTypes.length > 0) {
+    if (!testType || !exchangeCode.allowedTestTypes.includes(testType)) {
+      throw new Error('该兑换码不适用于当前测试');
+    }
   }
 
   if (exchangeCode.codeType === 'SINGLE_USE') {
@@ -116,7 +195,7 @@ function createSubmitRoute(routePath, extraValidation = []) {
         }
 
         const result = await prisma.$transaction(async (tx) => {
-          const exchangeCode = await consumeCode(tx, code);
+          const exchangeCode = await consumeCode(tx, code, testType);
 
           await tx.testResult.create({
             data: {

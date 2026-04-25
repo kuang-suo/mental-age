@@ -1,0 +1,2886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 厦门城市深度调研报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --teal: #0891B2;
+      --teal-light: #CFFAFE;
+      --teal-glow: rgba(8, 145, 178, 0.4);
+      --navy: #0C1B2A;
+      --navy-light: #164E63;
+      --cream: #F7FDFB;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-25%); }
+      100% { transform: translateX(0); }
+    }
+
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0C1B2A 0%, #164E63 50%, #0C1B2A 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .code-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .code-overlay::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .code-overlay::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .code-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .code-modal-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    .code-modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .code-modal-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .code-input-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .code-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      background: white;
+      color: var(--navy);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+    }
+
+    .code-input::placeholder {
+      color: #9CA3AF;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .code-input.error {
+      border-color: #EF4444;
+      animation: shake 0.4s ease;
+    }
+
+    .code-submit-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--teal) 0%, #0E7490 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .code-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(8, 145, 178, 0.3);
+    }
+
+    .code-submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .code-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .code-submit-btn .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .code-error {
+      color: #DC2626;
+      font-size: 13px;
+      margin-top: 16px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .code-hint {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .code-hint a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .code-hint a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: none;
+    }
+
+    .main-content.visible {
+      display: block;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0C1B2A 0%, #164E63 50%, #0C1B2A 100%);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 300px;
+      opacity: 0.15;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: var(--teal-light);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 10vw, 96px);
+      font-weight: 700;
+      color: white;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #22D3EE 0%, #CFFAFE 50%, #22D3EE 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .hero-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      font-weight: 300;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .content {
+      background: var(--cream);
+      position: relative;
+    }
+
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247, 253, 251, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 16px 0;
+    }
+
+    .toc-inner {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .toc-inner::-webkit-scrollbar { display: none; }
+
+    .toc-item {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .toc-item:hover, .toc-item.active {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(12, 27, 42, 0.2);
+    }
+
+    .section {
+      padding: 80px 0;
+      scroll-margin-top: 100px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-num {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--teal);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-light);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .radar-section {
+      background: linear-gradient(180deg, var(--navy) 0%, #164E63 100%);
+      padding: 80px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .radar-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .radar-canvas-wrap {
+      position: relative;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dim-item {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .dim-item:hover {
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .dim-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dim-info { flex: 1; }
+
+    .dim-name {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .dim-score {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .dim-score span {
+      color: #22D3EE;
+    }
+
+    .quote-box {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+
+    .quote-box::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      color: #22D3EE;
+      opacity: 0.1;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: 18px;
+      line-height: 2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-text strong {
+      color: #22D3EE;
+      font-weight: 700;
+    }
+
+    .fit-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .fit-card {
+      padding: 32px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fit-card.yes {
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 2px solid #10B981;
+    }
+
+    .fit-card.no {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+      border: 2px solid #EF4444;
+    }
+
+    .fit-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card.yes h3 { color: #059669; }
+    .fit-card.no h3 { color: #DC2626; }
+
+    .fit-list {
+      list-style: none;
+    }
+
+    .fit-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .fit-list li:last-child { border-bottom: none; }
+
+    .fit-list li strong { color: var(--navy); }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .data-card {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      padding: 28px 20px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .data-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .data-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #22D3EE;
+    }
+
+    .data-value {
+      font-size: 32px;
+      font-weight: 900;
+      color: #22D3EE;
+      margin-bottom: 4px;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .chart-section {
+      margin: 32px 0;
+    }
+
+    .chart-item {
+      margin-bottom: 20px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chart-name {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .chart-value {
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .chart-bar {
+      height: 12px;
+      background: #E5E7EB;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.5s ease;
+    }
+
+    .salary-section {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .salary-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .salary-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(8, 145, 178, 0.1);
+    }
+
+    .salary-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .salary-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .salary-dot {
+      width: 10px;
+      height: 10px;
+      background: #10B981;
+      border-radius: 50%;
+    }
+
+    .salary-type {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .salary-range {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-card {
+      background: white;
+      border: 1px solid var(--teal-light);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .expense-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .expense-title {
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expense-income {
+      font-size: 14px;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .expense-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .expense-tag {
+      padding: 4px 12px;
+      background: #F3F4F6;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .expense-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px dashed #E5E7EB;
+      font-size: 14px;
+    }
+
+    .expense-amount {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-surplus {
+      color: #10B981;
+      font-weight: 700;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .path-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      border-left: 4px solid var(--teal);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .path-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .path-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .path-time {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .path-list {
+      list-style: none;
+    }
+
+    .path-list li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .path-list li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .rating-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 32px 0;
+    }
+
+    .rating-card {
+      background: white;
+      padding: 20px 12px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .rating-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .rating-stars {
+      color: var(--teal);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .rating-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .rating-desc {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .life-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .life-card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .life-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(8, 145, 178, 0.1);
+    }
+
+    .life-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .life-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .life-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .user-quote {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .user-quote:hover {
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(8, 145, 178, 0.1);
+    }
+
+    .user-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .user-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, var(--navy) 0%, #164E63 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 40px;
+      margin: 48px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conclusion-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+    }
+
+    .conclusion-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #22D3EE;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .conclusion-text {
+      font-size: 16px;
+      line-height: 2;
+      position: relative;
+    }
+
+    .conclusion-text strong {
+      color: #22D3EE;
+    }
+
+    .action-list {
+      counter-reset: action;
+      list-style: none;
+    }
+
+    .action-item {
+      counter-increment: action;
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .action-item:last-child { border-bottom: none; }
+
+    .action-num {
+      width: 40px;
+      height: 40px;
+      background: var(--teal);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .action-num::before {
+      content: counter(action);
+    }
+
+    .action-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .action-content p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .info-table th, .info-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .info-table th {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .info-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #ECFEFF 0%, #CFFAFE 50%, #A5F3FC 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 0;
+      margin: 24px 0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+      position: relative;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #06B6D4, #0891B2, #0E7490);
+    }
+
+    .highlight-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #164E63;
+      padding: 20px 24px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      border-bottom: 1px dashed rgba(8, 145, 178, 0.3);
+    }
+
+    .highlight-content {
+      padding: 20px 24px;
+    }
+
+    .highlight-content p {
+      margin: 0;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #155E75;
+      line-height: 1.7;
+    }
+
+    .highlight-content p strong {
+      color: #164E63;
+      font-size: 15px;
+    }
+
+    .highlight-content p:first-child {
+      padding-top: 0;
+    }
+
+    .highlight-content p:last-child {
+      padding-bottom: 0;
+    }
+
+    .sub-section {
+      margin: 40px 0;
+    }
+
+    .sub-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .guide-section {
+      background: var(--cream);
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .guide-card {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .guide-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(8, 145, 178, 0.1);
+    }
+
+    .guide-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .guide-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .guide-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .industry-tree {
+      background: linear-gradient(135deg, #164E63 0%, #0C1B2A 100%);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      color: white;
+    }
+
+    .industry-tree-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #22D3EE;
+      margin-bottom: 20px;
+    }
+
+    .industry-branch {
+      margin-bottom: 16px;
+      padding-left: 20px;
+      border-left: 2px solid #22D3EE;
+    }
+
+    .industry-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: #22D3EE;
+      margin-bottom: 8px;
+    }
+
+    .industry-item {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .industry-item::before {
+      content: '├';
+      position: absolute;
+      left: 0;
+      color: #22D3EE;
+    }
+
+    .industry-item:last-child::before {
+      content: '└';
+    }
+
+    .persona-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .persona-table th, .persona-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .persona-table th {
+      background: var(--navy);
+      color: white;
+      font-weight: 600;
+    }
+
+    .persona-table th:first-child {
+      border-radius: 12px 0 0 0;
+    }
+
+    .persona-table th:last-child {
+      border-radius: 0 12px 0 0;
+    }
+
+    .persona-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .persona-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--teal-light);
+      color: var(--navy);
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .trend-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .trend-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .trend-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .trend-icon {
+      font-size: 24px;
+    }
+
+    .trend-name {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .trend-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .trend-insight {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .culture-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .culture-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .culture-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .culture-name {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .culture-data {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+
+    .culture-note {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .appendix-section {
+      background: #F8FAFC;
+      padding: 48px 0;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .appendix-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .source-table th, .source-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .source-table th {
+      background: var(--navy);
+      color: white;
+      font-weight: 600;
+    }
+
+    .source-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .disclaimer {
+      background: linear-gradient(135deg, #CFFAFE 0%, #A5F3FC 100%);
+      border: 2px solid var(--teal);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .disclaimer-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .download-section {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      padding: 60px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-section::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      opacity: 0.5;
+    }
+
+    .download-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .download-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .download-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .download-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--teal) 0%, #0E7490 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(8, 145, 178, 0.3);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(8, 145, 178, 0.4);
+    }
+
+    .download-hint {
+      font-size: 13px;
+      font-weight: 400;
+      opacity: 0.8;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .footer {
+      background: var(--navy);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .footer-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 900px) {
+      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .trend-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { scroll-margin-top: 80px; }
+      .radar-container { grid-template-columns: 1fr; }
+      .fit-section { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      .path-grid { grid-template-columns: 1fr; }
+      .rating-grid { grid-template-columns: repeat(2, 1fr); }
+      .life-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: 1fr; }
+      .toc { display: none; }
+      .hero-title { font-size: 36px; }
+      .dim-grid { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="code-overlay" id="codeOverlay">
+    <div class="code-modal">
+      <div class="code-modal-icon">🌊</div>
+      <h2 class="code-modal-title">厦门城市深度调研报告</h2>
+      <p class="code-modal-desc">请输入兑换码以查看完整报告内容<br>兑换码为8位字母数字组合</p>
+      <div class="code-input-wrapper">
+        <input type="text" class="code-input" id="codeInput" maxlength="8" placeholder="请输入8位兑换码" autocomplete="off">
+      </div>
+      <button class="code-submit-btn" id="codeSubmitBtn">
+        <span>确认兑换</span>
+      </button>
+      <div class="code-error" id="codeError"></div>
+      <div class="code-hint">
+        没有兑换码？<a href="https://xhslink.com/m/4nwD2BwUK2k">小红书购买链接</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <svg class="skyline" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#22D3EE;stop-opacity:0.8" />
+          <stop offset="100%" style="stop-color:#0891B2;stop-opacity:0.2" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#skyGrad)" d="M0,300 L0,240 Q60,220 120,230 Q180,200 240,210 Q300,180 360,190 Q420,160 480,175 Q540,140 600,155 Q660,120 720,140 Q780,110 840,130 Q900,100 960,120 Q1020,90 1080,110 Q1140,80 1200,100 Q1260,70 1320,90 Q1380,60 1440,80 L1440,300 Z"/>
+      <path fill="url(#skyGrad)" opacity="0.5" d="M0,300 L0,260 Q80,250 160,255 Q240,230 320,240 Q400,220 480,230 Q560,210 640,220 Q720,200 800,215 Q880,195 960,210 Q1040,190 1120,200 Q1200,185 1280,195 Q1360,180 1440,190 L1440,300 Z"/>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-badge">🌊 城市性格匹配测试 · 付费增值服务</div>
+      <h1 class="hero-title"><span>厦门</span></h1>
+      <p class="hero-subtitle">2026 城市深度调研报告</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">📊 政府公报 / 统计年鉴 / 实时数据</div>
+        <div class="hero-meta-item">📅 截止 2026 年 4 月</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      向下滚动
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="container">
+      <div class="guide-grid">
+        <div class="guide-card">
+          <div class="guide-icon">📊</div>
+          <div class="guide-title">数据来源</div>
+          <div class="guide-content">厦门市统计局公报、厦门市政府官网、各区政府公示、实时数据</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">📅</div>
+          <div class="guide-title">数据时效</div>
+          <div class="guide-content">人口/经济数据：2025年统计年鉴<br>租金/房价：2025-2026年实时</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">👥</div>
+          <div class="guide-title">适用人群</div>
+          <div class="guide-content">已完成城市性格测试、结果含厦门的用户；计划在厦门定居/工作/求学的人群</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">💡</div>
+          <div class="guide-title">特别说明</div>
+          <div class="guide-content">本报告为付费增值服务（9.9元），仅供个人学习参考，不构成定居决策依据</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <nav class="toc">
+      <div class="container">
+        <div class="toc-inner">
+          <div class="toc-item active" data-target="part1">Part 1 · 城市性格画像</div>
+          <div class="toc-item" data-target="part2">Part 2 · 自然地理与人口</div>
+          <div class="toc-item" data-target="part3">Part 3 · 经济就业人才</div>
+          <div class="toc-item" data-target="part4">Part 4 · 交通教育医疗</div>
+          <div class="toc-item" data-target="part5">Part 5 · 生活舒适度</div>
+          <div class="toc-item" data-target="part6">Part 6 · 发展潜力</div>
+          <div class="toc-item" data-target="part7">Part 7 · 定居指南</div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="radar-section" id="part1">
+      <div class="container">
+        <div class="section-header" style="color: white;">
+          <div class="section-num">PART 01</div>
+          <h2 class="section-title" style="color: white;">城市性格画像</h2>
+          <p class="section-desc" style="color: rgba(255,255,255,0.7);">综合评分 · 适合/不适合的人</p>
+        </div>
+        <div class="radar-container">
+          <div class="radar-canvas-wrap">
+            <canvas id="radarCanvas" width="450" height="450"></canvas>
+          </div>
+          <div class="dim-grid">
+            <div class="dim-item"><div class="dim-dot" style="background:#38BDF8"></div><div class="dim-info"><div class="dim-name">宜居环境</div><div class="dim-score"><span>95</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F97316"></div><div class="dim-info"><div class="dim-name">美食烟火</div><div class="dim-score"><span>90</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#8B5CF6"></div><div class="dim-info"><div class="dim-name">国际化</div><div class="dim-score"><span>85</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#EF4444"></div><div class="dim-info"><div class="dim-name">生活节奏</div><div class="dim-score"><span>80</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F59E0B"></div><div class="dim-info"><div class="dim-name">配套便利</div><div class="dim-score"><span>75</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#10B981"></div><div class="dim-info"><div class="dim-name">机遇收入</div><div class="dim-score"><span>70</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#A855F7"></div><div class="dim-info"><div class="dim-name">安稳度</div><div class="dim-score"><span>65</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#6B7280"></div><div class="dim-info"><div class="dim-name">生活成本</div><div class="dim-score"><span>35</span> / 100</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="quote-box">
+        <p class="quote-text">厦门是一座<strong>"宜居性"与"性价比"存在撕裂感</strong>的城市。空气质量全国顶尖，山海交融的花园环境无可挑剔，慢节奏的生活氛围让很多人来了就不想走。但岛内房价比肩一线、薪资水平仅为二线，高房价与低收入的剪刀差，让年轻人在此定居的梦想变得格外沉重。如果你追求生活品质、热爱海洋与文艺，且已有一定的经济基础——厦门会是你理想的家。如果你一穷二白、指望打工在此买房安家——三思而后行。</p>
+      </div>
+
+      <div class="fit-section">
+        <div class="fit-card yes">
+          <h3>✅ 这 5 类人适合厦门</h3>
+          <ul class="fit-list">
+            <li><strong>追求生活品质的人</strong> — 热爱大海、蓝天、花园城市，愿意为居住环境付费</li>
+            <li><strong>有经济基础的自由职业者</strong> — 网店店主、远程工作者、内容创作者，收入不依赖本地薪资</li>
+            <li><strong>闽南籍在外打拼的"回流族"</strong> — 有家乡情结、家人已购房或可提供居住支持</li>
+            <li><strong>新能源/电子信息/海洋经济从业者</strong> — 厦门的支柱产业从业者，有较好职业平台</li>
+            <li><strong>退休养老群体</strong> — 气候宜人、医疗配套完善，为退休生活提供优质环境</li>
+          </ul>
+        </div>
+        <div class="fit-card no">
+          <h3>❌ 这 5 类人不适合厦门</h3>
+          <ul class="fit-list">
+            <li><strong>纯靠薪资买房的年轻人</strong> — 岛内房价5万+、月薪8000起步，买房遥遥无期</li>
+            <li><strong>追求职业天花板的野心家</strong> — 产业链不如一线完整，薪资天花板明显低于北上深</li>
+            <li><strong>习惯于一线城市效率的人</strong> — 地铁网络密度不够、商业配套类型不够丰富</li>
+            <li><strong>不喜潮湿闷热的人</strong> — 夏季漫长潮湿，梅雨季节空调常开</li>
+            <li><strong>对学区极度焦虑的家长</strong> — 优质教育资源集中在岛内，竞争激烈，房价更高</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="highlight-title">⚠️ 特别说明</div>
+        <div class="highlight-content">厦门岛内（思明/湖里）与岛外（集美/海沧/同安/翔安）差异极大。岛内单价5-6万/㎡，岛外1.8-2.8万/㎡，生活成本与体验完全不同。建议结合具体区域做选择。</div>
+      </div>
+    </div>
+
+    <div class="section" id="part2">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 02</div>
+          <h2 class="section-title">自然地理与人口</h2>
+          <p class="section-desc">地理气候 · 四季体验 · 人口结构</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌍 地理与气候基础数据</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1,700</div><div class="data-label">km² · 陆地面积（含岛屿和海域）</div></div>
+            <div class="data-card"><div class="data-value">21℃</div><div class="data-label">年均温 · 亚热带海洋性季风气候</div></div>
+            <div class="data-card"><div class="data-value">99.2%</div><div class="data-label">空气质量优良率 · 全国第2</div></div>
+            <div class="data-card"><div class="data-value">203</div><div class="data-label">个 · 城市公园数量</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌸 厦门四季真实体验</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌸</div>
+              <div class="life-title">春季 3-5月</div>
+              <div class="life-content">温暖湿润，三角梅盛开，环岛路骑行最佳时节<br>⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🔥</div>
+              <div class="life-title">夏季 6-9月</div>
+              <div class="life-content">漫长湿热，台风季，空调是生存必需品<br>⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍂</div>
+              <div class="life-title">秋季 10-11月</div>
+              <div class="life-content">厦门最美季节，天高云淡，不冷不热，海风温柔<br>⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">❄️</div>
+              <div class="life-title">冬季 12-2月</div>
+              <div class="life-content">温暖舒适，10-20℃，北方人的"过冬天堂"<br>⭐⭐⭐⭐</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 人口结构深度分析</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">536.5</div><div class="data-label">万人 · 常住人口（2025年末）</div></div>
+            <div class="data-card"><div class="data-value">315.96</div><div class="data-label">万人 · 户籍人口</div></div>
+            <div class="data-card"><div class="data-value">91.31%</div><div class="data-label">城镇化率 · 全国领先</div></div>
+            <div class="data-card"><div class="data-value">50.7</div><div class="data-label">万人 · 户籍老年人口</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>维度</th><th>现状</th><th>影响</th></tr>
+            <tr><td>岛内外分化</td><td>岛外常住人口占比超六成</td><td>产业和人口向岛外疏解，城市从"单核"走向"多中心"</td></tr>
+            <tr><td>人口稳步增长</td><td>2024年末535万→2025年末536.5万</td><td>城市吸引力持续，但增速不及一线</td></tr>
+            <tr><td>老龄化加速</td><td>户籍老年人口超50万人</td><td>养老服务需求持续攀升</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part3">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 03</div>
+          <h2 class="section-title">经济就业人才</h2>
+          <p class="section-desc">经济规模 · 薪资段位 · 人才生态</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💰 经济规模</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">8,980</div><div class="data-label">亿元 · 2025年GDP</div></div>
+            <div class="data-card"><div class="data-value">16.7</div><div class="data-label">万元 · 人均GDP</div></div>
+            <div class="data-card"><div class="data-value">5.7%</div><div class="data-label">GDP增速 · 高于全国全省平均</div></div>
+            <div class="data-card"><div class="data-value">61.9%</div><div class="data-label">第三产业占比</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💵 居民收入</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">77,762</div><div class="data-label">元/年 · 全体居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">79,719</div><div class="data-label">元/年 · 城镇居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">38,512</div><div class="data-label">元/年 · 农村居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">2.07:1</div><div class="data-label">城乡收入比 · 差距进一步缩小</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 重点产业增速 TOP 5</h3>
+          <div class="chart-section">
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">光伏产品</span><span class="chart-value">+74.9%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="100" style="background: linear-gradient(90deg, #10B981, #059669);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">新能源汽车</span><span class="chart-value">+73.8%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="99" style="background: linear-gradient(90deg, #06B6D4, #0891B2);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">电子信息</span><span class="chart-value">+12.0%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="16" style="background: linear-gradient(90deg, #3B82F6, #2563EB);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">高技术服务业</span><span class="chart-value">+11.6%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="15" style="background: linear-gradient(90deg, #8B5CF6, #7C3AED);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">机械装备</span><span class="chart-value">+10.7%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="14" style="background: linear-gradient(90deg, #F59E0B, #D97706);"></div></div>
+            </div>
+          </div>
+          <div class="industry-tree">
+            <div class="industry-tree-title">🏗️ "4+4+6"现代化产业体系</div>
+            <div class="industry-branch">
+              <div class="industry-main">4大支柱产业集群</div>
+              <div class="industry-item">电子信息</div>
+              <div class="industry-item">机械装备</div>
+              <div class="industry-item">商贸物流</div>
+              <div class="industry-item">金融服务</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">4大战略性新兴产业</div>
+              <div class="industry-item">生物医药</div>
+              <div class="industry-item">新材料</div>
+              <div class="industry-item">新能源</div>
+              <div class="industry-item">文旅创意</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">6大未来产业</div>
+              <div class="industry-item">人工智能</div>
+              <div class="industry-item">海洋高新</div>
+              <div class="industry-item">第三代半导体等</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💼 厦门主要薪资段位</h3>
+          <table class="info-table">
+            <tr><th>岗位类型</th><th>薪资区间</th><th>评价</th></tr>
+            <tr><td>新能源/半导体/AI</td><td>15K-35K</td><td>🟢🟢🟢🟢 优秀</td></tr>
+            <tr><td>金融/咨询</td><td>12K-30K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>互联网/电子信息</td><td>10K-25K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>传统制造业/贸易</td><td>7K-15K</td><td>🟢🟢 一般</td></tr>
+            <tr><td>传统服务/旅游/餐饮</td><td>5K-10K</td><td>🟢🟢 一般</td></tr>
+            <tr><td>应届生平均</td><td>5K-8K</td><td>🟢 起步</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 对比参考</div>
+            <div class="highlight-content">厦门的绝对薪资水平低于北上深约<strong>30-50%</strong>，与一线城市的差距显著。月薪过万在厦门已属中上水平，但在住房压力面前仍显捉襟见肘。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📊 三类人群真实月度开支</h3>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🧑‍💻 刚毕业白领</div>
+              <div class="expense-income">税后 5,000-6,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 1,500（岛外合租）</span>
+              <span class="expense-tag">餐饮 1,200</span>
+              <span class="expense-tag">交通 200</span>
+              <span class="expense-tag">社交 300</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">3,200 元</span></span>
+              <span>结余：<span class="expense-surplus">约 2,000 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👨‍💼 3年经验白领</div>
+              <div class="expense-income">税后 8,000-10,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 2,500（岛内合租）</span>
+              <span class="expense-tag">餐饮 1,800</span>
+              <span class="expense-tag">交通 300</span>
+              <span class="expense-tag">社交 500</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">5,100 元</span></span>
+              <span>结余：<span class="expense-surplus">约 3,000-5,000 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👔 中层管理者</div>
+              <div class="expense-income">税后 15,000-20,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租 5,000（岛内整租）</span>
+              <span class="expense-tag">餐饮 2,500</span>
+              <span class="expense-tag">社交 1,000</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">8,500 元</span></span>
+              <span>结余：<span class="expense-surplus">约 6,500-11,500 元</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏆 人才吸引力</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">100万+</div><div class="data-label">实有经营主体</div></div>
+            <div class="data-card"><div class="data-value">101</div><div class="data-label">家 · 境内外上市公司</div></div>
+            <div class="data-card"><div class="data-value">4,735</div><div class="data-label">家 · 国家高新技术企业（翻番）</div></div>
+            <div class="data-card"><div class="data-value">34.1</div><div class="data-label">件 · 每万人高价值发明专利</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">⭐ 就业友好度评价</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐</div>
+              <div class="rating-label">就业机会</div>
+              <div class="rating-desc">经济体量有限，龙头岗位密度不敌一线</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐</div>
+              <div class="rating-label">薪酬天花板</div>
+              <div class="rating-desc">金融/互联网/新能源有一定高度，但整体不高</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职场规范</div>
+              <div class="rating-desc">特区城市，外企多，用工较规范</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐</div>
+              <div class="rating-label">职业培训</div>
+              <div class="rating-desc">龙头企业自带体系，公共资源一般</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">创业支持</div>
+              <div class="rating-desc">火炬高新区等平台政策优厚，融资环境较好</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part4">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 04</div>
+          <h2 class="section-title">交通教育医疗</h2>
+          <p class="section-desc">基础设施 · 公共服务 · 配套资源</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 交通网络</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">3条</div><div class="data-label">已建成地铁线路（1/2/3号线）</div></div>
+            <div class="data-card"><div class="data-value">120km/h</div><div class="data-label">4号线设计最高时速</div></div>
+            <div class="data-card"><div class="data-value">5座</div><div class="data-label">BRT与地铁换乘站</div></div>
+            <div class="data-card"><div class="data-value">第11</div><div class="data-label">港口连通性指数全球排名</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚄 综合交通枢纽</h3>
+          <table class="info-table">
+            <tr><th>枢纽</th><th>位置</th><th>意义</th></tr>
+            <tr><td>厦门站</td><td>岛内</td><td>岛内核心铁路枢纽</td></tr>
+            <tr><td>厦门北站</td><td>集美</td><td>高铁枢纽，4号线半小时直通翔安机场</td></tr>
+            <tr><td>翔安国际机场</td><td>翔安（建设中）</td><td>3号线机场段可直达，约1小时可达</td></tr>
+            <tr><td>BRT系统</td><td>全市</td><td>全国首条高架BRT，快捷便宜</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎓 教育资源</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1所</div><div class="data-label">985/211/双一流 · 厦门大学</div></div>
+            <div class="data-card"><div class="data-value">80</div><div class="data-label">厦门大学2025年QS世界排名</div></div>
+            <div class="data-card"><div class="data-value">5万+</div><div class="data-label">个/年 · 新增学位</div></div>
+            <div class="data-card"><div class="data-value">前列</div><div class="data-label">基础教育满意度全国领先</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏥 医疗资源</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">2,786</div><div class="data-label">个 · 各级各类医疗卫生机构</div></div>
+            <div class="data-card"><div class="data-value">25,220</div><div class="data-label">张 · 医疗机构实有床位</div></div>
+            <div class="data-card"><div class="data-value">4个</div><div class="data-label">国家区域医疗中心建设项目</div></div>
+            <div class="data-card"><div class="data-value">10+</div><div class="data-label">家 · 三甲医院</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 医疗提示</div>
+            <div class="highlight-content">复旦中山厦门医院、川大华西厦门医院等一批高水平三级医院已建成投用，实现每个区至少有一家高水平三级医院。4个国家区域医疗中心累计填补超200项区域医疗技术空白。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part5">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 05</div>
+          <h2 class="section-title">生活舒适度</h2>
+          <p class="section-desc">居住压力 · 城市性格 · 人文社交</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 居住压力 —— 核心矛盾</h3>
+          <div class="highlight-box">
+            <div class="highlight-title">⚠️ 房价收入比：约 21.1:1（全国第五）</div>
+            <div class="highlight-content">
+              <p>岛内房价：思明区约4.8万/㎡、湖里区约4.45万/㎡</p>
+              <p>岛外房价：集美2.8万/㎡、海沧2.4万/㎡、翔安2.2万/㎡、同安1.9万/㎡</p>
+              <p style="margin-top:12px;"><strong>购房建议：</strong></p>
+              <p>· 刚需首选：海沧、翔安、同安的地铁沿线（2-2.5万/㎡，200万内总价）</p>
+              <p>· 改善升级：岛内老小区小户型（4-5万/㎡，预算400万+）</p>
+              <p>· 租房过渡：合租1,500-2,500元/月，整租3,500-6,000元/月</p>
+            </div>
+          </div>
+          <table class="info-table">
+            <tr><th>区域</th><th>租金参考（元/月/㎡）</th><th>适合人群</th></tr>
+            <tr><td>思明区</td><td>约52.85</td><td>追求岛内便利与生活品质人群</td></tr>
+            <tr><td>湖里区</td><td>约47.82</td><td>职场通勤优先人群</td></tr>
+            <tr><td>集美区</td><td>约35.41</td><td>岛外职住平衡、预算有限</td></tr>
+            <tr><td>海沧区</td><td>约33.70</td><td>海沧生活区、近港</td></tr>
+            <tr><td>翔安区</td><td>约31.90</td><td>翔安南部新城、产业人群</td></tr>
+            <tr><td>同安区</td><td>约27.99</td><td>预算极度有限、通勤可接受</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 保障性住房</h3>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 "五年五折"租房补贴政策</div>
+            <div class="highlight-content">
+              <p>首次来厦就业（创业）的全日制本科及以上毕业生，在就业一年内可申请租房补贴：</p>
+              <p><strong>思明/湖里</strong>：每人每年8,000元</p>
+              <p><strong>集美/海沧</strong>：每人每年6,000元</p>
+              <p><strong>同安/翔安</strong>：每人每年5,000元</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 通勤现状</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">40-60</div><div class="data-label">分钟 · 跨岛通勤单程时间</div></div>
+            <div class="data-card"><div class="data-value">3条</div><div class="data-label">运营地铁线路 + 4号线在建</div></div>
+            <div class="data-card"><div class="data-value">全国首条</div><div class="data-label">高架BRT系统</div></div>
+            <div class="data-card"><div class="data-value">60%+</div><div class="data-label">岛外常住人口占比</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">☕ 城市"班味"浓度</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">💼</div>
+              <div class="life-title">厦门的班味</div>
+              <div class="life-content">沙坡尾的咖啡馆里有人在开会改PPT<br>软件园三期深夜灯火通明<br>环岛路跑步时不忘刷行业资讯<br>中山路的游客大军和岛上上班族同挤BRT</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌊</div>
+              <div class="life-title">反班味出口</div>
+              <div class="life-content">环岛路看日出/骑行<br>鼓浪屿发呆<br>八市吃海鲜<br>万石植物园+健康步道</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎭 城市"人设"：厦门是什么性格？</h3>
+          <table class="persona-table">
+            <tr><th>人设标签</th><th>描述</th></tr>
+            <tr><td><span class="persona-tag">花园城市</span></td><td>空气质量全国第2，全年优良率99.2%</td></tr>
+            <tr><td><span class="persona-tag">文艺青年</span></td><td>鼓浪屿、沙坡尾、独立书店，天生文艺感</td></tr>
+            <tr><td><span class="persona-tag">闽南温情</span></td><td>喝茶、吃海鲜、泡茶话仙，人情味浓</td></tr>
+            <tr><td><span class="persona-tag">台海前沿</span></td><td>与台湾隔海相望，两岸交流最前沿</td></tr>
+            <tr><td><span class="persona-tag">务实保守</span></td><td>规矩讲理、不冒进，做事有底线</td></tr>
+            <tr><td><span class="persona-tag">性价比撕裂</span></td><td>高颜值低薪资、高房价低收入</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌅 厦门专属独特活动</h3>
+          <div class="culture-grid">
+            <div class="culture-card">
+              <div class="culture-icon">🌅</div>
+              <div class="culture-name">环岛路看日出/骑行</div>
+              <div class="culture-data">全国最美</div>
+              <div class="culture-note">马拉松赛道</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏖️</div>
+              <div class="culture-name">鼓浪屿发呆</div>
+              <div class="culture-data">世界遗产</div>
+              <div class="culture-note">慢生活体验</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🍜</div>
+              <div class="culture-name">八市吃海鲜</div>
+              <div class="culture-data">深夜食堂</div>
+              <div class="culture-note">厦门人的日常</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">☕</div>
+              <div class="culture-name">沙坡尾咖啡探店</div>
+              <div class="culture-data">小镰仓</div>
+              <div class="culture-note">年轻人最爱</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏔️</div>
+              <div class="culture-name">万石植物园+健康步道</div>
+              <div class="culture-data">城市绿肺</div>
+              <div class="culture-note">空中走廊</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🐚</div>
+              <div class="culture-name">赶海挖花蛤</div>
+              <div class="culture-data">免费亲子</div>
+              <div class="culture-note">观音山海滩</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💳 消费特点</h3>
+          <div class="trend-grid">
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">☕</span>
+                <span class="trend-name">咖啡文化浓厚</span>
+              </div>
+              <div class="trend-desc">厦门咖啡馆密度全国前列，沙坡尾/西堤咖啡一条街已成地标</div>
+              <div class="trend-insight">咖啡是厦门人的社交语言</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🎭</span>
+                <span class="trend-name">体验型消费</span>
+              </div>
+              <div class="trend-desc">网红餐厅、咖啡馆、民宿、海景酒店消费活跃</div>
+              <div class="trend-insight">愿意为体验付费</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🍜</span>
+                <span class="trend-name">餐饮支出占比高</span>
+              </div>
+              <div class="trend-desc">海鲜、闽南菜、网红甜品成为日常支出</div>
+              <div class="trend-insight">吃在厦门不是虚名</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🏖️</span>
+                <span class="trend-name">旅游型消费</span>
+              </div>
+              <div class="trend-desc">文旅创意产业规模达2600亿元</div>
+              <div class="trend-insight">旅游城市基因深入骨髓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 社交氛围 — i人友好还是e人天堂？</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>🔵 i人友好度 ⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>海边/山上/咖啡厅，不社交也很舒服</li>
+                <li>鼓浪屿发呆、环岛路骑行，独处时光丰富</li>
+                <li>闽南茶文化适合安静社交</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>🔴 e人舒适度 ⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>圈子温暖但不如一线大，社交天花板相对较低</li>
+                <li>校友圈（厦大/集大）是最强的社交货币</li>
+                <li>台港澳及海外华侨社群丰富</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌈 文化包容度</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">生活方式多元</div>
+              <div class="rating-desc">闽南传统与国际范并存</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">外来人口包容</div>
+              <div class="rating-desc">不排外，融入需时间</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">宠物友好</div>
+              <div class="rating-desc">海边遛狗胜地，宠物咖啡馆遍布</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐</div>
+              <div class="rating-label">另类生活接受</div>
+              <div class="rating-desc">较一线保守，但好于多数二线</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">台港澳社群</div>
+              <div class="rating-desc">两岸交流频繁，台胞聚集度高</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part6">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 06</div>
+          <h2 class="section-title">发展潜力</h2>
+          <p class="section-desc">创新动能 · 厦漳泉一体化 · 2035规划</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 创新动能</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">3.5%+</div><div class="data-label">研发投入强度 · 远超全国平均</div></div>
+            <div class="data-card"><div class="data-value">4,735</div><div class="data-label">家 · 高新技术企业（较十三五翻番）</div></div>
+            <div class="data-card"><div class="data-value">千亿</div><div class="data-label">新能源产业产值突破</div></div>
+            <div class="data-card"><div class="data-value">TOP 10</div><div class="data-label">跻身人工智能十大城市</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌐 数字经济</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">TOP 10</div><div class="data-label">人工智能十大城市</div></div>
+            <div class="data-card"><div class="data-value">百强</div><div class="data-label">中国数字经济百强城市</div></div>
+            <div class="data-card"><div class="data-value">30%</div><div class="data-label">海洋生产总值占GDP比重</div></div>
+            <div class="data-card"><div class="data-value">300+</div><div class="data-label">项 · 创新实验室累计转化成果</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🔗 厦漳泉一体化</h3>
+          <table class="info-table">
+            <tr><th>项目</th><th>详情</th></tr>
+            <tr><td>厦漳泉都市圈</td><td>福建省核心都市圈，基础设施互联互通</td></tr>
+            <tr><td>跨城轨交</td><td>R1线（福厦漳城际轨道）规划中</td></tr>
+            <tr><td>产业协同</td><td>厦门研发+漳州泉州制造，分工明确</td></tr>
+            <tr><td>2小时直达</td><td>2035年实现2小时直达闽西南协同发展区</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏙️ 2035城市总体规划</h3>
+          <table class="info-table">
+            <tr><th>目标</th><th>详情</th></tr>
+            <tr><td>自由港特征</td><td>全面建成具有自由港特征的经济特区</td></tr>
+            <tr><td>高素质高颜值</td><td>现代化国际化城市，国际影响力和竞争力显著增强</td></tr>
+            <tr><td>人居环境</td><td>人居环境质量国际一流，生态花园城市特质更加凸显</td></tr>
+            <tr><td>空间格局</td><td>"一屏一湾十廊多组团"，凸显"一岛一湾"城镇空间结构</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌿 环境优势</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">99.2%</div><div class="data-label">空气质量优良率 · 全国第2</div></div>
+            <div class="data-card"><div class="data-value">17.4</div><div class="data-label">μg/m³ · PM₂.₅浓度</div></div>
+            <div class="data-card"><div class="data-value">203</div><div class="data-label">个城市公园</div></div>
+            <div class="data-card"><div class="data-value">第1</div><div class="data-label">城市综合信用指数全国第一</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part7">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 07</div>
+          <h2 class="section-title">定居指南</h2>
+          <p class="section-desc">落户政策 · 行动清单 · 真实场景</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📋 四大落户路径</h3>
+          <div class="path-grid">
+            <div class="path-card">
+              <div class="path-title">📍 岛外租房落户 <span class="path-time">⏱ 门槛最低</span></div>
+              <ul class="path-list">
+                <li>在集美/海沧/同安/翔安住房租赁备案满半年</li>
+                <li>社保缴纳满3个月</li>
+                <li>2025年新政，全面设立社区公共户口</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 人才引进落户</div>
+              <ul class="path-list">
+                <li>本科及以上学历+在厦稳定就业</li>
+                <li>最常用通道，含新引进人才生活补贴</li>
+                <li>重点产业方向补贴上浮30%</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 技能人才落户</div>
+              <ul class="path-list">
+                <li>持有高级工及以上职业资格证书</li>
+                <li>在厦稳定就业</li>
+                <li>技工院校毕业生友好</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 投资纳税落户</div>
+              <ul class="path-list">
+                <li>连续3年纳税累计达到一定额度</li>
+                <li>企业家/投资人通道</li>
+                <li>适合有创业基础的人群</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💰 厦门人才补贴政策</h3>
+          <table class="info-table">
+            <tr><th>类别</th><th>金额</th></tr>
+            <tr><td>博士新引进</td><td>8万元/人</td></tr>
+            <tr><td>硕士新引进</td><td>5万元/人</td></tr>
+            <tr><td>双一流/世界前200本科</td><td>3万元/人</td></tr>
+            <tr><td>其他应届本科生</td><td>1万元/人</td></tr>
+            <tr><td>重点产业方向</td><td>上浮30%</td></tr>
+            <tr><td>留学人员创业</td><td>20万元+30万元（达标追加）</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📝 定居厦门行动清单</h3>
+          <ol class="action-list">
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>职业定位</h4>
+                <p>优先厦门优势产业：新能源/电子信息/半导体/生物医药/海洋经济</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>区域选择</h4>
+                <p>预算300万以上选岛内老小区；预算200万以内选岛外地铁沿线</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>落户规划</h4>
+                <p>优先人才引进或岛外租房落户，岛外落户门槛最低，尽早办理</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>租房避坑</h4>
+                <p>正规合同+备案，岛外租房满半年即可申请落户</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>财务规划</h4>
+                <p>前3-5年积累为主，房价收入比超20倍，买房需充分准备</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>建立社交</h4>
+                <p>校友圈（厦大/集大）+ 行业圈子 + 兴趣社群，主动拓展</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌅 真实生活场景</h3>
+          <div class="quote-box">
+            <p class="quote-text"><em>在厦门，清晨的环岛路海风拂面，你会觉得生活真的很美好。但月底看银行卡余额，你又会觉得现实很骨感。BRT上挤满了岛外到岛内的通勤族，八市的海鲜香气和软件园的加班灯光交织在一起——这就是厦门，一座让你"想留却不敢留"的城市。</em></p>
+          </div>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚌</div>
+              <div class="life-title">通勤</div>
+              <div class="life-content">BRT/地铁跨海通勤，岛外到岛内的早高峰BRT人山人海</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍜</div>
+              <div class="life-title">早餐</div>
+              <div class="life-content">面线糊、花生汤、扁食<br>闽南早餐三件套</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🎉</div>
+              <div class="life-title">周末</div>
+              <div class="life-content">环岛路骑行 / 鼓浪屿 / 植物园 / 沙坡尾咖啡店</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌙</div>
+              <div class="life-title">夜宵</div>
+              <div class="life-content">八市海鲜大排档<br>人均100-300元，新鲜地道</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💬 真实用户自述</h3>
+          <div class="user-quote">
+            <div class="user-header">👩‍💻 月薪8K软件园白领</div>
+            <div class="user-content">税后7000，合租房租2000（集美），每天BRT往返岛内上班。空气好、城市美，但存钱太难。同事们最大的共识是：在厦门，靠死工资买岛内房几乎不可能。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">🎓 应届毕业生</div>
+            <div class="user-content">月薪6000，住人才公寓。厦门的气候和环境真的没话说，傍晚在海边散步是每天的治愈时刻。但落户后才发现，新政真心给力，至少有了留下来的盼头。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">👨‍💼 新能源行业从业者</div>
+            <div class="user-content">月薪18K，公司给的待遇在厦门属于上乘。看好厦门新能源产业发展，厦门时代、海辰储能都在扩张，行业前景不错。已经在翔安买了房，觉得厦门是"留得住"的城市。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💭 年轻人的期待与担忧</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>✅ 爱厦门的理由</h3>
+              <ul class="fit-list">
+                <li>🌊 <strong>空气质量全国第2</strong> — 蓝天天天可见</li>
+                <li>🌅 <strong>面朝大海</strong> — 春暖花开不是修辞是日常</li>
+                <li>🍜 <strong>闽南美食</strong> — 海鲜新鲜便宜</li>
+                <li>🌿 <strong>慢节奏生活</strong> — 幸福感不低</li>
+                <li>📋 <strong>落户政策友好</strong> — 人才补贴给力</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>❌ 焦虑厦门的理由</h3>
+              <ul class="fit-list">
+                <li>🏠 <strong>岛内房价赶上北上广</strong> — 薪资却只有二线水平</li>
+                <li>💸 <strong>买房需30年左右收入</strong> — 家庭不支援几乎无望</li>
+                <li>🏭 <strong>产业结构单一</strong> — 跳槽选择面窄</li>
+                <li>📈 <strong>职业天花板明显</strong> — 大厂管理岗机会少</li>
+                <li>🏝️ <strong>岛内最优但最贵</strong> — 岛外便宜但配套待完善</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="conclusion-box">
+          <h3 class="conclusion-title">🏆 最终结论：你适合厦门吗？</h3>
+          <div class="conclusion-text">
+            <p>✅ <strong>厦门适合：</strong>热爱大海、追求生活品质的人；有家庭积累/已购房的自由职业者、远程工作者；闽南籍回流族、情感上有根的"回家的人"；新能源/电子信息/半导体/海洋经济/生物医药从业者；退休养老、追求高品质晚年生活的人。</p>
+            <p>❌ <strong>厦门不适合：</strong>纯靠薪资买房的年轻人（房价收入比20倍+）；追求高薪天花板和丰富跳槽机会的野心家；不喜潮湿闷热气候的人；月薪低于8000且无家庭支援的群体。</p>
+            <p style="margin-top: 20px; font-style: italic; opacity: 0.9;">厦门是一座让你"想留却不敢留"的城市——爱它的颜值，却怕它的房价。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appendix-section">
+      <div class="container">
+        <h3 class="appendix-title">📋 附录 · 数据来源</h3>
+        <table class="source-table">
+          <tr><th>数据类型</th><th>来源</th></tr>
+          <tr><td>居民收入</td><td>厦门市统计局·2025年统计公报（2026年4月发布）</td></tr>
+          <tr><td>GDP数据</td><td>厦门市统计局·2025年GDP核算（2026年4月发布）</td></tr>
+          <tr><td>人口数据</td><td>厦门市统计局·2025年统计公报</td></tr>
+          <tr><td>房价数据</td><td>中国房价行情平台·2025年9月厦门房地产数据报告</td></tr>
+          <tr><td>产业数据</td><td>厦门市2025年及2026年政府工作报告</td></tr>
+          <tr><td>城市规划</td><td>《厦门市国土空间总体规划（2021—2035年）》</td></tr>
+          <tr><td>落户政策</td><td>厦门市人民政府·促进人口高质量发展若干措施（2025年11月）</td></tr>
+          <tr><td>人才政策</td><td>厦门市发改委/人社局官方文件</td></tr>
+          <tr><td>交通数据</td><td>厦门市交通运输局公示</td></tr>
+          <tr><td>医疗数据</td><td>厦门市卫健委/福建省卫健委评审通知</td></tr>
+          <tr><td>环境数据</td><td>厦门市生态环境局公开数据</td></tr>
+          <tr><td>薪资数据</td><td>BOSS直聘/智联招聘参考数据</td></tr>
+        </table>
+
+        <div class="disclaimer">
+          <div class="disclaimer-icon">⚠️</div>
+          <div class="disclaimer-text">
+            本报告为城市性格匹配测试付费增值服务（9.9元），仅供个人参考，不构成定居决策依据。<br>
+            报告内容基于公开数据整理，数据截止2026年4月。城市数据存在动态变化，建议读者以最新官方数据为准。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-section">
+      <div class="container">
+        <div class="download-card">
+          <div class="download-icon">📄</div>
+          <h3 class="download-title">下载完整PDF报告</h3>
+          <p class="download-desc">离线阅读 · 随时查阅 · 分享收藏</p>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="download-btn">
+            <span>📥</span>
+            <span>下载PDF报告</span>
+            <span class="download-hint">即将上线</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">💙 感谢阅读 · 祝你找到真正适合的城市 💙</p>
+      <p class="footer-sub">城市性格匹配测试 | 更多城市报告陆续上线</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    const CODE_STORAGE_KEY = 'xiamen_report_verified';
+    const CODE_EXPIRY_KEY = 'xiamen_report_expiry';
+    const SESSION_DURATION = 24 * 60 * 60 * 1000;
+
+    const codeOverlay = document.getElementById('codeOverlay');
+    const mainContent = document.getElementById('mainContent');
+    const codeInput = document.getElementById('codeInput');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+    const codeError = document.getElementById('codeError');
+
+    function isVerified() {
+      const verified = localStorage.getItem(CODE_STORAGE_KEY);
+      const expiry = localStorage.getItem(CODE_EXPIRY_KEY);
+      if (verified === 'true' && expiry && Date.now() < parseInt(expiry)) {
+        return true;
+      }
+      localStorage.removeItem(CODE_STORAGE_KEY);
+      localStorage.removeItem(CODE_EXPIRY_KEY);
+      return false;
+    }
+
+    function setVerified() {
+      localStorage.setItem(CODE_STORAGE_KEY, 'true');
+      localStorage.setItem(CODE_EXPIRY_KEY, (Date.now() + SESSION_DURATION).toString());
+    }
+
+    function showReport() {
+      codeOverlay.classList.add('hidden');
+      mainContent.classList.add('visible');
+      document.body.style.overflow = '';
+      initReport();
+    }
+
+    function showError(message) {
+      codeError.innerHTML = `<span>⚠️</span> ${message}`;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    function getCode() {
+      return codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    function clearCode() {
+      codeInput.value = '';
+      codeInput.focus();
+    }
+
+    async function validateCode(code) {
+      codeSubmitBtn.disabled = true;
+      codeSubmitBtn.innerHTML = '<div class="spinner"></div><span>验证中...</span>';
+      codeError.textContent = '';
+
+      try {
+        const response = await fetch(`${API_BASE}/validate-city-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cityKey: 'xiamen' })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.errors?.[0]?.msg || '验证失败');
+        }
+
+        setVerified();
+        showReport();
+      } catch (error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('ERR_FILE_NOT_FOUND') || error.name === 'TypeError') {
+          showError('网络连接失败，请通过服务器访问（http://localhost:3001）');
+        } else {
+          showError(error.message);
+        }
+        clearCode();
+      } finally {
+        codeSubmitBtn.disabled = false;
+        codeSubmitBtn.innerHTML = '<span>确认兑换</span>';
+      }
+    }
+
+    codeInput.addEventListener('input', (e) => {
+      const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      e.target.value = value;
+      codeError.textContent = '';
+
+      if (value.length === 8) {
+        validateCode(value);
+      }
+    });
+
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const code = getCode();
+        if (code.length === 8) {
+          validateCode(code);
+        } else {
+          showError('请输入完整的8位兑换码');
+        }
+      }
+    });
+
+    codeSubmitBtn.addEventListener('click', () => {
+      const code = getCode();
+      if (code.length !== 8) {
+        showError('请输入完整的8位兑换码');
+        return;
+      }
+      validateCode(code);
+    });
+
+    if (isVerified()) {
+      showReport();
+    } else {
+      document.body.style.overflow = 'hidden';
+      codeInput.focus();
+    }
+
+    function initReport() {
+      const dims = [
+        { name: '宜居环境', value: 95, color: '#38BDF8' },
+        { name: '美食烟火', value: 90, color: '#F97316' },
+        { name: '国际化', value: 85, color: '#8B5CF6' },
+        { name: '生活节奏', value: 80, color: '#EF4444' },
+        { name: '配套便利', value: 75, color: '#F59E0B' },
+        { name: '机遇收入', value: 70, color: '#10B981' },
+        { name: '安稳度', value: 65, color: '#A855F7' },
+        { name: '生活成本', value: 35, color: '#6B7280' }
+      ];
+
+      function drawRadar() {
+        const canvas = document.getElementById('radarCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+        const R = Math.min(W, H) / 2 - 60;
+        const n = dims.length;
+        const angleStep = (2 * Math.PI) / n;
+        const startAngle = -Math.PI / 2;
+
+        ctx.clearRect(0, 0, W, H);
+
+        for (let level = 1; level <= 5; level++) {
+          const r = (R / 5) * level;
+          ctx.beginPath();
+          for (let i = 0; i <= n; i++) {
+            const angle = startAngle + angleStep * (i % n);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < n; i++) {
+          const angle = startAngle + angleStep * i;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+          const dim = dims[i % n];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * (i % n);
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        gradient.addColorStop(0, 'rgba(8, 145, 178, 0.4)');
+        gradient.addColorStop(1, 'rgba(8, 145, 178, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.strokeStyle = '#22D3EE';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * i;
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, 2 * Math.PI);
+          ctx.fillStyle = dim.color;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.font = '14px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const angle = startAngle + angleStep * i;
+          const labelR = R + 35;
+          const x = cx + labelR * Math.cos(angle);
+          const y = cy + labelR * Math.sin(angle);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillText(dim.name, x, y - 8);
+          ctx.fillStyle = '#22D3EE';
+          ctx.font = 'bold 16px "Noto Sans SC"';
+          ctx.fillText(dim.value, x, y + 10);
+          ctx.font = '14px "Noto Sans SC"';
+        }
+      }
+
+      drawRadar();
+
+      const tocInner = document.querySelector('.toc-inner');
+      const tocItems = document.querySelectorAll('.toc-item');
+      let isClicking = false;
+      let clickTarget = null;
+      let lastActiveId = null;
+      let scrollTimeout = null;
+
+      function centerTocItem(item, immediate = false) {
+        if (!item || !tocInner) return;
+        const itemOffsetLeft = item.offsetLeft;
+        const innerWidth = tocInner.clientWidth;
+        const itemWidth = item.offsetWidth;
+        const targetScroll = itemOffsetLeft - (innerWidth / 2) + (itemWidth / 2);
+        tocInner.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: immediate ? 'auto' : 'smooth'
+        });
+      }
+
+      function setActiveItem(targetId) {
+        if (lastActiveId === targetId) return;
+        lastActiveId = targetId;
+        tocItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.target === targetId);
+        });
+      }
+
+      tocItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.dataset.target;
+          const target = document.getElementById(targetId);
+          if (target) {
+            isClicking = true;
+            clickTarget = targetId;
+            setActiveItem(targetId);
+            centerTocItem(item, true);
+
+            const tocHeight = document.querySelector('.toc')?.offsetHeight || 0;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - tocHeight - 20;
+
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+              isClicking = false;
+            }, 1000);
+          }
+        });
+      });
+
+      let observerCallback = (entries) => {
+        if (isClicking) return;
+
+        const visibleEntries = entries.filter(e => e.isIntersecting);
+        if (visibleEntries.length === 0) return;
+
+        visibleEntries.sort((a, b) => {
+          const rectA = a.boundingClientRect;
+          const rectB = b.boundingClientRect;
+          return Math.abs(rectA.top) - Math.abs(rectB.top);
+        });
+
+        const mostVisible = visibleEntries[0];
+        const tocTarget = mostVisible.target.id;
+
+        if (tocTarget && tocTarget !== lastActiveId) {
+          setActiveItem(tocTarget);
+          const activeItem = document.querySelector(`.toc-item[data-target="${tocTarget}"]`);
+          if (activeItem) {
+            centerTocItem(activeItem);
+          }
+        }
+
+        mostVisible.target.classList.add('visible');
+
+        const charts = mostVisible.target.querySelectorAll('.chart-fill');
+        charts.forEach(chart => {
+          const width = chart.dataset.width;
+          if (width && !chart.style.width) {
+            setTimeout(() => {
+              chart.style.width = width + '%';
+            }, 200);
+          }
+        });
+      };
+
+      const sections = document.querySelectorAll('.section');
+      const observer = new IntersectionObserver(observerCallback, {
+        threshold: [0, 0.1, 0.2, 0.3],
+        rootMargin: '-80px 0px -50% 0px'
+      });
+
+      sections.forEach(section => observer.observe(section));
+    }
+  </script>
+</body>
+</html>
