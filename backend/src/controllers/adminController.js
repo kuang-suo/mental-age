@@ -448,6 +448,24 @@ export async function updateCodeScope(id, allowedTestTypes) {
   });
 }
 
+export async function updateMonthlyCardLimit(id, useLimit) {
+  const code = await prisma.exchangeCode.findUnique({
+    where: { id }
+  });
+  if (!code) {
+    throw new Error('兑换码不存在');
+  }
+  if (code.codeType !== 'MONTHLY_CARD') {
+    throw new Error('仅月卡支持修改次数');
+  }
+  return prisma.exchangeCode.update({
+    where: { id },
+    data: {
+      useLimit: useLimit !== null && useLimit !== undefined && useLimit !== '' ? parseInt(useLimit) : null
+    }
+  });
+}
+
 export async function batchUpdateCodeScope(ids, allowedTestTypes) {
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
     throw new Error('请选择要修改的兑换码');

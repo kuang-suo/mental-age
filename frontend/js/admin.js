@@ -11,6 +11,7 @@ const TEST_TYPE_NAMES = {
   'avoidant': '回避型依恋',
   'city': '城市匹配',
   'anxious': '焦虑型依恋',
+  'love-depth': '恋爱深度解析',
   'city-report': '城市报告'
 };
 
@@ -252,7 +253,7 @@ async function loadCodes(page) {
   const status = document.getElementById('filterCodeStatus').value;
   const scope = document.getElementById('filterCodeScope').value;
 
-  let url = `/codes?page=${codesPage}&limit=20`;
+  let url = `/codes?page=${codesPage}&limit=100`;
   if (search) url += `&search=${encodeURIComponent(search)}`;
   if (codeType) url += `&codeType=${codeType}`;
   if (status) url += `&status=${status}`;
@@ -349,6 +350,18 @@ function closeEditScopeModal() {
   document.getElementById('editScopeModal').classList.remove('active');
 }
 
+function scopeSelectAll() {
+  document.getElementById('editScopeCheckboxes').querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = true;
+  });
+}
+
+function scopeInvertSelect() {
+  document.getElementById('editScopeCheckboxes').querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = !cb.checked;
+  });
+}
+
 async function saveCodeScope() {
   const codeIdStr = document.getElementById('editScopeCodeId').value;
   const allowedTestTypes = getSelectedTestTypes('editScopeCheckboxes');
@@ -406,6 +419,7 @@ async function loadResults(page) {
       else if (r.testType === 'disc') summary = `${rd.primaryType || '-'}型`;
       else if (r.testType === 'avoidant') summary = `${rd.attachmentType || '-'} (${rd.score || '-'}分)`;
       else if (r.testType === 'city') summary = `${(rd.topCity || {}).name || '-'} (${(rd.topCity || {}).matchPercent || '-'}%)`;
+      else if (r.testType === 'love-depth') summary = `${(rd.personality || {}).name || '-'} · ${(rd.personality || {}).nickname || '-'}`;
       else summary = JSON.stringify(rd).slice(0, 40);
 
       const typeName = TEST_TYPE_NAMES[r.testType] || r.testType;
@@ -557,7 +571,7 @@ async function loadMonthlyCards(page) {
         <td>${card.expiresAt ? new Date(card.expiresAt).toLocaleDateString('zh-CN') : '永久'}</td>
         <td><button class="btn-small" onclick="editCodeScope(${card.id}, ${JSON.stringify(card.allowedTestTypes || []).replace(/"/g, '&quot;')})" style="float:right;">改</button>${scopeStr}</td>
         <td>${limitText}</td>
-        <td>${card.useLimit ? card.useLimit + '次' : '不限'}</td>
+        <td><button class="btn-small" onclick="editMonthlyLimit(${card.id}, ${card.useLimit || 'null'})" style="float:right;">改</button>${card.useLimit ? card.useLimit + '次' : '不限'}</td>
         <td>${status}</td>
         <td>${testInfo}</td>
         <td>${new Date(card.createdAt).toLocaleString('zh-CN')}</td>
@@ -633,6 +647,8 @@ function getTestResultSummary(result) {
     return `依恋类型: ${rd.attachmentStyle || '-'}`;
   } else if (result.testType === 'disc') {
     return `DISC类型: ${rd.discType || '-'}`;
+  } else if (result.testType === 'love-depth') {
+    return `恋爱人格: ${(rd.personality || {}).name || '-'} · ${(rd.personality || {}).nickname || '-'}`;
   }
   return '-';
 }
@@ -780,6 +796,31 @@ async function addTestConfig() {
     loadTestConfigs();
   } catch (e) {
     alert('添加失败: ' + e.message);
+  }
+}
+
+function editMonthlyLimit(codeId, currentLimit) {
+  document.getElementById('editLimitCodeId').value = codeId;
+  document.getElementById('editLimitValue').value = currentLimit && currentLimit !== 'null' ? currentLimit : '';
+  document.getElementById('editLimitModal').classList.add('active');
+}
+
+function closeEditLimitModal() {
+  document.getElementById('editLimitModal').classList.remove('active');
+}
+
+async function saveMonthlyLimit() {
+  const codeId = document.getElementById('editLimitCodeId').value;
+  const useLimit = document.getElementById('editLimitValue').value;
+  try {
+    await apiFetch(`/monthly-cards/${codeId}/limit`, {
+      method: 'PUT',
+      body: JSON.stringify({ useLimit: useLimit ? parseInt(useLimit) : null })
+    });
+    closeEditLimitModal();
+    loadMonthlyCards();
+  } catch (e) {
+    alert('修改失败: ' + e.message);
   }
 }
 

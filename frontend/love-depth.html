@@ -1,0 +1,798 @@
+  <!--  情侣深度解析测试页 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>恋爱深度解析</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/html2canvas.min.js"></script>
+  <script src="js/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --ld-primary-color: #C2185B;
+      --ld-secondary-color: #FCE4EC;
+      --ld-accent-color: #F48FB1;
+      --ld-text-color: #5a5a5a;
+      --ld-light-bg: #FFF5F8;
+      --ld-border-radius: 32px;
+      --ld-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --ld-soft-shadow: 0 4px 12px rgba(194, 24, 91, 0.1);
+      --ld-gradient-bg: linear-gradient(145deg, #FFF5F8 0%, #FCE4EC 100%);
+      --ld-gradient-primary: linear-gradient(135deg, #E91E63, #C2185B);
+      --ld-gradient-secondary: linear-gradient(135deg, #FCE4EC, #F8BBD0);
+    }
+
+    .love-depth-test {
+      --primary-color: var(--ld-primary-color);
+      --secondary-color: var(--ld-secondary-color);
+      --accent-color: var(--ld-accent-color);
+      --text-color: var(--ld-text-color);
+      --light-bg: var(--ld-light-bg);
+      --border-radius: var(--ld-border-radius);
+      --shadow: var(--ld-shadow);
+      --soft-shadow: var(--ld-soft-shadow);
+      --gradient-bg: var(--ld-gradient-bg);
+      --gradient-primary: var(--ld-gradient-primary);
+      --gradient-secondary: var(--ld-gradient-secondary);
+    }
+
+    .love-depth-test .start-content {
+      padding: 64px 32px;
+    }
+
+    .author-info {
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    .author-info a {
+      color: var(--primary-color);
+    }
+
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 12px 4px;
+      border-radius: 16px;
+    }
+    .topbar .progress-bar {
+      width: 100%;
+      min-width: 240px;
+      margin-bottom: 0;
+    }
+    .progress-text {
+      color: #999;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .module-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 14px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(194, 24, 91, 0.15);
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .question-area {
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(194, 24, 91, 0.15);
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .question-sub {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .love-depth-test .option {
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      position: relative;
+      padding-left: 36px;
+    }
+    .love-depth-test .option::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .love-depth-test .option.selected::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .love-depth-test .option:hover {
+      background: var(--secondary-color);
+      border-color: transparent;
+      box-shadow: var(--soft-shadow);
+    }
+    .love-depth-test .option.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .likert-scale {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .likert-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .likert-option:hover {
+      background: var(--secondary-color);
+      box-shadow: var(--soft-shadow);
+    }
+    .likert-option.selected {
+      border-color: var(--primary-color);
+      background: var(--secondary-color);
+    }
+    .likert-option.selected .likert-dot {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+    .likert-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .likert-label {
+      font-size: 15px;
+      color: var(--text-color);
+    }
+    .likert-score {
+      margin-left: auto;
+      font-size: 12px;
+      color: #bbb;
+      font-weight: 600;
+    }
+
+    .actions-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .result-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .personality-hero {
+      text-align: center;
+      padding: 40px 25px;
+    }
+    .personality-hero-emoji {
+      font-size: 72px;
+      margin-bottom: 16px;
+    }
+    .personality-hero-kicker {
+      font-size: 12px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .personality-hero-name {
+      font-size: clamp(26px, 5vw, 42px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--primary-color);
+      font-weight: 800;
+    }
+    .personality-hero-nickname {
+      font-size: 20px;
+      color: var(--accent-color);
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    .personality-hero-oneliner {
+      margin-top: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-color);
+      line-height: 1.8;
+      font-style: italic;
+    }
+    .personality-keywords {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .personality-keyword {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 8px 16px;
+      background: var(--secondary-color);
+      border: 1px solid rgba(194, 24, 91, 0.15);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .core-traits {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .core-trait-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--light-bg);
+      border: 1px solid rgba(194, 24, 91, 0.08);
+    }
+    .core-trait-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .core-trait-text {
+      font-size: 14px;
+      color: var(--text-color);
+      line-height: 1.7;
+    }
+
+    .dim-bar-section {
+      display: grid;
+      gap: 14px;
+    }
+    .dim-bar-item {
+      background: white;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(194, 24, 91, 0.1);
+    }
+    .dim-bar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .dim-bar-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .dim-bar-score {
+      color: var(--primary-color);
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .dim-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .dim-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+
+    .insight-box {
+      background: var(--gradient-bg);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(194, 24, 91, 0.15);
+    }
+    .insight-box p {
+      margin: 8px 0;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #666;
+    }
+    .insight-box .highlight {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .insight-quote {
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-left: 4px solid var(--primary-color);
+      background: white;
+      border-radius: 0 12px 12px 0;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--primary-color);
+      font-weight: 600;
+      line-height: 1.8;
+    }
+
+    .radar-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    .radar-canvas-wrap canvas {
+      max-width: 100%;
+    }
+
+    .need-ranking {
+      display: grid;
+      gap: 10px;
+    }
+    .need-rank-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--light-bg);
+      border: 1px solid rgba(194, 24, 91, 0.08);
+    }
+    .need-rank-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .need-rank-num.rank-1 { background: linear-gradient(135deg, #E91E63, #C2185B); }
+    .need-rank-num.rank-2 { background: linear-gradient(135deg, #F48FB1, #E91E63); }
+    .need-rank-num.rank-3 { background: linear-gradient(135deg, #F8BBD0, #F48FB1); color: #C2185B; }
+    .need-rank-num.rank-4 { background: #e0e0e0; color: #999; }
+    .need-rank-num.rank-5 { background: #f0f0f0; color: #bbb; }
+    .need-rank-info {
+      flex: 1;
+    }
+    .need-rank-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .need-rank-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .need-rank-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s ease;
+    }
+    .need-rank-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-color);
+      white-space: nowrap;
+    }
+
+    .cycle-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 16px;
+      background: var(--light-bg);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .cycle-step {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid rgba(194, 24, 91, 0.15);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    .cycle-arrow {
+      color: var(--primary-color);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .breakthrough-box {
+      padding: 16px 20px;
+      border-left: 4px solid var(--primary-color);
+      background: white;
+      border-radius: 0 12px 12px 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .match-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .match-card {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(194, 24, 91, 0.15);
+      background: white;
+    }
+    .match-card.best {
+      border-color: #4CAF50;
+      background: linear-gradient(135deg, #f1f8f1, #ffffff);
+    }
+    .match-card.challenge {
+      border-color: #FF9800;
+      background: linear-gradient(135deg, #fff8f0, #ffffff);
+    }
+    .match-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .match-card-icon {
+      font-size: 24px;
+    }
+    .match-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    .match-card-subtitle {
+      font-size: 13px;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .match-card-reason {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .growth-map {
+      display: grid;
+      gap: 16px;
+    }
+    .growth-step {
+      padding: 18px;
+      border-radius: 16px;
+      background: var(--light-bg);
+      border: 1px solid rgba(194, 24, 91, 0.08);
+    }
+    .growth-step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .growth-step-content {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+    .growth-step-content ol {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+    .growth-step-content li {
+      margin-bottom: 6px;
+    }
+    .growth-quote {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-left: 3px solid var(--primary-color);
+      background: white;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--primary-color);
+      font-weight: 600;
+      line-height: 1.7;
+    }
+
+    .closing-box {
+      text-align: center;
+      padding: 32px 24px;
+      background: var(--gradient-primary);
+      border-radius: 20px;
+      color: white;
+    }
+    .closing-box p {
+      font-size: 16px;
+      line-height: 2;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .need-deep-list {
+      display: grid;
+      gap: 14px;
+    }
+    .need-deep-item {
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: var(--light-bg);
+      border: 1px solid rgba(194, 24, 91, 0.08);
+    }
+    .need-deep-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+    }
+    .need-deep-desc {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #666;
+    }
+    .match-card-detail {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #666;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+    }
+    .growth-practice-item {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid rgba(194, 24, 91, 0.08);
+    }
+    .growth-practice-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 6px;
+    }
+    .growth-practice-content {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .analysis-box h3, .dim-box h3, .note-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--secondary-color);
+      text-align: center;
+    }
+
+    .note-box p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 600px) {
+      .love-depth-test .start-content { padding: 40px 20px; }
+      .love-depth-test .start-content h1 { font-size: 32px; }
+      .cycle-flow { gap: 4px; }
+      .cycle-step { font-size: 12px; padding: 4px 8px; }
+    }
+  </style>
+</head>
+<body class="love-depth-test">
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <h2>输入兑换码</h2>
+      <p>请输入您的兑换码以开始测试，兑换码通用所有测试</p>
+      <input type="text" id="codeInput" class="input-field" placeholder="请输入8位兑换码" maxlength="8">
+      <div class="modal-buttons">
+        <button id="codeCancelBtn" class="btn btn-secondary">取消</button>
+        <button id="codeValidateBtn" class="btn btn-primary">验证</button>
+      </div>
+      <div id="codeError" class="error-message"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="intro" class="screen active">
+      <div class="start-content">
+        <div class="logo">💫</div>
+        <h1>恋爱深度解析</h1>
+        <p class="subtitle">24种恋爱人格 × 三维心理画像，发现你的爱之密码</p>
+        <div class="description">
+          <p>通过36道精心设计的心理测评，我们将帮助你深入了解：</p>
+          <ul>
+            <li>📎 你的依恋模式——焦虑度·回避度·安全感</li>
+            <li>💕 你的恋爱风格——六种风格雷达图</li>
+            <li>🎯 你的情感需求排序——五大需求优先级</li>
+            <li>🔄 你的关系循环模式与破局关键</li>
+            <li>👫 最佳匹配与挑战匹配分析</li>
+            <li>🗺️ 专属恋爱成长地图</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn btn-primary">开始测试</button>
+        <div class="author-info">
+          <span>理论基础：依恋理论 × 恋爱风格理论 × 情感需求层次</span>
+          <span>预计用时：5-8分钟 · 36题 · 24种复合人格</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-container">
+        <div class="topbar">
+          <div class="progress-bar"><div id="progressBar" class="progress-fill"></div></div>
+          <div class="progress-text" id="progressText">0 / 36</div>
+        </div>
+
+        <div id="questionArea" class="question-area">
+          <div id="moduleBadge" class="module-badge"></div>
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="questionSub" class="question-sub"></div>
+          <div id="optionsContainer" class="options"></div>
+        </div>
+
+        <div class="actions-bottom">
+          <button id="prevBtn" class="btn btn-secondary" style="display:none;">上一题</button>
+          <button id="nextBtn" class="btn btn-primary" style="display:none;">下一题</button>
+          <button id="submitTestBtn" class="btn btn-primary" style="display:none;">提交测试</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-container">
+        <div class="result-layout" id="resultLayout">
+          <div class="personality-hero result-module" id="personalityHero">
+            <div class="personality-hero-emoji">💫</div>
+            <div class="personality-hero-kicker">你的恋爱人格</div>
+            <div class="personality-hero-name" id="resultPersonalityName"></div>
+            <div class="personality-hero-nickname" id="resultNickname"></div>
+            <div class="personality-hero-oneliner" id="resultOneLiner"></div>
+            <div class="personality-keywords" id="resultKeywords"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">💎 核心特质</h3>
+            <div id="coreTraits" class="core-traits"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">📎 依恋维度深度解读</h3>
+            <div id="attachmentBars" class="dim-bar-section"></div>
+            <div id="attachmentDeep" class="insight-box" style="margin-top:16px;"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">💕 恋爱风格深度解读</h3>
+            <div class="radar-canvas-wrap">
+              <canvas id="radarCanvas" width="440" height="440"></canvas>
+            </div>
+            <div id="styleDeep" class="insight-box"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🎯 情感需求深度解读</h3>
+            <div id="needRanking" class="need-ranking"></div>
+            <div id="needsDeep" style="margin-top:16px;"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🔄 关系循环模式</h3>
+            <div id="cycleFlow" class="cycle-flow"></div>
+            <div id="cycleHealthyDetail" class="insight-box" style="margin-top:14px;"></div>
+            <div id="cycleStuckDetail" class="insight-box" style="margin-top:14px;"></div>
+            <div id="breakthrough" class="breakthrough-box" style="margin-top:14px;"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">👫 匹配分析</h3>
+            <div id="matchAnalysis" class="match-grid"></div>
+          </div>
+
+          <div class="result-module">
+            <h3 class="module-title">🗺️ 恋爱成长地图</h3>
+            <div id="growthMap" class="growth-map"></div>
+          </div>
+
+          <div class="result-module">
+            <div id="closingBox" class="closing-box"></div>
+          </div>
+
+          <div class="note-box result-module">
+            <h3 class="module-title">友情提示</h3>
+            <p>本测试基于依恋理论、恋爱风格理论和情感需求层次模型，结果仅供参考和自我探索，不构成专业心理诊断。如需专业帮助，请咨询心理咨询师。</p>
+          </div>
+        </div>
+
+        <div class="result-actions" style="width:100%; display:flex; justify-content:center; margin-top:24px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="saveResultBtn" class="btn btn-primary">保存结果图片</button>
+            <button class="btn btn-primary" onclick="window.location.href='home.html'">更多测试</button>
+          </div>
+        </div>
+
+        <div class="share-activity" id="shareActivity">
+          <h3 class="share-activity-title">🎁 晒单领大额劵0.1元可测试其它内容</h3>
+          <p class="share-activity-desc">晒单后免费获赠大额优惠券，可0.1元再测任意一个店铺内测试</p>
+          <img class="share-activity-flow" src="image/shaidan.png" alt="晒单流程" onclick="openImageModal(this)" title="点击放大查看">
+          <p class="share-activity-rule">活动规则以店铺内为准</p>
+        </div>
+      </div>
+
+      <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+        <div class="image-modal-content">
+          <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
+          <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/love-depth.js"></script>
+</body>
+</html>

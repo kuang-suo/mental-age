@@ -1,3 +1,4 @@
+  <!--  管理员后台登录页 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -209,6 +210,7 @@
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
             </div>
           </div>
@@ -267,6 +269,8 @@
               <option value="disc">DISC测试</option>
               <option value="avoidant">回避型依恋测试</option>
               <option value="city">性格匹配城市测试</option>
+              <option value="anxious">焦虑型依恋测试</option>
+              <option value="love-depth">恋爱深度解析</option>
             </select>
             <input type="date" id="filterStartDate" title="开始日期">
             <input type="date" id="filterEndDate" title="结束日期">
@@ -310,6 +314,7 @@
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
               <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
             </div>
           </div>
@@ -402,6 +407,10 @@
       <h3>修改使用范围</h3>
       <p style="color:#999;font-size:13px;margin-bottom:12px;">不选择任何测试则表示全部可用</p>
       <input type="hidden" id="editScopeCodeId">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="btn btn-sm btn-secondary" onclick="scopeSelectAll()">全选</button>
+        <button class="btn btn-sm btn-secondary" onclick="scopeInvertSelect()">反选</button>
+      </div>
       <div id="editScopeCheckboxes" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
@@ -411,11 +420,29 @@
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-primary" onclick="saveCodeScope()">保存</button>
         <button class="btn btn-secondary" onclick="closeEditScopeModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editLimitModal" class="modal-overlay" onclick="if(event.target===this)closeEditLimitModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeEditLimitModal()">&times;</button>
+      <h3>修改使用次数限制</h3>
+      <p style="color:#999;font-size:13px;margin-bottom:12px;">留空表示不限制次数</p>
+      <input type="hidden" id="editLimitCodeId">
+      <div class="form-group">
+        <label>使用次数上限</label>
+        <input type="number" id="editLimitValue" min="1" placeholder="不限">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveMonthlyLimit()">保存</button>
+        <button class="btn btn-secondary" onclick="closeEditLimitModal()">取消</button>
       </div>
     </div>
   </div>

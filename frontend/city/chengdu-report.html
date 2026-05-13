@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 成都城市深度调研报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --teal: #0D9488;
+      --teal-light: #99F6E4;
+      --teal-glow: rgba(13, 148, 136, 0.4);
+      --navy: #0F172A;
+      --navy-light: #1E3A5F;
+      --cream: #FDFBF7;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 50%, #0F172A 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .code-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .code-overlay::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .code-overlay::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .code-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .code-modal-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    .code-modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .code-modal-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .code-input-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .code-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      background: white;
+      color: var(--navy);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+    }
+
+    .code-input::placeholder {
+      color: #9CA3AF;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .code-input.error {
+      border-color: #EF4444;
+      animation: shake 0.4s ease;
+    }
+
+    .code-submit-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--teal) 0%, #065F46 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .code-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
+    }
+
+    .code-submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .code-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .code-submit-btn .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .code-error {
+      color: #DC2626;
+      font-size: 13px;
+      margin-top: 16px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .code-hint {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .code-hint a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .code-hint a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: none;
+    }
+
+    .main-content.visible {
+      display: block;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 50%, #0F172A 100%);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 300px;
+      opacity: 0.15;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: var(--teal-light);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 10vw, 96px);
+      font-weight: 700;
+      color: white;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--teal) 0%, #5EEAD4 50%, var(--teal) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .hero-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      font-weight: 300;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .content {
+      background: var(--cream);
+      position: relative;
+    }
+
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253, 251, 247, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 16px 0;
+    }
+
+    .toc-inner {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .toc-inner::-webkit-scrollbar { display: none; }
+
+    .toc-item {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .toc-item:hover, .toc-item.active {
+      background: #134E4A;
+      color: white;
+      border-color: #134E4A;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+    }
+
+    .section {
+      padding: 80px 0;
+      scroll-margin-top: 100px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-num {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--teal);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-light);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .radar-section {
+      background: linear-gradient(180deg, #0F172A 0%, #134E4A 100%);
+      padding: 80px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .radar-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .radar-canvas-wrap {
+      position: relative;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dim-item {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .dim-item:hover {
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .dim-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dim-info { flex: 1; }
+
+    .dim-name {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .dim-score {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .dim-score span {
+      color: var(--teal-light);
+    }
+
+    .quote-box {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+
+    .quote-box::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      color: var(--teal);
+      opacity: 0.1;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: 18px;
+      line-height: 2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-text strong {
+      color: var(--teal-light);
+      font-weight: 700;
+    }
+
+    .fit-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 48px 0;
+    }
+
+    .fit-card {
+      padding: 32px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fit-card.yes {
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 2px solid #10B981;
+    }
+
+    .fit-card.no {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+      border: 2px solid #EF4444;
+    }
+
+    .fit-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card.yes h3 { color: #059669; }
+    .fit-card.no h3 { color: #DC2626; }
+
+    .fit-list {
+      list-style: none;
+    }
+
+    .fit-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .fit-list li:last-child { border-bottom: none; }
+
+    .fit-list li strong { color: var(--navy); }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .data-card {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: white;
+      padding: 28px 20px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .data-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .data-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--teal);
+    }
+
+    .data-value {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--teal-light);
+      margin-bottom: 4px;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .chart-section {
+      margin: 32px 0;
+    }
+
+    .chart-item {
+      margin-bottom: 20px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chart-name {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .chart-value {
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .chart-bar {
+      height: 12px;
+      background: #E5E7EB;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.5s ease;
+    }
+
+    .salary-section {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .salary-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .salary-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.1);
+    }
+
+    .salary-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .salary-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .salary-dot {
+      width: 10px;
+      height: 10px;
+      background: #10B981;
+      border-radius: 50%;
+    }
+
+    .salary-type {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .salary-range {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-card {
+      background: white;
+      border: 1px solid var(--teal-light);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .expense-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .expense-title {
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expense-income {
+      font-size: 14px;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .expense-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .expense-tag {
+      padding: 4px 12px;
+      background: #F3F4F6;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .expense-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px dashed #E5E7EB;
+      font-size: 14px;
+    }
+
+    .expense-amount {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .expense-surplus {
+      color: #10B981;
+      font-weight: 700;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .path-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      border-left: 4px solid var(--teal);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .path-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .path-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .path-time {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .path-list {
+      list-style: none;
+    }
+
+    .path-list li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .path-list li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .rating-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 32px 0;
+    }
+
+    .rating-card {
+      background: white;
+      padding: 20px 12px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .rating-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .rating-stars {
+      color: var(--teal);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .rating-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .rating-desc {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .life-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .life-card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .life-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.1);
+    }
+
+    .life-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .life-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .life-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .user-quote {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .user-quote:hover {
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
+    }
+
+    .user-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .user-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 40px;
+      margin: 48px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conclusion-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+    }
+
+    .conclusion-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--teal-light);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .conclusion-text {
+      font-size: 16px;
+      line-height: 2;
+      position: relative;
+    }
+
+    .conclusion-text strong {
+      color: var(--teal-light);
+    }
+
+    .action-list {
+      counter-reset: action;
+      list-style: none;
+    }
+
+    .action-item {
+      counter-increment: action;
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .action-item:last-child { border-bottom: none; }
+
+    .action-num {
+      width: 40px;
+      height: 40px;
+      background: var(--teal);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .action-num::before {
+      content: counter(action);
+    }
+
+    .action-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .action-content p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .info-table th, .info-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .info-table th {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .info-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 50%, #99F6E4 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 0;
+      margin: 24px 0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(13, 148, 136, 0.15);
+      position: relative;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #14B8A6, #0D9488, #065F46);
+    }
+
+    .highlight-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #065F46;
+      padding: 20px 24px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      border-bottom: 1px dashed rgba(13, 148, 136, 0.3);
+    }
+
+    .highlight-content {
+      padding: 20px 24px;
+    }
+
+    .highlight-content p {
+      margin: 0;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #065F46;
+      line-height: 1.7;
+    }
+
+    .highlight-content p strong {
+      color: #065F46;
+      font-size: 15px;
+    }
+
+    .highlight-content p:first-child {
+      padding-top: 0;
+    }
+
+    .highlight-content p:last-child {
+      padding-bottom: 0;
+    }
+
+    .sub-section {
+      margin: 40px 0;
+    }
+
+    .sub-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .guide-section {
+      background: var(--cream);
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .guide-card {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .guide-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.1);
+    }
+
+    .guide-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .guide-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .guide-content {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .industry-tree {
+      background: linear-gradient(135deg, #134E4A 0%, #0F172A 100%);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      color: white;
+    }
+
+    .industry-tree-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--teal-light);
+      margin-bottom: 20px;
+    }
+
+    .industry-branch {
+      margin-bottom: 16px;
+      padding-left: 20px;
+      border-left: 2px solid var(--teal);
+    }
+
+    .industry-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--teal-light);
+      margin-bottom: 8px;
+    }
+
+    .industry-item {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .industry-item::before {
+      content: '├';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+    }
+
+    .industry-item:last-child::before {
+      content: '└';
+    }
+
+    .persona-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .persona-table th, .persona-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .persona-table th {
+      background: #134E4A;
+      color: white;
+      font-weight: 600;
+    }
+
+    .persona-table th:first-child {
+      border-radius: 12px 0 0 0;
+    }
+
+    .persona-table th:last-child {
+      border-radius: 0 12px 0 0;
+    }
+
+    .persona-table tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .persona-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--teal-light);
+      color: var(--navy);
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .trend-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .trend-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .trend-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .trend-icon {
+      font-size: 24px;
+    }
+
+    .trend-name {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .trend-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .trend-insight {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .culture-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .culture-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-4px);
+    }
+
+    .culture-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .culture-name {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .culture-data {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+
+    .culture-note {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .appendix-section {
+      background: #F8FAFC;
+      padding: 48px 0;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .appendix-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .source-table th, .source-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .source-table th {
+      background: #134E4A;
+      color: white;
+      font-weight: 600;
+    }
+
+    .source-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .disclaimer {
+      background: linear-gradient(135deg, #CCFBF1 0%, #99F6E4 100%);
+      border: 2px solid var(--teal);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .disclaimer-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .download-section {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      padding: 60px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-section::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      opacity: 0.5;
+    }
+
+    .download-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .download-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .download-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .download-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--teal) 0%, #065F46 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(13, 148, 136, 0.4);
+    }
+
+    .download-hint {
+      font-size: 13px;
+      font-weight: 400;
+      opacity: 0.8;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .footer {
+      background: var(--navy);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .footer-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 900px) {
+      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .trend-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { scroll-margin-top: 80px; }
+      .radar-container { grid-template-columns: 1fr; }
+      .fit-section { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      .path-grid { grid-template-columns: 1fr; }
+      .rating-grid { grid-template-columns: repeat(2, 1fr); }
+      .life-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .culture-grid { grid-template-columns: 1fr; }
+      .toc { display: none; }
+      .hero-title { font-size: 36px; }
+      .dim-grid { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="code-overlay" id="codeOverlay">
+    <div class="code-modal">
+      <div class="code-modal-icon">🐼</div>
+      <h2 class="code-modal-title">成都城市深度调研报告</h2>
+      <p class="code-modal-desc">请输入兑换码以查看完整报告内容<br>兑换码为8位字母数字组合</p>
+      <div class="code-input-wrapper">
+        <input type="text" class="code-input" id="codeInput" maxlength="8" placeholder="请输入8位兑换码" autocomplete="off">
+      </div>
+      <button class="code-submit-btn" id="codeSubmitBtn">
+        <span>确认兑换</span>
+      </button>
+      <div class="code-error" id="codeError"></div>
+      <div class="code-hint">
+        没有兑换码？<a href="https://xhslink.com/m/4nwD2BwUK2k">小红书购买链接</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <svg class="skyline" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#0D9488;stop-opacity:0.8" />
+          <stop offset="100%" style="stop-color:#0D9488;stop-opacity:0.2" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#skyGrad)" d="M0,300 L0,220 L60,220 L60,200 L100,200 L100,180 L140,180 L140,160 L180,160 L180,140 L220,140 L220,120 L260,120 L260,100 L300,100 L300,80 L340,80 L340,60 L380,60 L380,40 L420,40 L420,20 L460,20 L460,40 L500,40 L500,60 L540,60 L540,80 L580,80 L580,100 L620,100 L620,80 L660,80 L660,60 L700,60 L700,40 L740,40 L740,20 L780,20 L780,40 L820,40 L820,60 L860,60 L860,80 L900,80 L900,100 L940,100 L940,80 L980,80 L980,60 L1020,60 L1020,40 L1060,40 L1060,60 L1100,60 L1100,80 L1140,80 L1140,100 L1180,100 L1180,120 L1220,120 L1220,100 L1260,100 L1260,80 L1300,80 L1300,100 L1340,100 L1340,120 L1380,120 L1380,140 L1420,140 L1420,160 L1440,160 L1440,300 Z"/>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-badge">🐼 城市性格匹配测试 · 付费增值服务</div>
+      <h1 class="hero-title"><span>成都</span></h1>
+      <p class="hero-subtitle">2026 城市深度调研报告</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">📊 政府公报 / 统计年鉴 / 实时数据</div>
+        <div class="hero-meta-item">📅 截止 2026 年 4 月</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      向下滚动
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="container">
+      <div class="guide-grid">
+        <div class="guide-card">
+          <div class="guide-icon">📊</div>
+          <div class="guide-title">数据来源</div>
+          <div class="guide-content">成都市统计局公报、成都市政府官网、各区公示、实时数据平台</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">📅</div>
+          <div class="guide-title">数据时效</div>
+          <div class="guide-content">人口/经济数据：2025年统计公报<br>薪资/房价/租金：2025-2026年实时</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">👥</div>
+          <div class="guide-title">适用人群</div>
+          <div class="guide-content">已完成城市性格测试、结果含成都的用户；计划在成都定居/工作/求学的人群</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">💡</div>
+          <div class="guide-title">特别说明</div>
+          <div class="guide-content">本报告为付费增值服务（9.9元），仅供个人学习参考，不构成定居决策依据</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <nav class="toc">
+      <div class="container">
+        <div class="toc-inner">
+          <div class="toc-item active" data-target="part1">Part 1 · 城市性格画像</div>
+          <div class="toc-item" data-target="part2">Part 2 · 自然地理与人口</div>
+          <div class="toc-item" data-target="part3">Part 3 · 经济就业人才</div>
+          <div class="toc-item" data-target="part4">Part 4 · 交通教育医疗</div>
+          <div class="toc-item" data-target="part5">Part 5 · 生活舒适度</div>
+          <div class="toc-item" data-target="part6">Part 6 · 发展潜力</div>
+          <div class="toc-item" data-target="part7">Part 7 · 定居指南</div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="radar-section" id="part1">
+      <div class="container">
+        <div class="section-header" style="color: white;">
+          <div class="section-num">PART 01</div>
+          <h2 class="section-title" style="color: white;">城市性格画像</h2>
+          <p class="section-desc" style="color: rgba(255,255,255,0.7);">综合评分 · 适合/不适合的人</p>
+        </div>
+        <div class="radar-container">
+          <div class="radar-canvas-wrap">
+            <canvas id="radarCanvas" width="450" height="450"></canvas>
+          </div>
+          <div class="dim-grid">
+            <div class="dim-item"><div class="dim-dot" style="background:#F97316"></div><div class="dim-info"><div class="dim-name">生活烟火</div><div class="dim-score"><span>99</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#F59E0B"></div><div class="dim-info"><div class="dim-name">文化底蕴</div><div class="dim-score"><span>92</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#38BDF8"></div><div class="dim-info"><div class="dim-name">宜居环境</div><div class="dim-score"><span>80</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#10B981"></div><div class="dim-info"><div class="dim-name">配套便利</div><div class="dim-score"><span>80</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#8B5CF6"></div><div class="dim-info"><div class="dim-name">机遇收入</div><div class="dim-score"><span>78</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#3B82F6"></div><div class="dim-info"><div class="dim-name">国际化</div><div class="dim-score"><span>72</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#EF4444"></div><div class="dim-info"><div class="dim-name">生活节奏</div><div class="dim-score"><span>62</span> / 100</div></div></div>
+            <div class="dim-item"><div class="dim-dot" style="background:#6B7280"></div><div class="dim-info"><div class="dim-name">生活成本</div><div class="dim-score"><span>48</span> / 100</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="quote-box">
+        <p class="quote-text">成都，一座让奋斗者和生活家都能找到归宿的城市。一面是13条千亿级产业链、超1.4万家高新企业的科创引擎，一面是人民公园喝茶掏耳、抚琴夜市撸串的烟火人间。它不是全国薪资最高的城市，但套均总价160万、连续7年蝉联"中国最佳引才城市"，让它成为年轻人用更低成本换取体面生活的最佳选择之一。如果你的信条是<strong>"生活需要奋斗，但奋斗是为了更好生活"</strong>——成都可能就是答案。</p>
+      </div>
+
+      <div class="fit-section">
+        <div class="fit-card yes">
+          <h3>✅ 这 5 类人适合成都</h3>
+          <ul class="fit-list">
+            <li><strong>在意生活性价比的技术人才</strong> — AI、芯片、新能源从业者，薪资虽不如京沪但有更多可支配收入，吃得香、住得起</li>
+            <li><strong>热爱户外与自然的人</strong> — 开车1小时进山徒步滑雪，周末绿道骑行、公园露营，"雪山下的公园城市"触手可及</li>
+            <li><strong>美食驱动型人格</strong> — 火锅串串钵钵鸡、抚琴夜市2.0版——从5元的小吃摊到黑珍珠，成都就是一座长在舌尖上的城市</li>
+            <li><strong>数字经济/游戏/文娱从业者</strong> — 腾讯天美、鹰角网络以及密集的MCN机构，产业链完整，全国文娱人才高地之一</li>
+            <li><strong>寻找工作与生活平衡的"中间代"</strong> — 不想996到秃头，也不甘心彻底躺平，成都提供了一种体面的"中间态"</li>
+          </ul>
+        </div>
+        <div class="fit-card no">
+          <h3>❌ 这 5 类人不适合成都</h3>
+          <ul class="fit-list">
+            <li><strong>单纯追求薪酬天花板的野心家</strong> — 月薪中位数约7200元，多数岗位薪资与京沪深仍有30-50%差距</li>
+            <li><strong>对快节奏和效率有强迫症的人</strong> — "慢生活"的另一面是部分行业效率偏低，急性子的人可能抓狂</li>
+            <li><strong>讨厌阴天的人</strong> — 成都日照时数全国倒数，冬季多阴天和小雨，"蜀犬吠日"不是传说</li>
+            <li><strong>顶尖金融/咨询业从业者</strong> — 外资投行、顶级咨询公司总部集中于京沪深，成都的高端金融基建仍有差距</li>
+            <li><strong>有严重花粉/潮湿过敏者</strong> — 盆地地形冬季湿度大、梅雨季后紧随花粉季，过敏体质者需要注意</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="highlight-title">⚠️ 特别说明</div>
+        <div class="highlight-content">成都"5+2"主城区（锦江/青羊/武侯/成华/金牛+高新/天府新区）与二三圈层（双流/郫都/温江/龙泉驿/新都/简阳等）在产业、配套和房价上差异显著。高新区均价约2.5万/㎡，而三圈层的青白江仅约0.8-1.0万/㎡，同城差价可达3倍。</div>
+      </div>
+    </div>
+
+    <div class="section" id="part2">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 02</div>
+          <h2 class="section-title">自然地理与人口</h2>
+          <p class="section-desc">地理气候 · 四季体验 · 人口结构</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌍 地理与气候基础数据</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">14,335</div><div class="data-label">km² · 幅员面积</div></div>
+            <div class="data-card"><div class="data-value">16℃</div><div class="data-label">年均温 · 亚热带湿润季风</div></div>
+            <div class="data-card"><div class="data-value">40%</div><div class="data-label">平原占比 · 成都平原腹地</div></div>
+            <div class="data-card"><div class="data-value">295天</div><div class="data-label">空气质量优良天数</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌸 成都四季真实体验</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌸</div>
+              <div class="life-title">春季 3-5月</div>
+              <div class="life-content">油菜花和樱花盛放，公园茶馆最舒适的季节，但短暂且早晚温差大<br>⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🔥</div>
+              <div class="life-title">夏季 6-8月</div>
+              <div class="life-content">闷热潮湿，高温+高湿"桑拿天"，空调必备，偶有暴雨内涝<br>⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🍂</div>
+              <div class="life-title">秋季 9-11月</div>
+              <div class="life-content">秋高气爽、银杏满城金黄，是最适合户外和拍雪山的季节<br>⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">☁️</div>
+              <div class="life-title">冬季 12-2月</div>
+              <div class="life-content">湿冷入骨，日照稀少，阴云低垂，多数建筑无集中供暖<br>⭐⭐</div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 成都气候的真实体感</div>
+            <div class="highlight-content">夏天是"汗蒸房"，冬天是"冰窖"，春天是"限量版"，秋天是"顶配"——这也是为什么成都人最爱扎堆出太阳。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 人口结构深度分析</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">2,153.5万</div><div class="data-label">常住人口（2025年末）</div></div>
+            <div class="data-card"><div class="data-value">81.46%</div><div class="data-label">常住人口城镇化率</div></div>
+            <div class="data-card"><div class="data-value">21.97%</div><div class="data-label">户籍60岁以上占比 · 中度老龄化</div></div>
+            <div class="data-card"><div class="data-value">7年</div><div class="data-label">连续蝉联"中国最佳引才城市"</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>维度</th><th>现状</th><th>影响</th></tr>
+            <tr><td>中心城市虹吸效应</td><td>"5+2"主城区+双流区人口高度密集，双流区以279万人居全市第一</td><td>医疗、教育资源集中，但也带来了主城区通勤压力</td></tr>
+            <tr><td>中度老龄化</td><td>每5个户籍人口中就有1个超过60岁</td><td>养老、医疗公共服务持续承压，银发经济兴起</td></tr>
+            <tr><td>年轻人净流入</td><td>连续7年"中国最佳引才城市"，每年可提供20万左右大学毕业生</td><td>为老城注入活力，新兴产业后备人才充沛</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part3">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 03</div>
+          <h2 class="section-title">经济就业人才</h2>
+          <p class="section-desc">经济规模 · 产业结构 · 薪资段位 · 人才生态</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💰 经济规模 —— 全国第7</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">24,763.6</div><div class="data-label">亿元 · GDP（2025年）全国第7</div></div>
+            <div class="data-card"><div class="data-value">115,155</div><div class="data-label">元 · 人均GDP（约1.6万美元）</div></div>
+            <div class="data-card"><div class="data-value">5.8%</div><div class="data-label">GDP增速 · 高基数稳健增长</div></div>
+            <div class="data-card"><div class="data-value">50.6%</div><div class="data-label">民营经济占比 · 增长6.2%</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💵 居民收入</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">54,363</div><div class="data-label">元/年 · 全体居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">59,449</div><div class="data-label">元/年 · 城镇居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">33,779</div><div class="data-label">元/年 · 农村居民人均可支配收入</div></div>
+            <div class="data-card"><div class="data-value">1.76:1</div><div class="data-label">城乡居民收入比 · 持续收窄</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 关键对比</div>
+            <div class="highlight-content">成都居民人均可支配收入54,363元/年，显著低于上海（96,842元/年）、北京（89,090元/年）和杭州（80,017元/年），但考虑房价仅为上述城市的1/3至1/2，实际可支配购买力对工薪阶层友好度更高。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏭 产业结构总览</h3>
+          <div class="industry-tree">
+            <div class="industry-tree-title">13条千亿级产业链已经成形</div>
+            <div class="industry-branch">
+              <div class="industry-main">第三产业占比 69.9%（数字经济为引擎）</div>
+              <div class="industry-item">电子信息：万亿级支柱产业，英特尔/华为/京东方等链条完整</div>
+              <div class="industry-item">信息服务与软件：腾讯天美、阿里成都、字节跳动西南总部等汇聚</div>
+              <div class="industry-item">游戏/文娱/数字内容：鹰角网络等代表，中国游戏产业重镇之一</div>
+              <div class="industry-item">金融商务与现代物流：西部金融中心核心承载区</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">第二产业占比 27.9%</div>
+              <div class="industry-item">装备制造：第二个万亿级产业集群，汽车产量跃居全国第11位</div>
+              <div class="industry-item">集成电路：国家集成电路重大生产力布局城市，芯片设计新锐涌现</div>
+              <div class="industry-item">新能源汽车：2025年产量暴增181.0%至23.3万辆</div>
+              <div class="industry-item">航空航天：火箭总装等薄弱环节已补强</div>
+              <div class="industry-item">绿色食品与生物医药：传统优势产业稳健增长</div>
+            </div>
+            <div class="industry-branch">
+              <div class="industry-main">第一产业占比 2.2%</div>
+              <div class="industry-item">现代农业与乡村振兴：乡村区域占全市面积90.6%，特色农产品电商兴起</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 高技术产品产量增速 TOP 3</h3>
+          <div class="chart-section">
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">锂离子电池</span><span class="chart-value">+109.8%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="100" style="background: linear-gradient(90deg, #14B8A6, #0D9488);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">智能电视</span><span class="chart-value">+97.4%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="89" style="background: linear-gradient(90deg, #3B82F6, #2563EB);"></div></div>
+            </div>
+            <div class="chart-item">
+              <div class="chart-header"><span class="chart-name">新能源汽车</span><span class="chart-value">+181.0%</span></div>
+              <div class="chart-bar"><div class="chart-fill" data-width="65" style="background: linear-gradient(90deg, #8B5CF6, #7C3AED);"></div></div>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 核心结论</div>
+            <div class="highlight-content">电子信息、装备制造2个产业集群规模已突破万亿级，人工智能近3年平均增速30%以上。2025年全市战略性新兴产业和高技术制造业保持两位数高增长。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💼 成都主要薪资段位</h3>
+          <table class="info-table">
+            <tr><th>岗位类型</th><th>薪资区间</th><th>评价</th></tr>
+            <tr><td>AI/集成电路/新能源汽车核心</td><td>18K-40K</td><td>🟢🟢🟢🟢 优秀，部分芯片岗年薪超50万</td></tr>
+            <tr><td>互联网/游戏/数字内容</td><td>12K-28K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>金融/商务/现代物流</td><td>10K-22K</td><td>🟢🟢🟢 良好</td></tr>
+            <tr><td>传统制造/工程</td><td>7K-15K</td><td>🟢🟢 一般</td></tr>
+            <tr><td>传统服务/零售/餐饮</td><td>4K-8K</td><td>🟢 起步</td></tr>
+            <tr><td>应届生（本科）</td><td>约5,800元/月起</td><td>🟢 起步，核心工科岗可达12K-20K</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">📌 核心认知</div>
+            <div class="highlight-content">成都绝对薪资低于京沪深约30-40%，但套均房价（160万）远低一线，对于能进入AI/芯片/新能源汽车等核心赛道的技术岗而言，可支配收入性价比处于全国第一梯队。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📊 三类人群真实月度开支</h3>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🎓 应届生（普通行业）</div>
+              <div class="expense-income">税后 4,800-5,500 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租1,800（合租高新区）</span>
+              <span class="expense-tag">餐饮1,500</span>
+              <span class="expense-tag">交通300</span>
+              <span class="expense-tag">社交500</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">4,100 元</span></span>
+              <span>结余：<span class="expense-surplus">约 700-1,400 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">👨‍💻 3-5年工程师</div>
+              <div class="expense-income">税后 10,000-14,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租2,500（整租近郊）</span>
+              <span class="expense-tag">餐饮2,000</span>
+              <span class="expense-tag">交通300</span>
+              <span class="expense-tag">社交800</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">5,600 元</span></span>
+              <span>结余：<span class="expense-surplus">约 4,400-8,400 元</span></span>
+            </div>
+          </div>
+          <div class="expense-card">
+            <div class="expense-header">
+              <div class="expense-title">🧠 芯片/AI中层</div>
+              <div class="expense-income">税后 18,000-25,000 元</div>
+            </div>
+            <div class="expense-items">
+              <span class="expense-tag">房租4,500（整租高新/天府）</span>
+              <span class="expense-tag">餐饮3,000</span>
+              <span class="expense-tag">社交1,500</span>
+            </div>
+            <div class="expense-total">
+              <span>月支出：<span class="expense-amount">9,000 元</span></span>
+              <span>结余：<span class="expense-surplus">约 9,000-16,000 元</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏆 人才吸引力 —— 连续7年全国最佳</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">685万</div><div class="data-label">人才总量 · 全国城市第4位</div></div>
+            <div class="data-card"><div class="data-value">1.4万+</div><div class="data-label">家 · 高新技术企业</div></div>
+            <div class="data-card"><div class="data-value">920.89亿</div><div class="data-label">元 · 全社会R&D投入</div></div>
+            <div class="data-card"><div class="data-value">第24位</div><div class="data-label">全球创新指数排名</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">⭐ 就业友好度评价</h3>
+          <div class="rating-grid">
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">就业机会总量</div>
+              <div class="rating-desc">13条千亿级产业链成形</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">薪酬天花板</div>
+              <div class="rating-desc">核心赛道年薪超50万</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职场规范度</div>
+              <div class="rating-desc">头部企业五险一金齐全</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">职业培训体系</div>
+              <div class="rating-desc">龙头企业与市属机构互补</div>
+            </div>
+            <div class="rating-card">
+              <div class="rating-stars">⭐⭐⭐⭐</div>
+              <div class="rating-label">创业支持</div>
+              <div class="rating-desc">"科创贷"+产业基金+孵化器</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part4">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 04</div>
+          <h2 class="section-title">交通教育医疗</h2>
+          <p class="section-desc">基础设施 · 公共服务 · 配套资源</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚇 交通网络 —— 全国第4的轨交密度</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">672km</div><div class="data-label">地铁/轨交运营里程 · 全国第4</div></div>
+            <div class="data-card"><div class="data-value">820km</div><div class="data-label">2026年底规划里程</div></div>
+            <div class="data-card"><div class="data-value">双4F</div><div class="data-label">双流+天府国际机场</div></div>
+            <div class="data-card"><div class="data-value">50min</div><div class="data-label">成渝中线建成后直达时间</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎓 教育资源 —— 西部高等教育最强极</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">7所</div><div class="data-label">双一流高校</div></div>
+            <div class="data-card"><div class="data-value">65所</div><div class="data-label">高校总数（本科+专科）</div></div>
+            <div class="data-card"><div class="data-value">125所</div><div class="data-label">中等职业院校</div></div>
+            <div class="data-card"><div class="data-value">20万</div><div class="data-label">年大学毕业生供给</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 理性看待</div>
+            <div class="highlight-content">成都高等教育在中西部首屈一指，但相比北京（8所985）和上海（6所985），顶尖学科覆盖度和985/211总量仍有差距。其中成都是全国少数拥有"华西"这一全国排名前三的顶级医学集群的城市，这是京沪之外绝大多数城市不具备的医疗后盾。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏥 医疗资源 —— 西部医疗中心</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">70家</div><div class="data-label">三甲医院（2025年末）</div></div>
+            <div class="data-card"><div class="data-value">24.78万</div><div class="data-label">卫生技术人员</div></div>
+            <div class="data-card"><div class="data-value">21家</div><div class="data-label">三甲中医医院 · 副省级城市首位</div></div>
+            <div class="data-card"><div class="data-value">前3</div><div class="data-label">华西医院全国综合排名</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 核心优势</div>
+            <div class="highlight-content">华西医院（全国综合排名前3）、华西口腔（全球知名）、省人民医院——成都是全国少数拥有顶级医学集群的城市，医疗资源西部第一。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part5">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 05</div>
+          <h2 class="section-title">生活舒适度</h2>
+          <p class="section-desc">居住压力 · 城市性格 · 人文社交</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏠 居住压力 —— 新一线"性价比天花板"</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">1.46万</div><div class="data-label">元/㎡ · 二手房挂牌均价</div></div>
+            <div class="data-card"><div class="data-value">160万</div><div class="data-label">元 · 平均总价/套</div></div>
+            <div class="data-card"><div class="data-value">34</div><div class="data-label">售租比（远低于北上深杭50-61）</div></div>
+            <div class="data-card"><div class="data-value">50万</div><div class="data-label">元起 · 近郊首次置业首付</div></div>
+          </div>
+          <table class="info-table">
+            <tr><th>区域</th><th>租金参考（元/月）</th><th>适合人群</th></tr>
+            <tr><td>高新区/天府新区</td><td>1,800-2,800（单间合租）</td><td>科技从业者、创业群体</td></tr>
+            <tr><td>锦江/武侯主城</td><td>2,000-3,500（整租单间）</td><td>追求主城生活便利度的人</td></tr>
+            <tr><td>成华/金牛/双流近郊</td><td>1,500-2,500</td><td>预算有限的应届生和通勤族</td></tr>
+            <tr><td>二三圈层（郫都/温江/龙泉驿）</td><td>800-1,800</td><td>只要通勤可接受，月节省很可观</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚲 通勤现状</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🚇</div>
+              <div class="life-title">典型通勤模式</div>
+              <div class="life-content">高新区（上班）→双流/温江（居住），地铁单程约30-50分钟。换乘大站：天府广场、火车南站、西博城。</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🚄</div>
+              <div class="life-title">跨城通勤未来</div>
+              <div class="life-content">S5线（2026年试运行）东坡区→成都30分钟，成德S11线也在推进中，都市圈通勤一体化加速。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">☕ 城市"班味"浓度</h3>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🍵</div>
+              <div class="life-title">成都的班味</div>
+              <div class="life-content">天府软件园凌晨依然热闹，芯片工程师的格子衫与创意市集的设计师擦肩而过，加班文化与文艺气息并行<br>天府新区写字楼里的融资对谈，"搞钱"氛围不输一线<br>成都的班味 = 白天拼脑力 + 晚上拼美食<br>任何高压，都能被一顿火锅消解。如果不能——那就两顿。</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌿</div>
+              <div class="life-title">反班味出口</div>
+              <div class="life-content">人民公园一杯盖碗茶<br>锦江夜游<br>兴隆湖的落日骑行<br>1.15万公里绿道穿城而过</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎭 城市"人设"：成都是什么性格？</h3>
+          <table class="persona-table">
+            <tr><th>人设标签</th><th>描述</th></tr>
+            <tr><td><span class="persona-tag">烟火之都</span></td><td>夜市"火"力十足、烧烤店凌晨还在排长队，生活烟火气全国第一</td></tr>
+            <tr><td><span class="persona-tag">雪山下的公园城市</span></td><td>推窗可见雪山（81天/年），蓝绿交织的生态底色</td></tr>
+            <tr><td><span class="persona-tag">慢生活的代名词</span></td><td>茶馆里的长嘴壶、麻将声、人民公园相亲角——松弛是一种生产力</td></tr>
+            <tr><td><span class="persona-tag">熊猫之乡</span></td><td>大熊猫繁育研究基地，城市的全球文化符号</td></tr>
+            <tr><td><span class="persona-tag">西部"搞钱"高地</span></td><td>AI、芯片、新能源汽车赛道西部第一极，新质生产力人才集聚地</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🎯 成都专属独特活动</h3>
+          <div class="culture-grid">
+            <div class="culture-card">
+              <div class="culture-icon">🐼</div>
+              <div class="culture-name">大熊猫基地</div>
+              <div class="culture-data">花花和萌妹</div>
+              <div class="culture-note">成都全球文化IP</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🫖</div>
+              <div class="culture-name">人民公园鹤鸣茶馆</div>
+              <div class="culture-data">9-15元</div>
+              <div class="culture-note">盖碗茶 · 本土社交最高仪式感</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🍜</div>
+              <div class="culture-name">抚琴夜市2.0版</div>
+              <div class="culture-data">昼夜双态</div>
+              <div class="culture-note">2026年全新升级沉浸式川味</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🚲</div>
+              <div class="culture-name">锦城湖-桂溪骑行</div>
+              <div class="culture-data">1.15万km</div>
+              <div class="culture-note">绿道如穿行在画中</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏔️</div>
+              <div class="culture-name">龙泉山观雪山</div>
+              <div class="culture-data">81天/年</div>
+              <div class="culture-note">窗含西岭千秋雪</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🎶</div>
+              <div class="culture-name">东郊记忆音乐公园</div>
+              <div class="culture-data">Livehouse</div>
+              <div class="culture-note">老工业遗产变身文艺地标</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🌃</div>
+              <div class="culture-name">夜游锦江</div>
+              <div class="culture-data">灯火迷人</div>
+              <div class="culture-note">成都人的夜浪漫</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">🏕️</div>
+              <div class="culture-name">1小时进山</div>
+              <div class="culture-data">都江堰/青城山</div>
+              <div class="culture-note">户外天堂触手可及</div>
+            </div>
+            <div class="culture-card">
+              <div class="culture-icon">⛷️</div>
+              <div class="culture-name">西岭雪山</div>
+              <div class="culture-data">滑雪徒步</div>
+              <div class="culture-note">南方人的雪上乐园</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">👥 社交氛围 — i人友好还是e人天堂？</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>🔵 i人友好度 ⭐⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>一个人在茶馆发呆、在兴隆湖边露营，完全不觉得孤单</li>
+                <li>1.15万公里绿道，独处即是享受</li>
+                <li>成都的慢节奏天然适合i人充电</li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>🔴 e人舒适度 ⭐⭐⭐⭐⭐</h3>
+              <ul class="fit-list">
+                <li>火锅局、户外群、音乐节、市集——每晚都有社交的理由</li>
+                <li>校友圈稳固：川大校友遍布全城、电子科大系在芯片/IT界盘根错节</li>
+                <li>"蓉漂"圈急速膨胀：近40万年轻人年均涌入，社群活跃度极高</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌶️ 社交特点</h3>
+          <div class="trend-grid">
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🍲</span>
+                <span class="trend-name">火锅社交</span>
+              </div>
+              <div class="trend-desc">火锅是最有效的社交催化剂，一顿火锅解决不了的问题就两顿</div>
+              <div class="trend-insight">从5元小吃摊到黑珍珠餐厅全覆盖</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🏃</span>
+                <span class="trend-name">户外运动社交</span>
+              </div>
+              <div class="trend-desc">徒步群、骑行群、登山群——户外运动是新成都人建立链接的方式</div>
+              <div class="trend-insight">1小时进山，青城山/都江堰/西岭雪山</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🌙</span>
+                <span class="trend-name">夜经济融合</span>
+              </div>
+              <div class="trend-desc">"夜食+夜市+夜秀+夜展+夜娱"让社交不再局限于酒桌</div>
+              <div class="trend-insight">夜经济融合体育、文化、市集</div>
+            </div>
+            <div class="trend-card">
+              <div class="trend-header">
+                <span class="trend-icon">🤝</span>
+                <span class="trend-name">蜀式包容</span>
+              </div>
+              <div class="trend-desc">成都人不排外，"来了就是成都人"，融入门槛全国最低之一</div>
+              <div class="trend-insight">桐梓林、锦城湖一带国际社群初具规模</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part6">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 06</div>
+          <h2 class="section-title">发展潜力</h2>
+          <p class="section-desc">创新动能 · 成渝双城经济圈 · 2035规划</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🚀 创新动能</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">920.89亿</div><div class="data-label">元 · 全社会R&D投入 · 增长11.7%</div></div>
+            <div class="data-card"><div class="data-value">3.92%</div><div class="data-label">R&D投入强度 · 高于全国2.6%</div></div>
+            <div class="data-card"><div class="data-value">410家</div><div class="data-label">专精特新"小巨人"企业</div></div>
+            <div class="data-card"><div class="data-value">2,100亿+</div><div class="data-label">元 · 技术合同登记额</div></div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌐 成渝双城经济圈（2026年最新）</h3>
+          <table class="info-table">
+            <tr><th>项目</th><th>详情</th></tr>
+            <tr><td>成渝中线高铁（在建）</td><td>建成后成渝最快约50分钟直达，双核进入"同城化"倒计时</td></tr>
+            <tr><td>市域铁路S5线（2026年试运行）</td><td>东坡区→成都30分钟轨道通勤，最快发车间隔每3分钟一趟</td></tr>
+            <tr><td>成德线（S11线）</td><td>全线轨道铺设2026年全面展开，成都-德阳一体化提速</td></tr>
+            <tr><td>成渝地区户籍便捷迁移</td><td>电子凭证互认、流动人口信息共享，一体化政策红利加速释放</td></tr>
+            <tr><td>天府国际机场二期</td><td>纳入"十五五"规划，双机场+双枢纽格局继续升级</td></tr>
+          </table>
+          <div class="highlight-box">
+            <div class="highlight-title">💡 双城经济圈核心</div>
+            <div class="highlight-content">2026年共确定350个共建重点项目，年度预计投资4,992亿元。成渝双城经济圈进入全面提速期。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🏙️ 2035城市总体规划</h3>
+          <table class="info-table">
+            <tr><th>目标</th><th>详情</th></tr>
+            <tr><td>"十五五"GDP目标</td><td>2030年GDP达3.2万亿元</td></tr>
+            <tr><td>城市定位</td><td>践行新发展理念的公园城市示范区，西部地区高质量发展的重要增长极</td></tr>
+            <tr><td>生态目标</td><td>空气质量持续改善，"窗含西岭千秋雪"常态化；公园总数持续增加</td></tr>
+            <tr><td>都市圈同城化</td><td>成都都市圈同城化水平全面提升，基本形成一体化发展格局</td></tr>
+          </table>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💚 环境底色 —— "雪山下的公园城市"</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="data-value">295天</div><div class="data-label">空气质量优良天数</div></div>
+            <div class="data-card"><div class="data-value">81天</div><div class="data-label">观雪山天数 · 创观测纪录新高</div></div>
+            <div class="data-card"><div class="data-value">10,000+</div><div class="data-label">公里 · 城市绿道累计建成</div></div>
+            <div class="data-card"><div class="data-value">1,500+</div><div class="data-label">个 · 各类公园总数</div></div>
+          </div>
+          <div class="highlight-box">
+            <div class="highlight-title">💚 成都最奢侈的东西</div>
+            <div class="highlight-content">不是火锅——是推窗可见的雪山。2025年"窗含西岭千秋雪"盛景再现81天，创观测纪录新高。国省考核断面水质连续四年全面达标。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="part7">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-num">PART 07</div>
+          <h2 class="section-title">定居指南</h2>
+          <p class="section-desc">落户政策 · 行动清单 · 真实场景</p>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📋 五大落户路径</h3>
+          <div class="path-grid">
+            <div class="path-card">
+              <div class="path-title">📍 学历落户 <span class="path-time">⏱ 即办</span></div>
+              <ul class="path-list">
+                <li>全日制本科45岁以下/研究生不限年龄</li>
+                <li>持毕业证和身份证即可办理</li>
+                <li>流程极简，最快当场办结</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 "先落户后就业" <span class="path-time">⏱ 即办</span></div>
+              <ul class="path-list">
+                <li>应届毕业生2年内凭毕业证直接落户</li>
+                <li>无需签订劳动合同</li>
+                <li>全国最友好的应届生落户政策之一</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 积分落户 <span class="path-time">⏱ 年度申请</span></div>
+              <ul class="path-list">
+                <li>持有居住证+社保连续缴纳</li>
+                <li>居住和就业等积分达标</li>
+                <li>常规通道，适合长期在蓉工作人群</li>
+              </ul>
+            </div>
+            <div class="path-card">
+              <div class="path-title">📍 人才引进落户 <span class="path-time">⏱ 视情况</span></div>
+              <ul class="path-list">
+                <li>重点产业链急需紧缺人才、A/B/C类高层次人才</li>
+                <li>博士/高级职称等，享受安家补贴</li>
+                <li>A/B/C类：3,000元/人·月，连续3年</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">📝 定居成都行动清单</h3>
+          <ol class="action-list">
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>职业定位</h4>
+                <p>锁定目标赛道与企业，优先成都核心赛道：AI/芯片/新能源汽车/游戏/数字内容/航空航天</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>落户规划</h4>
+                <p>入职当月办理，应届生走"先落户后就业"，最快当场办结</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>区域选择</h4>
+                <p>平衡通勤与房价：工作在高新·住在双流/温江；主城品质优先选锦江/青羊近郊</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>租房/安家</h4>
+                <p>用好人才公寓和补贴，成都首套房平均总价约160万（新一线最低），首付约50万起</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>财务规划</h4>
+                <p>高性价比积累首付，技术岗3-5年可实现购房，生活成本显著低于北上深杭</p>
+              </div>
+            </li>
+            <li class="action-item">
+              <div class="action-num"></div>
+              <div class="action-content">
+                <h4>建立社交</h4>
+                <p>融入蓉城朋友圈：加入川大/电子科大的校友圈、各"蓉漂"社群和骑行/登山/美食趣缘群</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">🌅 真实生活场景</h3>
+          <div class="quote-box">
+            <p class="quote-text"><em>在成都，早晨担担面或豆花面加豆浆10-15元搞定，路边包子铺是最原始的幸福。工作日午餐外卖25-40元，盒饭和川菜是最大公约数。傍晚跑步骑行走绿道，或到茶馆坐下喝茶看电影。周末轻户外：青城山、都江堰、大邑西岭雪山，1小时进山就是另一个世界。凌晨2点火锅店仍在翻台，夜游锦江的灯火比白昼更迷人。</em></p>
+          </div>
+          <div class="life-grid">
+            <div class="life-card">
+              <div class="life-icon">🌅</div>
+              <div class="life-title">早间</div>
+              <div class="life-content">担担面/豆花面/肥肠粉+豆浆10-15元；路边包子铺是最原始的幸福</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">💼</div>
+              <div class="life-title">工作日</div>
+              <div class="life-content">天府软件园/交子公园商圈外卖25-40元，盒饭和川菜是最大公约数</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🏃</div>
+              <div class="life-title">傍晚</div>
+              <div class="life-content">跑步/骑行走绿道，或到茶馆坐下喝茶看电影</div>
+            </div>
+            <div class="life-card">
+              <div class="life-icon">🌙</div>
+              <div class="life-title">深夜</div>
+              <div class="life-content">凌晨2点火锅店仍在翻台，夜游锦江的灯火比白昼更迷人</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💬 真实用户自述</h3>
+          <div class="user-quote">
+            <div class="user-header">🧑‍💻 月薪16K 游戏策划，应届硕士</div>
+            <div class="user-content">税后约13K，租在成华区每月2,500元整租。成都的游戏圈产业链极全，离职再跳机会也多。每天下班骑车20分钟到锦城湖看日落——这在北上广是奢侈品。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">👩‍💻 月薪12K 电子科大硕士，应届AI岗</div>
+            <div class="user-content">税前12K、年终奖预计3-6个月。能在温江轻松租房整租2,000元以内。最大的感受是"在成都拿低于一线20%的工资，过上比一线自在两倍的生活"。</div>
+          </div>
+          <div class="user-quote">
+            <div class="user-header">🏃 月薪8K 新媒体运营，3年经验</div>
+            <div class="user-content">月薪8K可支配空间也不少。周末雷打不动去爬青城山或逛市集，幸福指数比我北京的大学室友高太多。</div>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <h3 class="sub-title">💭 年轻人对成都的爱与忧</h3>
+          <div class="fit-section">
+            <div class="fit-card yes">
+              <h3>✅ 爱成都的理由</h3>
+              <ul class="fit-list">
+                <li>🏠 <strong>房价是新一线性价比天花板</strong> — 首付压力远低于京沪深杭</li>
+                <li>🍲 <strong>美食是"内卷之解药"</strong> — 深夜火锅店全城不休</li>
+                <li>🏔️ <strong>1小时进雪山</strong> — 城市骑行绿道超1万公里</li>
+                <li>📋 <strong>"先落户后就业"</strong> — 对新来者全国最友好</li>
+                <li>🌶️ <strong>"来一次少活几年（吃太多），不来一次白活几年"</strong></li>
+              </ul>
+            </div>
+            <div class="fit-card no">
+              <h3>❌ 逃离成都的理由</h3>
+              <ul class="fit-list">
+                <li>📉 <strong>绝对薪资与京沪深仍有30%+差距</strong></li>
+                <li>☁️ <strong>冬季湿冷，日照稀少让人emo</strong></li>
+                <li>🏭 <strong>主城区个别时段空气污染偶发</strong></li>
+                <li>🤝 <strong>招聘存在一定"人情社会"印记</strong></li>
+                <li>🐢 <strong>对于极端追求快节奏的人来说，"慢生活"可能是一剂慢性的焦虑</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="conclusion-box">
+          <h3 class="conclusion-title">🐼 最终结论：你适合成都吗？</h3>
+          <div class="conclusion-text">
+            <p>✅ <strong>成都适合：</strong>追求生活性价比的技术人才（AI/芯片/新能源汽车/游戏）；热爱户外、美食和城市烟火气的生活家；希望在工作与生活之间找到"中间态"的年轻人；需要西部市场入口的创业者和职场人。</p>
+            <p>❌ <strong>成都不适合：</strong>单纯追求最高薪酬天花板的野心家；极度不耐阴天、爱上火、怕湿冷的人；依赖一线商业思维和最高端金融/咨询圈子的人。</p>
+            <p style="margin-top: 20px; font-style: italic; opacity: 0.9;">成都是一座"把生活本身活成风景"的城市。来了可能胖十斤，走了又常想念那一口麻辣鲜香。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appendix-section">
+      <div class="container">
+        <h3 class="appendix-title">📋 附录 · 数据来源</h3>
+        <table class="source-table">
+          <tr><th>数据类型</th><th>来源</th></tr>
+          <tr><td>GDP数据</td><td>成都市统计局·2025年统计公报（2026年4月15日发布）</td></tr>
+          <tr><td>人口数据</td><td>成都市统计局·2025年统计公报</td></tr>
+          <tr><td>居民收入</td><td>成都市统计局·2025年统计公报；成都市政府·2025年主要目标任务实施情况</td></tr>
+          <tr><td>薪资数据</td><td>前程无忧2026年春招报告；新东方·2026年应届生薪资报告；jobui；职Q数据</td></tr>
+          <tr><td>房价数据</td><td>中国房价行情平台·2026年实时数据；聚汇数据·2026年月度数据</td></tr>
+          <tr><td>产业数据</td><td>成都市经信局·2025年经济运行情况；2026年一季度统计数据</td></tr>
+          <tr><td>创新排名</td><td>世界知识产权组织（WIPO）·2025年全球创新指数；成都市科技局年度总结</td></tr>
+          <tr><td>人才数据</td><td>"蓉漂人才荟"相关报道；成都市委组织部最新公告</td></tr>
+          <tr><td>交通数据</td><td>成都地铁集团公告；新华网·2026年成都都市圈轨道交通报道</td></tr>
+          <tr><td>教育数据</td><td>教育部高校名单；四川天府新区管委会人才资源报告；四川大学华西医学中心</td></tr>
+          <tr><td>医疗数据</td><td>成都市卫健委·2026年卫生健康工作会；成都市人民政府·公共服务信息</td></tr>
+          <tr><td>环境数据</td><td>成都市生态环境局·2025年度空气质量与生态数据公报</td></tr>
+          <tr><td>落户与人才政策</td><td>成都市人社局·《成都市引进急需紧缺人才实施办法》（2026年1月起执行）；《成都市户籍迁入登记管理办法》</td></tr>
+          <tr><td>夜经济与生活</td><td>成都电视台/每日经济新闻·2026年成都夜经济报道；成都市文旅局</td></tr>
+          <tr><td>区域规划</td><td>2026年成都市政府工作报告；川渝两省市·共建成渝双城经济圈项目名单</td></tr>
+        </table>
+
+        <div class="disclaimer">
+          <div class="disclaimer-icon">⚠️</div>
+          <div class="disclaimer-text">
+            本报告为城市性格匹配测试付费增值服务（9.9元），仅供个人参考，不构成定居决策依据。<br>
+            报告内容基于公开数据整理，数据截止2026年4月。城市数据存在动态变化，建议读者以最新官方数据为准。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-section">
+      <div class="container">
+        <div class="download-card">
+          <div class="download-icon">📄</div>
+          <h3 class="download-title">下载完整PDF报告</h3>
+          <p class="download-desc">离线阅读 · 随时查阅 · 分享收藏</p>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="download-btn">
+            <span>📥</span>
+            <span>下载PDF报告</span>
+            <span class="download-hint">即将上线</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">💙 感谢阅读 · 祝你找到真正适合的城市 💙</p>
+      <p class="footer-sub">城市性格匹配测试 | 更多城市报告陆续上线</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    const CODE_STORAGE_KEY = 'chengdu_report_verified';
+    const CODE_EXPIRY_KEY = 'chengdu_report_expiry';
+    const SESSION_DURATION = 24 * 60 * 60 * 1000;
+
+    const codeOverlay = document.getElementById('codeOverlay');
+    const mainContent = document.getElementById('mainContent');
+    const codeInput = document.getElementById('codeInput');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+    const codeError = document.getElementById('codeError');
+
+    function isVerified() {
+      const verified = localStorage.getItem(CODE_STORAGE_KEY);
+      const expiry = localStorage.getItem(CODE_EXPIRY_KEY);
+      if (verified === 'true' && expiry && Date.now() < parseInt(expiry)) {
+        return true;
+      }
+      localStorage.removeItem(CODE_STORAGE_KEY);
+      localStorage.removeItem(CODE_EXPIRY_KEY);
+      return false;
+    }
+
+    function setVerified() {
+      localStorage.setItem(CODE_STORAGE_KEY, 'true');
+      localStorage.setItem(CODE_EXPIRY_KEY, (Date.now() + SESSION_DURATION).toString());
+    }
+
+    function showReport() {
+      codeOverlay.classList.add('hidden');
+      mainContent.classList.add('visible');
+      document.body.style.overflow = '';
+      initReport();
+    }
+
+    function showError(message) {
+      codeError.innerHTML = `<span>⚠️</span> ${message}`;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    function getCode() {
+      return codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    function clearCode() {
+      codeInput.value = '';
+      codeInput.focus();
+    }
+
+    async function validateCode(code) {
+      codeSubmitBtn.disabled = true;
+      codeSubmitBtn.innerHTML = '<div class="spinner"></div><span>验证中...</span>';
+      codeError.textContent = '';
+
+      try {
+        const response = await fetch(`${API_BASE}/validate-city-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cityKey: 'chengdu' })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.errors?.[0]?.msg || '验证失败');
+        }
+
+        setVerified();
+        showReport();
+      } catch (error) {
+        showError(error.message);
+        clearCode();
+      } finally {
+        codeSubmitBtn.disabled = false;
+        codeSubmitBtn.innerHTML = '<span>确认兑换</span>';
+      }
+    }
+
+    codeInput.addEventListener('input', (e) => {
+      const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      e.target.value = value;
+      codeError.textContent = '';
+
+      if (value.length === 8) {
+        validateCode(value);
+      }
+    });
+
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const code = getCode();
+        if (code.length === 8) {
+          validateCode(code);
+        } else {
+          showError('请输入完整的8位兑换码');
+        }
+      }
+    });
+
+    codeSubmitBtn.addEventListener('click', () => {
+      const code = getCode();
+      if (code.length !== 8) {
+        showError('请输入完整的8位兑换码');
+        return;
+      }
+      validateCode(code);
+    });
+
+    if (isVerified()) {
+      showReport();
+    } else {
+      document.body.style.overflow = 'hidden';
+      codeInput.focus();
+    }
+
+    function initReport() {
+      const dims = [
+        { name: '生活烟火', value: 99, color: '#F97316' },
+        { name: '文化底蕴', value: 92, color: '#F59E0B' },
+        { name: '宜居环境', value: 80, color: '#38BDF8' },
+        { name: '配套便利', value: 80, color: '#10B981' },
+        { name: '机遇收入', value: 78, color: '#8B5CF6' },
+        { name: '国际化', value: 72, color: '#3B82F6' },
+        { name: '生活节奏', value: 62, color: '#EF4444' },
+        { name: '生活成本', value: 48, color: '#6B7280' }
+      ];
+
+      function drawRadar() {
+        const canvas = document.getElementById('radarCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+        const R = Math.min(W, H) / 2 - 60;
+        const n = dims.length;
+        const angleStep = (2 * Math.PI) / n;
+        const startAngle = -Math.PI / 2;
+
+        ctx.clearRect(0, 0, W, H);
+
+        for (let level = 1; level <= 5; level++) {
+          const r = (R / 5) * level;
+          ctx.beginPath();
+          for (let i = 0; i <= n; i++) {
+            const angle = startAngle + angleStep * (i % n);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < n; i++) {
+          const angle = startAngle + angleStep * i;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+          const dim = dims[i % n];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * (i % n);
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        gradient.addColorStop(0, 'rgba(13, 148, 136, 0.4)');
+        gradient.addColorStop(1, 'rgba(13, 148, 136, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.strokeStyle = '#0D9488';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const val = dim.value / 100;
+          const angle = startAngle + angleStep * i;
+          const r = R * val;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, 2 * Math.PI);
+          ctx.fillStyle = dim.color;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.font = '14px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i < n; i++) {
+          const dim = dims[i];
+          const angle = startAngle + angleStep * i;
+          const labelR = R + 35;
+          const x = cx + labelR * Math.cos(angle);
+          const y = cy + labelR * Math.sin(angle);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillText(dim.name, x, y - 8);
+          ctx.fillStyle = '#5EEAD4';
+          ctx.font = 'bold 16px "Noto Sans SC"';
+          ctx.fillText(dim.value, x, y + 10);
+          ctx.font = '14px "Noto Sans SC"';
+        }
+      }
+
+      drawRadar();
+
+      const tocInner = document.querySelector('.toc-inner');
+      const tocItems = document.querySelectorAll('.toc-item');
+      let isClicking = false;
+      let clickTarget = null;
+      let lastActiveId = null;
+      let scrollTimeout = null;
+
+      function centerTocItem(item, immediate = false) {
+        if (!item || !tocInner) return;
+        const itemOffsetLeft = item.offsetLeft;
+        const innerWidth = tocInner.clientWidth;
+        const itemWidth = item.offsetWidth;
+        const targetScroll = itemOffsetLeft - (innerWidth / 2) + (itemWidth / 2);
+        tocInner.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: immediate ? 'auto' : 'smooth'
+        });
+      }
+
+      function setActiveItem(targetId) {
+        if (lastActiveId === targetId) return;
+        lastActiveId = targetId;
+        tocItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.target === targetId);
+        });
+      }
+
+      tocItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.dataset.target;
+          const target = document.getElementById(targetId);
+          if (target) {
+            isClicking = true;
+            clickTarget = targetId;
+            setActiveItem(targetId);
+            centerTocItem(item, true);
+
+            const tocHeight = document.querySelector('.toc')?.offsetHeight || 0;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - tocHeight - 20;
+
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+              isClicking = false;
+            }, 1000);
+          }
+        });
+      });
+
+      let observerCallback = (entries) => {
+        if (isClicking) return;
+
+        const visibleEntries = entries.filter(e => e.isIntersecting);
+        if (visibleEntries.length === 0) return;
+
+        visibleEntries.sort((a, b) => {
+          const rectA = a.boundingClientRect;
+          const rectB = b.boundingClientRect;
+          return Math.abs(rectA.top) - Math.abs(rectB.top);
+        });
+
+        const mostVisible = visibleEntries[0];
+        const tocTarget = mostVisible.target.id;
+
+        if (tocTarget && tocTarget !== lastActiveId) {
+          setActiveItem(tocTarget);
+          const activeItem = document.querySelector(`.toc-item[data-target="${tocTarget}"]`);
+          if (activeItem) {
+            centerTocItem(activeItem);
+          }
+        }
+
+        mostVisible.target.classList.add('visible');
+
+        const charts = mostVisible.target.querySelectorAll('.chart-fill');
+        charts.forEach(chart => {
+          const width = chart.dataset.width;
+          if (width && !chart.style.width) {
+            setTimeout(() => {
+              chart.style.width = width + '%';
+            }, 200);
+          }
+        });
+
+        const counters = mostVisible.target.querySelectorAll('.data-value[data-count]');
+        counters.forEach(counter => {
+          if (counter.dataset.animated) return;
+          counter.dataset.animated = 'true';
+          const target = parseFloat(counter.dataset.count);
+          const decimal = parseInt(counter.dataset.decimal) || 0;
+          let current = 0;
+          const increment = target / 50;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            counter.textContent = decimal > 0 ? current.toFixed(decimal) : Math.floor(current);
+          }, 30);
+        });
+      };
+
+      const sections = document.querySelectorAll('.section');
+      const observer = new IntersectionObserver(observerCallback, {
+        threshold: [0, 0.1, 0.2, 0.3],
+        rootMargin: '-80px 0px -50% 0px'
+      });
+
+      sections.forEach(section => observer.observe(section));
+    }
+  </script>
+</body>
+</html>

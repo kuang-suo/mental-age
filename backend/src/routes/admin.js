@@ -6,7 +6,7 @@ import {
   login, generateCodes, getCodes, exportCodes,
   getStats, getResults, getResultById, deleteResult, exportResults,
   createMonthlyCards, getMonthlyCards, getMonthlyCardResults,
-  updateCodeScope, batchUpdateCodeScope,
+  updateCodeScope, batchUpdateCodeScope, updateMonthlyCardLimit,
   getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs
 } from '../controllers/adminController.js';
 
@@ -116,6 +116,23 @@ router.put(
       const result = await batchUpdateCodeScope(
         req.body.ids,
         req.body.allowedTestTypes || null
+      );
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.put(
+  '/monthly-cards/:id/limit',
+  authMiddleware,
+  body('useLimit').optional({ nullable: true }),
+  async (req, res) => {
+    try {
+      const result = await updateMonthlyCardLimit(
+        parseInt(req.params.id),
+        req.body.useLimit
       );
       res.json(result);
     } catch (error) {

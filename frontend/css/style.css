@@ -82,6 +82,19 @@
   --anxious-gradient-primary: linear-gradient(135deg, #FB923C, #F97316);
   --anxious-gradient-secondary: linear-gradient(135deg, #FFF7ED, #FFEDD5);
 
+  /* 恋爱深度解析测试样式变量（玫瑰红色系） */
+  --ld-primary-color: #C2185B;
+  --ld-secondary-color: #FCE4EC;
+  --ld-accent-color: #F48FB1;
+  --ld-text-color: #5a5a5a;
+  --ld-light-bg: #FFF5F8;
+  --ld-border-radius: 32px;
+  --ld-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --ld-soft-shadow: 0 4px 12px rgba(194, 24, 91, 0.1);
+  --ld-gradient-bg: linear-gradient(145deg, #FFF5F8 0%, #FCE4EC 100%);
+  --ld-gradient-primary: linear-gradient(135deg, #E91E63, #C2185B);
+  --ld-gradient-secondary: linear-gradient(135deg, #FCE4EC, #F8BBD0);
+
   /* 默认样式（用于心理年龄测试） */
   --primary-color: var(--mental-primary-color);
   --secondary-color: var(--mental-secondary-color);
@@ -2869,4 +2882,99 @@ body {
 @media (max-width: 600px) {
   .anxious-test .start-content { padding: 40px 20px; }
   .anxious-test .start-content h1 { font-size: 32px; }
+}
+
+.love-depth-test {
+  --primary-color: var(--ld-primary-color);
+  --secondary-color: var(--ld-secondary-color);
+  --accent-color: var(--ld-accent-color);
+  --text-color: var(--ld-text-color);
+  --light-bg: var(--ld-light-bg);
+  --border-radius: var(--ld-border-radius);
+  --shadow: var(--ld-shadow);
+  --soft-shadow: var(--ld-soft-shadow);
+  --gradient-bg: var(--ld-gradient-bg);
+  --gradient-primary: var(--ld-gradient-primary);
+  --gradient-secondary: var(--ld-gradient-secondary);
+}
+
+.love-depth-test .btn-primary {
+  background: var(--ld-gradient-primary);
+}
+.love-depth-test .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(194, 24, 91, 0.3);
+}
+.love-depth-test .progress-fill {
+  background: var(--ld-gradient-primary);
+}
+.love-depth-test .start-content {
+  padding: 64px 32px;
+}
+.love-depth-test .start-content h1 {
+  color: var(--ld-primary-color);
+}
+.love-depth-test .logo {
+  font-size: 80px;
+  margin-bottom: 16px;
+}
+.love-depth-test .subtitle {
+  color: var(--ld-accent-color);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.love-depth-test .description {
+  text-align: left;
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--ld-light-bg);
+  border-radius: 16px;
+  border: 1px solid rgba(194, 24, 91, 0.1);
+}
+.love-depth-test .description p {
+  color: var(--ld-text-color);
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.love-depth-test .description ul {
+  list-style: none;
+  padding: 0;
+}
+.love-depth-test .description li {
+  color: var(--ld-text-color);
+  font-size: 14px;
+  padding: 6px 0;
+  line-height: 1.6;
+}
+.love-depth-test .result-module {
+  background: white;
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(194, 24, 91, 0.1);
+}
+.love-depth-test .module-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ld-secondary-color);
+  text-align: center;
+  color: var(--ld-primary-color);
+}
+.love-depth-test .result-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+.love-depth-test .test-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+@media (max-width: 600px) {
+  .love-depth-test .start-content { padding: 40px 20px; }
+  .love-depth-test .start-content h1 { font-size: 32px; }
 }
