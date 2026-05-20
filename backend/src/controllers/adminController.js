@@ -560,3 +560,98 @@ export async function seedDefaultTestConfigs() {
 
   return { seeded: created, total: defaults.length };
 }
+
+export async function getImageAnalysisResults(page = 1, limit = 20, startDate, endDate) {
+  const skip = (page - 1) * limit;
+  const where = {};
+
+  if (startDate || endDate) {
+    where.createdAt = {};
+    if (startDate) where.createdAt.gte = new Date(startDate);
+    if (endDate) where.createdAt.lte = new Date(endDate);
+  }
+
+  const [results, total] = await Promise.all([
+    prisma.imageAnalysisResult.findMany({
+      where,
+      skip,
+      take: limit,
+      include: {
+        exchangeCode: {
+          select: { code: true, codeType: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    }),
+    prisma.imageAnalysisResult.count({ where })
+  ]);
+
+  return { results, total, page, pages: Math.ceil(total / limit) };
+}
+
+export async function getImageAnalysisResultById(id) {
+  return prisma.imageAnalysisResult.findUnique({
+    where: { id },
+    include: {
+      exchangeCode: {
+        select: { code: true, codeType: true }
+      }
+    }
+  });
+}
+
+export async function deleteImageAnalysisResult(id) {
+  return prisma.imageAnalysisResult.delete({ where: { id } });
+}
+
+export async function exportImageAnalysisResults(startDate, endDate) {
+  const where = {};
+  if (startDate || endDate) {
+    where.createdAt = {};
+    if (startDate) where.createdAt.gte = new Date(startDate);
+    if (endDate) where.createdAt.lte = new Date(endDate);
+  }
+
+  const results = await prisma.imageAnalysisResult.findMany({
+    where,
+    include: {
+      exchangeCode: {
+        select: { code: true }
+      }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+
+  const ANALYSIS_NAMES = {
+    '1': '综合形象分析',
+    '2': '穿搭分析',
+    '3': '妆容分析',
+    '4': '发型分析',
+    '5': '色彩分析',
+    '6': '气质风格定位',
+    '7': '五官风格拆解',
+    '8': '显瘦显脸小',
+    '9': '拍照表现力',
+    '10': '个人品牌感',
+    '11': '体型比例分析',
+    '12': '发色分析'
+  };
+
+  const headers = ['ID', '分析类型', '兑换码', '原始照片', '结果图片', '过期时间', '创建时间'];
+  const rows = results.map(r => [
+    String(r.id),
+    ANALYSIS_NAMES[r.analysisType] || `类型${r.analysisType}`,
+    r.exchangeCode?.code || '-',
+    r.originalPhoto || '-',
+    r.resultImage || '-',
+    r.expiresAt ? new Date(r.expiresAt).toLocaleString('zh-CN') : '-',
+    new Date(r.createdAt).toLocaleString('zh-CN')
+  ]);
+
+  const csv = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+  ].join('\n');
+
+  return csv;
+}

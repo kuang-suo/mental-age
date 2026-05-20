@@ -6,8 +6,10 @@ import { PrismaClient } from '@prisma/client';
 import config from './config/env.js';
 import { generalLimiter, errorHandler } from './middleware/auth.js';
 import { initializeDatabase } from './utils/database.js';
+import { startCleanupScheduler } from './utils/imageCleanup.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
+import imageAnalysisRoutes from './routes/imageAnalysis.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,9 +33,14 @@ app.use(generalLimiter);
 const frontendPath = path.join(__dirname, '../../frontend');
 app.use(express.static(frontendPath));
 
+// 静态文件服务 - 服务上传的文件
+const uploadsPath = path.join(__dirname, '../../uploads');
+app.use('/uploads', express.static(uploadsPath));
+
 // 路由
 app.use('/api', apiRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', imageAnalysisRoutes);
 
 // 健康检查
 app.get('/health', (req, res) => {
@@ -48,6 +55,9 @@ async function start() {
   try {
     // 数据库初始化（现在服务能正常启动，不会崩溃了，可以恢复这个逻辑）
     await initializeDatabase(prisma);
+
+    // 启动文件清理调度器
+    startCleanupScheduler();
 
     app.listen(config.port, "0.0.0.0", () => {
       console.log(`✅ 服务启动成功，监听端口：${config.port}`);

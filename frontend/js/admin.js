@@ -12,7 +12,23 @@ const TEST_TYPE_NAMES = {
   'city': '城市匹配',
   'anxious': '焦虑型依恋',
   'love-depth': '恋爱深度解析',
-  'city-report': '城市报告'
+  'city-report': '城市报告',
+  'image-analysis': '个人形象分析'
+};
+
+const IMAGE_ANALYSIS_NAMES = {
+  '1': '综合形象分析',
+  '2': '穿搭分析',
+  '3': '妆容分析',
+  '4': '发型分析',
+  '5': '色彩分析',
+  '6': '气质风格定位',
+  '7': '五官风格拆解',
+  '8': '显瘦显脸小',
+  '9': '拍照表现力',
+  '10': '个人品牌感',
+  '11': '体型比例分析',
+  '12': '发色分析'
 };
 
 const BAR_COLORS = ['#667eea', '#e74c3c', '#28a745', '#fd7e14', '#0ea5e9', '#6f42c1', '#20c997'];
@@ -400,6 +416,11 @@ async function loadResults(page) {
   container.innerHTML = '<div class="loading">加载中...</div>';
 
   try {
+    if (testType === 'image-analysis') {
+      await loadImageAnalysisResults(page);
+      return;
+    }
+
     let url = `/results?page=${resultsPage}&limit=20&testType=${testType}`;
     if (startDate) url += `&startDate=${startDate}`;
     if (endDate) url += `&endDate=${endDate}`;
@@ -452,6 +473,88 @@ async function loadResults(page) {
   }
 }
 
+async function loadImageAnalysisResults(page) {
+  if (page) resultsPage = page;
+  const startDate = document.getElementById('filterStartDate').value;
+  const endDate = document.getElementById('filterEndDate').value;
+  const container = document.getElementById('resultsContainer');
+
+  try {
+    let url = `/image-analysis-results?page=${resultsPage}&limit=20`;
+    if (startDate) url += `&startDate=${startDate}`;
+    if (endDate) url += `&endDate=${endDate}`;
+
+    const res = await apiFetch(url);
+    const data = await res.json();
+
+    let html = '<table><thead><tr><th>ID</th><th>分析类型</th><th>兑换码</th><th>结果图片</th><th>过期时间</th><th>创建时间</th><th>操作</th></tr></thead><tbody>';
+
+    (data.results || []).forEach(r => {
+      const typeName = IMAGE_ANALYSIS_NAMES[r.analysisType] || `类型${r.analysisType}`;
+      const codeDisplay = r.exchangeCode ? r.exchangeCode.code : '-';
+      const resultImageLink = r.resultImage ? `<a href="${r.resultImage}" target="_blank" style="color:#667eea;">查看图片</a>` : '-';
+      const expiresAt = r.expiresAt ? new Date(r.expiresAt).toLocaleString('zh-CN') : '-';
+
+      html += `<tr>
+        <td>${r.id}</td>
+        <td>${typeName}</td>
+        <td style="font-family:monospace;">${codeDisplay}</td>
+        <td>${resultImageLink}</td>
+        <td>${expiresAt}</td>
+        <td>${new Date(r.createdAt).toLocaleString('zh-CN')}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" onclick="viewImageAnalysisResult(${r.id})">详情</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteImageAnalysisResult(${r.id})">删除</button>
+        </td>
+      </tr>`;
+    });
+
+    html += '</tbody></table>';
+
+    if ((data.results || []).length === 0) {
+      html = '<div class="loading">暂无数据</div>';
+    }
+
+    const totalPages = data.pages || 1;
+    html += renderPagination(resultsPage, totalPages, 'loadImageAnalysisResults');
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = '<div class="loading">加载失败: ' + e.message + '</div>';
+  }
+}
+
+async function viewImageAnalysisResult(id) {
+  try {
+    const res = await apiFetch(`/image-analysis-results/${id}`);
+    const data = await res.json();
+
+    let html = '';
+    html += `<div class="detail-item"><div class="detail-key">分析类型</div><div class="detail-value">${IMAGE_ANALYSIS_NAMES[data.analysisType] || `类型${data.analysisType}`}</div></div>`;
+    html += `<div class="detail-item"><div class="detail-key">创建时间</div><div class="detail-value">${new Date(data.createdAt).toLocaleString('zh-CN')}</div></div>`;
+    if (data.exchangeCode) {
+      html += `<div class="detail-item"><div class="detail-key">兑换码</div><div class="detail-value">${data.exchangeCode.code} (${data.exchangeCode.codeType === 'MONTHLY_CARD' ? '月卡' : '单次'})</div></div>`;
+    }
+    html += `<div class="detail-item"><div class="detail-key">原始照片</div><div class="detail-value"><a href="${data.originalPhoto}" target="_blank" style="color:#667eea;">${data.originalPhoto}</a></div></div>`;
+    html += `<div class="detail-item"><div class="detail-key">结果图片</div><div class="detail-value"><a href="${data.resultImage}" target="_blank" style="color:#667eea;">${data.resultImage}</a></div></div>`;
+    html += `<div class="detail-item"><div class="detail-key">过期时间</div><div class="detail-value">${data.expiresAt ? new Date(data.expiresAt).toLocaleString('zh-CN') : '-'}</div></div>`;
+
+    document.getElementById('resultDetailContent').innerHTML = html;
+    document.getElementById('resultDetailModal').classList.add('active');
+  } catch (e) {
+    alert('加载详情失败: ' + e.message);
+  }
+}
+
+async function deleteImageAnalysisResult(id) {
+  if (!confirm('确定删除此结果？')) return;
+  try {
+    await apiFetch(`/image-analysis-results/${id}`, { method: 'DELETE' });
+    loadImageAnalysisResults();
+  } catch (e) {
+    alert('删除失败: ' + e.message);
+  }
+}
+
 async function viewResult(id) {
   try {
     const res = await apiFetch(`/results/${id}`);
@@ -500,6 +603,15 @@ function exportResults() {
   const testType = document.getElementById('filterTestType').value;
   const startDate = document.getElementById('filterStartDate').value;
   const endDate = document.getElementById('filterEndDate').value;
+  
+  if (testType === 'image-analysis') {
+    let url = `${API_BASE}/image-analysis-results-export?`;
+    if (startDate) url += `startDate=${startDate}&`;
+    if (endDate) url += `endDate=${endDate}`;
+    window.open(url, '_blank');
+    return;
+  }
+  
   let url = `${API_BASE}/results-export?testType=${testType}`;
   if (startDate) url += `&startDate=${startDate}`;
   if (endDate) url += `&endDate=${endDate}`;

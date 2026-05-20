@@ -7,7 +7,8 @@ import {
   getStats, getResults, getResultById, deleteResult, exportResults,
   createMonthlyCards, getMonthlyCards, getMonthlyCardResults,
   updateCodeScope, batchUpdateCodeScope, updateMonthlyCardLimit,
-  getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs
+  getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs,
+  getImageAnalysisResults, getImageAnalysisResultById, deleteImageAnalysisResult, exportImageAnalysisResults
 } from '../controllers/adminController.js';
 
 const router = express.Router();
@@ -374,5 +375,68 @@ router.post('/test-configs/seed', authMiddleware, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+router.get(
+  '/image-analysis-results',
+  authMiddleware,
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
+  query('startDate').optional().trim(),
+  query('endDate').optional().trim(),
+  async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const startDate = req.query.startDate || null;
+      const endDate = req.query.endDate || null;
+      const result = await getImageAnalysisResults(page, limit, startDate, endDate);
+      res.json(result);
+    } catch (error) {
+      console.error('获取形象分析结果列表失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.get('/image-analysis-results/:id', authMiddleware, async (req, res) => {
+  try {
+    const result = await getImageAnalysisResultById(parseInt(req.params.id));
+    if (!result) {
+      return res.status(404).json({ error: '结果不存在' });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error('获取形象分析结果详情失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/image-analysis-results/:id', authMiddleware, async (req, res) => {
+  try {
+    await deleteImageAnalysisResult(parseInt(req.params.id));
+    res.json({ success: true, message: '删除成功' });
+  } catch (error) {
+    console.error('删除形象分析结果失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get(
+  '/image-analysis-results-export',
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const startDate = req.query.startDate || null;
+      const endDate = req.query.endDate || null;
+      const csv = await exportImageAnalysisResults(startDate, endDate);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="image_analysis_results.csv"');
+      res.send('\uFEFF' + csv);
+    } catch (error) {
+      console.error('导出形象分析结果CSV失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
 
 export default router;
