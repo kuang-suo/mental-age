@@ -1,9 +1,11 @@
+  <!--  个人形象分析页面 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>个人形象分析</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .container {
@@ -417,6 +419,10 @@
   </style>
 </head>
 <body>
+  <a href="home.html" class="back-to-home">
+    <span class="back-to-home-icon">←</span>
+    <span class="back-to-home-text">返回首页</span>
+  </a>
   <div class="container">
     <div class="page-header">
       <div class="page-logo">✨</div>
@@ -429,7 +435,7 @@
       <div class="note-list">
         • 请上传清晰的正面照片，效果更佳<br>
         • 体型比例分析（第11项）需上传全身照<br>
-        • 生成时间约2分钟-5分钟，请耐心等待<br>
+        • 生成4K超清图片，生成时间约3分钟-6分钟，请耐心等待<br>
       </div>
     </div>
 
@@ -541,7 +547,8 @@
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <div class="loading-text">AI正在分析中...</div>
-    <div class="loading-subtext">预计需要2分钟-5分钟，请耐心等待</div>
+    <div class="loading-subtext">正在生成4K超清图片，预计需要3分钟-6分钟，请耐心等待</div>
+    <div class="loading-subtext" style="color: #FF69B4; font-weight: 600; margin-top: 15px;">⚠️ 请勿离开页面，否则将导致分析失败</div>
   </div>
 
   <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>查询测试结果 - 心理测试中心</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      padding: 0;
+      background: linear-gradient(135deg, #FFF8F0 0%, #FFE4E1 100%);
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-logo-icon {
+      font-size: 28px;
+    }
+
+    .nav-logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF69B4, #E91E63);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .query-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 100px 20px 40px;
+    }
+
+    .query-header {
+      text-align: center;
+      padding: 40px 30px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .query-header-icon {
+      font-size: 60px;
+      margin-bottom: 16px;
+    }
+
+    .query-header-title {
+      font-size: 32px;
+      color: #FF69B4;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .query-header-desc {
+      font-size: 16px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    .query-form {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #f0f0f0;
+      border-radius: 12px;
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #FF69B4;
+      box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.1);
+    }
+
+    .form-input::placeholder {
+      letter-spacing: 2px;
+      text-transform: none;
+    }
+
+    .query-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #FF69B4, #E91E63);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+
+    .query-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4);
+    }
+
+    .query-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      color: #E91E63;
+      font-size: 14px;
+      margin-top: 12px;
+      text-align: center;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .results-section {
+      display: none;
+    }
+
+    .results-section.show {
+      display: block;
+    }
+
+    .results-header {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .results-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .results-count {
+      font-size: 14px;
+      color: #888;
+      background: #f5f5f5;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-card-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #FFF8F0, #FFE4E1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-type {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-type-icon {
+      font-size: 24px;
+    }
+
+    .result-type-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .result-time {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .result-card-body {
+      padding: 20px;
+    }
+
+    .result-image-preview {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .result-image-preview:hover {
+      transform: scale(1.02);
+    }
+
+    .result-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .result-info-item {
+      font-size: 14px;
+      color: #666;
+      background: #f8f8f8;
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .result-expired {
+      font-size: 13px;
+      color: #E91E63;
+      background: #FFF0F5;
+      padding: 8px 14px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-action-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #FF69B4, #E91E63);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #666;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: #eee;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .no-results-icon {
+      font-size: 60px;
+      margin-bottom: 16px;
+    }
+
+    .no-results-text {
+      font-size: 16px;
+      color: #888;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 图片放大模态窗口 */
+    .image-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .image-modal.active {
+      display: flex;
+    }
+
+    .image-modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .image-modal-img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .image-modal-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .image-modal-close:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      .query-header-title {
+        font-size: 24px;
+      }
+
+      .query-header-icon {
+        font-size: 48px;
+      }
+
+      .result-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .result-actions {
+        flex-direction: column;
+      }
+
+      .result-action-btn {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="home.html" class="nav-logo">
+        <span class="nav-logo-icon">🌸</span>
+        <span class="nav-logo-text">心理测试中心</span>
+      </a>
+      <a href="home.html" style="padding: 10px 20px; background: linear-gradient(135deg, #FF69B4, #E91E63); color: white; text-decoration: none; border-radius: 20px; font-size: 14px; font-weight: 600;">返回首页</a>
+    </div>
+  </nav>
+
+  <div class="query-container">
+    <div class="query-header">
+      <div class="query-header-icon">🔍</div>
+      <h1 class="query-header-title">查询测试结果</h1>
+      <p class="query-header-desc">
+        输入您的兑换码，即可查看该兑换码对应的所有测试结果<br>
+        包括心理测试、图片分析、证件照生成等全部记录
+      </p>
+    </div>
+
+    <div class="query-form">
+      <div class="form-group">
+        <label class="form-label">请输入您的兑换码</label>
+        <input type="text" class="form-input" id="codeInput" placeholder="请输入8位兑换码" maxlength="8" autocomplete="off">
+      </div>
+      <button class="query-btn" id="queryBtn" onclick="queryResults()">查询结果</button>
+      <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <div class="results-section" id="resultsSection">
+      <div class="results-header">
+        <div class="results-title">查询结果</div>
+        <div class="results-count" id="resultsCount">共 0 条记录</div>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+    </div>
+  </div>
+
+  <!-- 图片放大模态窗口 -->
+  <div class="image-modal" id="imageModal" onclick="closeImageModal(event)">
+    <div class="image-modal-content">
+      <button class="image-modal-close" onclick="closeImageModal(event)">&times;</button>
+      <img class="image-modal-img" id="imageModalImg" src="" alt="放大查看">
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin + '/api';
+
+    // 测试类型图标映射
+    const testTypeIcons = {
+      'mental-age': '🧠',
+      'mbti': '🔮',
+      'sbti': '🎭',
+      'nbti': '💕',
+      'disc': '📊',
+      'avoidant': '🛡️',
+      'city': '🏙️',
+      'anxious': '⚡',
+      'love-depth': '💫',
+      'secret-crush': '💕',
+      'lonely': '🌙',
+      'city-report': '📋'
+    };
+
+    // 测试结果页面映射
+    const testResultPages = {
+      'mental-age': 'index.html',
+      'mbti': 'mbti.html',
+      'sbti': 'sbti.html',
+      'nbti': 'nbti.html',
+      'disc': 'DISC.html',
+      'avoidant': 'avoidant.html',
+      'city': 'city.html',
+      'anxious': 'anxious.html',
+      'love-depth': 'love-depth.html',
+      'secret-crush': 'secret-crush.html',
+      'lonely': 'lonely.html'
+    };
+
+    async function queryResults() {
+      const codeInput = document.getElementById('codeInput');
+      const queryBtn = document.getElementById('queryBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      const resultsSection = document.getElementById('resultsSection');
+      const resultsList = document.getElementById('resultsList');
+      const resultsCount = document.getElementById('resultsCount');
+
+      const code = codeInput.value.trim().toUpperCase();
+
+      if (code.length !== 8) {
+        showError('请输入8位兑换码');
+        return;
+      }
+
+      // 显示加载状态
+      queryBtn.disabled = true;
+      queryBtn.innerHTML = '<span class="loading-spinner"></span>查询中...';
+      errorMessage.classList.remove('show');
+      resultsSection.classList.remove('show');
+
+      try {
+        const response = await fetch(`${API_BASE}/query-results`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || '查询失败');
+        }
+
+        // 显示结果
+        resultsCount.textContent = `共 ${data.totalResults} 条记录`;
+
+        if (data.totalResults === 0) {
+          resultsList.innerHTML = `
+            <div class="no-results">
+              <div class="no-results-icon">📭</div>
+              <div class="no-results-text">该兑换码暂无测试记录</div>
+            </div>
+          `;
+        } else {
+          resultsList.innerHTML = data.results.map(result => renderResultCard(result)).join('');
+        }
+
+        resultsSection.classList.add('show');
+
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        queryBtn.disabled = false;
+        queryBtn.innerHTML = '查询结果';
+      }
+    }
+
+    function showError(message) {
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
+      errorMessage.classList.add('show');
+    }
+
+    function renderResultCard(result) {
+      const time = formatDate(result.createdAt);
+      const icon = getResultIcon(result);
+
+      let bodyContent = '';
+
+      if (result.type === 'test') {
+        // 测试结果
+        bodyContent = `
+          <div class="result-info">
+            <span class="result-info-item">测试类型：${result.typeName}</span>
+          </div>
+          <div class="result-actions">
+            <a href="${testResultPages[result.testType] || 'home.html'}" class="result-action-btn btn-primary">
+              📊 查看测试页面
+            </a>
+          </div>
+        `;
+      } else if (result.type === 'imageAnalysis' || result.type === 'idPhoto' || result.type === 'idPhotoLayout') {
+        // 图片结果
+        const imageUrl = window.location.origin + '/' + result.resultImage;
+        const isExpired = result.isExpired;
+
+        bodyContent = `
+          <img src="${imageUrl}" class="result-image-preview" onclick="openImageModal(this)" alt="${result.typeName}">
+          <div class="result-info">
+            <span class="result-info-item">类型：${result.typeName}</span>
+            ${result.type === 'idPhotoLayout' ? `<span class="result-info-item">相纸：${result.paperSize}</span><span class="result-info-item">照片：${result.photoSize}</span>` : ''}
+          </div>
+          ${isExpired ? '<div class="result-expired">⏰ 图片已过期，无法下载</div>' : ''}
+          <div class="result-actions">
+            <a href="${imageUrl}" download class="result-action-btn btn-primary" ${isExpired ? 'style="pointer-events:none;opacity:0.5;"' : ''}>
+              📥 下载图片
+            </a>
+            <button class="result-action-btn btn-secondary" onclick="openImageModal(document.querySelector('.result-image-preview'))">
+              🔍 放大查看
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="result-card">
+          <div class="result-card-header">
+            <div class="result-type">
+              <span class="result-type-icon">${icon}</span>
+              <span class="result-type-name">${result.typeName}</span>
+            </div>
+            <div class="result-time">${time}</div>
+          </div>
+          <div class="result-card-body">
+            ${bodyContent}
+          </div>
+        </div>
+      `;
+    }
+
+    function getResultIcon(result) {
+      if (result.type === 'test') {
+        return testTypeIcons[result.testType] || '📝';
+      } else if (result.type === 'imageAnalysis') {
+        return '✨';
+      } else if (result.type === 'idPhoto') {
+        return '📸';
+      } else if (result.type === 'idPhotoLayout') {
+        return '🖨️';
+      }
+      return '📄';
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diff = now - date;
+
+      if (diff < 60000) {
+        return '刚刚';
+      } else if (diff < 3600000) {
+        return Math.floor(diff / 60000) + '分钟前';
+      } else if (diff < 86400000) {
+        return Math.floor(diff / 3600000) + '小时前';
+      } else if (diff < 604800000) {
+        return Math.floor(diff / 86400000) + '天前';
+      } else {
+        return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+
+    function openImageModal(imgElement) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('imageModalImg');
+      modalImg.src = imgElement.src;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal(event) {
+      if (event) {
+        const target = event.target;
+        if (target.classList.contains('image-modal-img')) return;
+      }
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // 回车键查询
+    document.getElementById('codeInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        queryResults();
+      }
+    });
+
+    // ESC关闭模态框
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    });
+  </script>
+</body>
+</html>

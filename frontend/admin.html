@@ -33,19 +33,34 @@
     .success-msg.show { display: block; }
 
     .admin-screen { display: none; }
-    .admin-screen.active { display: block; }
+    .admin-screen.active { display: flex; flex-direction: column; min-height: 100vh; }
 
     .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 16px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
     .header h1 { font-size: 18px; color: #333; }
     .header-right { display: flex; align-items: center; gap: 12px; }
     .header-right span { color: #666; font-size: 14px; }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .main-layout { display: flex; flex: 1; }
 
-    .tabs { display: flex; gap: 0; background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
-    .tab-btn { flex: 1; padding: 14px 20px; border: none; background: white; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
-    .tab-btn:hover { background: #f8f9fa; color: #333; }
-    .tab-btn.active { color: #667eea; border-bottom-color: #667eea; background: #f8f9ff; }
+    .sidebar { width: 220px; background: white; border-right: 1px solid #eee; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-menu { padding: 12px 0; }
+    .sidebar-item { display: flex; align-items: center; padding: 12px 20px; color: #666; font-size: 14px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; gap: 8px; }
+    .sidebar-item:hover { background: #f8f9fa; color: #333; }
+    .sidebar-item.active { color: #667eea; background: #f8f9ff; border-left-color: #667eea; font-weight: 600; }
+    .sidebar-item-icon { font-size: 16px; }
+
+    .sidebar-submenu { display: none; background: #f8f9fa; }
+    .sidebar-submenu.open { display: block; }
+    .sidebar-submenu .sidebar-item { padding-left: 48px; font-size: 13px; }
+    .sidebar-submenu .sidebar-item .sidebar-item-icon { font-size: 14px; }
+
+    .sidebar-item.has-submenu::after { content: '▼'; font-size: 10px; margin-left: auto; transition: transform 0.2s; }
+    .sidebar-item.has-submenu.open::after { transform: rotate(180deg); }
+
+    .main-content { flex: 1; padding: 20px; overflow-y: auto; background: #f0f2f5; }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
@@ -116,8 +131,12 @@
     .monthly-results-row td { border-top: none; }
 
     @media (max-width: 768px) {
-      .tabs { flex-wrap: wrap; }
-      .tab-btn { font-size: 12px; padding: 10px 12px; }
+      .main-layout { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #eee; }
+      .sidebar-menu { display: flex; flex-wrap: wrap; padding: 8px; }
+      .sidebar-item { padding: 10px 12px; font-size: 13px; }
+      .sidebar-submenu { position: absolute; left: 0; right: 0; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10; }
+      .sidebar-submenu .sidebar-item { padding-left: 20px; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       table { font-size: 12px; }
       th, td { padding: 8px 6px; }
@@ -135,11 +154,11 @@
       <form onsubmit="handleLogin(event)">
         <div class="form-group">
           <label for="username">用户名</label>
-          <input type="text" id="username" required>
+          <input type="text" id="username" autocomplete="username" required>
         </div>
         <div class="form-group">
           <label for="password">密码</label>
-          <input type="password" id="password" required>
+          <input type="password" id="password" autocomplete="current-password" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">登录</button>
         <div id="loginError" class="error"></div>
@@ -156,21 +175,51 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('overview')">📊 数据概览</button>
-        <button class="tab-btn" onclick="switchTab('codes')">💳 兑换码管理</button>
-        <button class="tab-btn" onclick="switchTab('results')">📋 结果查询</button>
-        <button class="tab-btn" onclick="switchTab('monthly')">📅 月卡管理</button>
-        <button class="tab-btn" onclick="switchTab('config')">⚙️ 测试配置</button>
+    <div class="main-layout">
+      <div class="sidebar">
+        <div class="sidebar-menu">
+          <div class="sidebar-item active" onclick="switchTab('overview')"><span class="sidebar-item-icon">📊</span>数据概览</div>
+          <div class="sidebar-item" onclick="switchTab('codes')"><span class="sidebar-item-icon">💳</span>兑换码管理</div>
+          <div class="sidebar-item has-submenu" onclick="toggleSubmenu(this)"><span class="sidebar-item-icon">📋</span>结果查询</div>
+          <div class="sidebar-submenu">
+            <div class="sidebar-item" onclick="switchTab('results')"><span class="sidebar-item-icon">📝</span>测试结果</div>
+            <div class="sidebar-item" onclick="switchTab('image-analysis')"><span class="sidebar-item-icon">🖼️</span>形象分析结果</div>
+            <div class="sidebar-item" onclick="switchTab('id-photo')"><span class="sidebar-item-icon">📷</span>证件照结果</div>
+            <div class="sidebar-item" onclick="switchTab('id-photo-layout')"><span class="sidebar-item-icon">🖨️</span>排版结果</div>
+            <div class="sidebar-item" onclick="switchTab('id-photo-compress')"><span class="sidebar-item-icon">🗜️</span>压缩结果</div>
+          </div>
+          <div class="sidebar-item" onclick="switchTab('monthly')"><span class="sidebar-item-icon">📅</span>月卡管理</div>
+          <div class="sidebar-item" onclick="switchTab('groups')"><span class="sidebar-item-icon">📁</span>测试分组</div>
+          <div class="sidebar-item" onclick="switchTab('config')"><span class="sidebar-item-icon">⚙️</span>测试配置</div>
+        </div>
       </div>
 
-      <div id="tab-overview" class="tab-content active">
+      <div class="main-content">
+        <div class="container">
+        <div id="tab-overview" class="tab-content active">
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card"><div class="stat-value" id="statTotal">-</div><div class="stat-label">总测试次数</div></div>
           <div class="stat-card green"><div class="stat-value" id="statToday">-</div><div class="stat-label">今日新增</div></div>
           <div class="stat-card orange"><div class="stat-value" id="statCodes">-</div><div class="stat-label">兑换码总数</div></div>
           <div class="stat-card blue"><div class="stat-value" id="statUsage">-</div><div class="stat-label">兑换码使用率</div></div>
+        </div>
+
+        <div class="section">
+          <h2>网站访问量</h2>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value" id="statTodayVisits">-</div><div class="stat-label">今日访问</div></div>
+            <div class="stat-card green"><div class="stat-value" id="statWeekVisits">-</div><div class="stat-label">近7天访问</div></div>
+          </div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;">
+            <div style="flex:1;min-width:300px;">
+              <h3 style="font-size:14px;color:#666;margin-bottom:12px;">访问趋势（近7天）</h3>
+              <div id="visitChart" class="bar-chart"></div>
+            </div>
+            <div style="flex:1;min-width:300px;">
+              <h3 style="font-size:14px;color:#666;margin-bottom:12px;">热门页面TOP10</h3>
+              <div id="topPagesChart" class="bar-chart"></div>
+            </div>
+          </div>
         </div>
 
         <div class="section">
@@ -194,26 +243,16 @@
           <h2>生成单次兑换码</h2>
           <div class="generate-form">
             <div class="form-item">
-              <label>数量</label>
+              <label for="codeCount">数量</label>
               <input type="number" id="codeCount" min="1" max="100" value="10">
             </div>
             <button class="btn btn-primary" onclick="generateCodes()">生成</button>
           </div>
           <div class="form-group" style="margin-bottom:12px;">
-            <label style="font-size:13px;color:#666;margin-bottom:8px;display:block;">使用范围（不选则全部可用）</label>
-            <div id="codeScope" style="display:flex;flex-wrap:wrap;gap:8px;">
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="image-analysis"> 个人形象分析</label>
-            </div>
+            <label for="codeGroupSelect" style="font-size:13px;color:#666;margin-bottom:8px;display:block;">选择分组</label>
+            <select id="codeGroupSelect" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;min-width:200px;">
+              <option value="">加载中...</option>
+            </select>
           </div>
           <div id="codeSuccess" class="success-msg"></div>
           <div id="generatedCodes" style="display:none;">
@@ -239,10 +278,8 @@
               <option value="active">有效月卡</option>
               <option value="expired">已过期</option>
             </select>
-            <select id="filterCodeScope">
-              <option value="">全部范围</option>
-              <option value="all">通用(全部可用)</option>
-              <option value="limited">限定范围</option>
+            <select id="filterCodeGroup">
+              <option value="">全部分组</option>
             </select>
             <button class="btn btn-primary btn-sm" onclick="loadCodes()">筛选</button>
             <button class="btn btn-secondary btn-sm" onclick="clearCodeFilters()">清除</button>
@@ -250,7 +287,8 @@
           <div class="action-bar">
             <button class="btn btn-primary btn-sm" onclick="loadCodes()">刷新列表</button>
             <button class="btn btn-success btn-sm" onclick="exportCodes()">导出 CSV</button>
-            <button class="btn btn-primary btn-sm" id="batchScopeBtn" style="display:none;" onclick="batchEditScope()">批量修改范围</button>
+            <button class="btn btn-primary btn-sm" id="batchScopeBtn" style="display:none;" onclick="batchEditScope()">批量修改分组</button>
+            <button class="btn btn-danger btn-sm" id="batchDeleteBtn" style="display:none;" onclick="batchDeleteCodes()">批量删除</button>
             <span id="selectedCount" style="font-size:13px;color:#666;"></span>
           </div>
           <div id="codesContainer" class="loading">加载中...</div>
@@ -272,8 +310,13 @@
               <option value="city">性格匹配城市测试</option>
               <option value="anxious">焦虑型依恋测试</option>
               <option value="love-depth">恋爱深度解析</option>
+              <option value="secret-crush">暗恋程度测试</option>
+              <option value="lonely">孤独程度测试</option>
               <option value="image-analysis">个人形象分析</option>
-            </select>
+          <option value="id-photo">证件照生成</option>
+          <option value="id-photo-layout">证件照排版</option>
+          <option value="id-photo-compress">证件照压缩</option>
+        </select>
             <input type="date" id="filterStartDate" title="开始日期">
             <input type="date" id="filterEndDate" title="结束日期">
             <button class="btn btn-primary btn-sm" onclick="loadResults()">查询</button>
@@ -283,43 +326,82 @@
         </div>
       </div>
 
+      <div id="tab-image-analysis" class="tab-content">
+        <div class="section">
+          <h2>形象分析结果查询</h2>
+          <div class="filter-bar">
+            <input type="date" id="filterImageAnalysisStartDate" title="开始日期">
+            <input type="date" id="filterImageAnalysisEndDate" title="结束日期">
+            <button class="btn btn-primary btn-sm" onclick="loadImageAnalysisResults()">查询</button>
+            <button class="btn btn-success btn-sm" onclick="exportImageAnalysisResults()">导出 CSV</button>
+          </div>
+          <div id="imageAnalysisResultsContainer" class="loading">点击查询加载数据</div>
+        </div>
+      </div>
+
+      <div id="tab-id-photo" class="tab-content">
+        <div class="section">
+          <h2>证件照结果查询</h2>
+          <div class="filter-bar">
+            <input type="date" id="filterIdPhotoStartDate" title="开始日期">
+            <input type="date" id="filterIdPhotoEndDate" title="结束日期">
+            <button class="btn btn-primary btn-sm" onclick="loadIdPhotoResults()">查询</button>
+          </div>
+          <div id="idPhotoResultsContainer" class="loading">点击查询加载数据</div>
+        </div>
+      </div>
+
+      <div id="tab-id-photo-layout" class="tab-content">
+        <div class="section">
+          <h2>证件照排版结果查询</h2>
+          <div class="filter-bar">
+            <input type="date" id="filterIdPhotoLayoutStartDate" title="开始日期">
+            <input type="date" id="filterIdPhotoLayoutEndDate" title="结束日期">
+            <button class="btn btn-primary btn-sm" onclick="loadIdPhotoLayoutResults()">查询</button>
+          </div>
+          <div id="idPhotoLayoutResultsContainer" class="loading">点击查询加载数据</div>
+        </div>
+      </div>
+
+      <div id="tab-id-photo-compress" class="tab-content">
+        <div class="section">
+          <h2>证件照压缩结果查询</h2>
+          <div class="filter-bar">
+            <input type="date" id="filterIdPhotoCompressStartDate" title="开始日期">
+            <input type="date" id="filterIdPhotoCompressEndDate" title="结束日期">
+            <button class="btn btn-primary btn-sm" onclick="loadIdPhotoCompressResults()">查询</button>
+          </div>
+          <div id="idPhotoCompressResultsContainer" class="loading">点击查询加载数据</div>
+        </div>
+      </div>
+
       <div id="tab-monthly" class="tab-content">
         <div class="section">
           <h2>创建月卡</h2>
           <div class="generate-form">
             <div class="form-item">
-              <label>数量</label>
+              <label for="monthlyCount">数量</label>
               <input type="number" id="monthlyCount" min="1" max="100" value="5">
             </div>
             <div class="form-item">
-              <label>有效天数</label>
+              <label for="monthlyDays">有效天数</label>
               <input type="number" id="monthlyDays" min="1" value="30">
             </div>
             <div class="form-item">
-              <label>使用次数限制</label>
+              <label for="monthlyLimit">使用次数限制</label>
               <input type="number" id="monthlyLimit" min="1" placeholder="不限" value="">
             </div>
             <div class="form-item">
-              <label>备注</label>
+              <label for="monthlyRemark">备注</label>
               <input type="text" id="monthlyRemark" placeholder="可选">
             </div>
             <button class="btn btn-primary" onclick="createMonthlyCards()">创建</button>
           </div>
           <div class="form-group" style="margin-bottom:12px;">
-            <label style="font-size:13px;color:#666;margin-bottom:8px;display:block;">使用范围（不选则全部可用）</label>
-            <div id="monthlyScope" style="display:flex;flex-wrap:wrap;gap:8px;">
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
-              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="image-analysis"> 个人形象分析</label>
-            </div>
+            <label for="monthlyGroupSelect" style="font-size:13px;color:#666;margin-bottom:8px;display:block;">选择分组</label>
+            <select id="monthlyGroupSelect" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;min-width:200px;">
+              <option value="">加载中...</option>
+            </select>
           </div>
           <div id="monthlySuccess" class="success-msg"></div>
           <div id="generatedMonthlyCodes" style="display:none;">
@@ -338,6 +420,55 @@
         </div>
       </div>
 
+      <div id="tab-groups" class="tab-content">
+        <div class="section">
+          <h2>测试分组管理</h2>
+          <p style="color:#999;font-size:13px;margin-bottom:16px;">创建测试分组后，兑换码关联到分组即可继承分组的使用范围。修改分组范围会自动影响所有关联的兑换码。</p>
+          <div class="action-bar">
+            <button class="btn btn-primary btn-sm" onclick="loadTestGroups()">刷新列表</button>
+            <button class="btn btn-success btn-sm" onclick="seedDefaultGroups()">初始化默认分组</button>
+          </div>
+          <div id="testGroupsContainer" class="loading">加载中...</div>
+        </div>
+
+        <div class="section">
+          <h2>添加新分组</h2>
+          <div class="generate-form">
+            <div class="form-item">
+              <label for="newGroupName">分组名称</label>
+              <input type="text" id="newGroupName" placeholder="如：恋爱专题">
+            </div>
+            <div class="form-item">
+              <label for="newGroupDesc">描述（可选）</label>
+              <input type="text" id="newGroupDesc" placeholder="如：只包含恋爱相关测试">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <div style="font-size:13px;color:#666;margin-bottom:8px;">包含的测试项目</div>
+            <div id="newGroupTests" style="display:flex;flex-wrap:wrap;gap:8px;">
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="secret-crush"> 暗恋程度测试</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="lonely"> 孤独程度测试</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="image-analysis"> 个人形象分析</label>
+              <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo"> 证件照生成</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo-layout"> 证件照排版</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo-compress"> 证件照压缩</label>
+          </div>
+          </div>
+          <button class="btn btn-primary" onclick="addTestGroup()">添加分组</button>
+          <div id="addGroupSuccess" class="success-msg"></div>
+        </div>
+      </div>
+
       <div id="tab-config" class="tab-content">
         <div class="section">
           <h2>已注册的测试项目</h2>
@@ -349,24 +480,26 @@
           <h2>添加新测试</h2>
           <div class="generate-form">
             <div class="form-item">
-              <label>测试名称</label>
+              <label for="newTestName">测试名称</label>
               <input type="text" id="newTestName" placeholder="如：九型人格测试">
             </div>
             <div class="form-item">
-              <label>TypeKey（英文标识）</label>
+              <label for="newTestTypeKey">TypeKey（英文标识）</label>
               <input type="text" id="newTestTypeKey" placeholder="如：enneagram">
             </div>
             <div class="form-item">
-              <label>页面文件名</label>
+              <label for="newTestPage">页面文件名</label>
               <input type="text" id="newTestPage" placeholder="如：enneagram.html">
             </div>
             <div class="form-item">
-              <label>排序权重</label>
+              <label for="newTestOrder">排序权重</label>
               <input type="number" id="newTestOrder" value="0" min="0">
             </div>
             <button class="btn btn-primary" onclick="addTestConfig()">添加</button>
           </div>
           <div id="addTestSuccess" class="success-msg"></div>
+        </div>
+      </div>
         </div>
       </div>
     </div>
@@ -385,15 +518,15 @@
       <button class="close-btn" onclick="closeEditModal()">&times;</button>
       <h3>编辑测试配置</h3>
       <div class="form-group">
-        <label>测试名称</label>
+        <label for="editTestName">测试名称</label>
         <input type="text" id="editTestName">
       </div>
       <div class="form-group">
-        <label>页面文件名</label>
+        <label for="editTestPage">页面文件名</label>
         <input type="text" id="editTestPage">
       </div>
       <div class="form-group">
-        <label>排序权重</label>
+        <label for="editTestOrder">排序权重</label>
         <input type="number" id="editTestOrder" min="0">
       </div>
       <input type="hidden" id="editTestId">
@@ -424,9 +557,16 @@
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="secret-crush"> 暗恋程度测试</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="lonely"> 孤独程度测试</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
         <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="image-analysis"> 个人形象分析</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="id-photo"> 证件照生成</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="id-photo-layout"> 证件照排版</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;"><input type="checkbox" value="id-photo-compress"> 证件照压缩</label>
       </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveCodeScope()">保存</button>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-primary" onclick="saveCodeScope()">保存</button>
         <button class="btn btn-secondary" onclick="closeEditScopeModal()">取消</button>
@@ -441,7 +581,7 @@
       <p style="color:#999;font-size:13px;margin-bottom:12px;">留空表示不限制次数</p>
       <input type="hidden" id="editLimitCodeId">
       <div class="form-group">
-        <label>使用次数上限</label>
+        <label for="editLimitValue">使用次数上限</label>
         <input type="number" id="editLimitValue" min="1" placeholder="不限">
       </div>
       <div style="display:flex;gap:10px;">
@@ -451,6 +591,51 @@
     </div>
   </div>
 
-  <script src="js/admin.js"></script>
+  <div id="editGroupModal" class="modal-overlay" onclick="if(event.target===this)closeEditGroupModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeEditGroupModal()">&times;</button>
+      <h3>编辑测试分组</h3>
+      <input type="hidden" id="editGroupId">
+      <div class="form-group">
+        <label for="editGroupName">分组名称</label>
+        <input type="text" id="editGroupName">
+      </div>
+      <div class="form-group">
+        <label for="editGroupDesc">描述（可选）</label>
+        <input type="text" id="editGroupDesc">
+      </div>
+      <div class="form-group">
+        <div style="font-size:13px;color:#666;margin-bottom:8px;">包含的测试项目</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="btn btn-sm btn-secondary" onclick="editGroupSelectAll()">全选</button>
+          <button class="btn btn-sm btn-secondary" onclick="editGroupInvertSelect()">反选</button>
+        </div>
+        <div id="editGroupTests" style="display:flex;flex-wrap:wrap;gap:8px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mental-age"> 心理年龄</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="mbti"> MBTI</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="sbti"> SBTI</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="nbti"> NBTI恋爱</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="disc"> DISC</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="avoidant"> 回避型依恋</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city"> 城市匹配</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="anxious"> 焦虑型依恋</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="love-depth"> 恋爱深度解析</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="secret-crush"> 暗恋程度测试</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="lonely"> 孤独程度测试</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="city-report"> 城市报告</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="image-analysis"> 个人形象分析</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo"> 证件照生成</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo-layout"> 证件照排版</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="id-photo-compress"> 证件照压缩</label>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="saveEditGroup()">保存</button>
+        <button class="btn btn-secondary" onclick="closeEditGroupModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js?v=2"></script>
 </body>
 </html>

@@ -3,16 +3,28 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
+import { setGlobalDispatcher, Agent } from 'undici';
 import config from './config/env.js';
 import { generalLimiter, errorHandler } from './middleware/auth.js';
 import { initializeDatabase } from './utils/database.js';
 import { startCleanupScheduler } from './utils/imageCleanup.js';
+import { visitTracker } from './middleware/visitTracker.js';
 import apiRoutes from './routes/api.js';
 import adminRoutes from './routes/admin.js';
 import imageAnalysisRoutes from './routes/imageAnalysis.js';
+import idPhotoRoutes from './routes/idPhoto.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// 设置全局HTTP代理，增加超时时间（图片生成API需要较长时间）
+// headersTimeout: 等待服务器响应headers的超时时间（10分钟）
+// bodyTimeout: 等待响应body的超时时间（10分钟）
+setGlobalDispatcher(new Agent({
+  headersTimeout: 10 * 60 * 1000,  // 10分钟
+  bodyTimeout: 10 * 60 * 1000,     // 10分钟
+  connectTimeout: 60 * 1000        // 连接超时1分钟
+}));
 
 const app = express();
 const prisma = new PrismaClient();
@@ -29,18 +41,22 @@ app.use(express.json());
 // 限流中间件放在json解析之后
 app.use(generalLimiter);
 
+// 访问统计中间件
+app.use(visitTracker);
+
 // 静态文件服务 - 服务前端文件
 const frontendPath = path.join(__dirname, '../../frontend');
 app.use(express.static(frontendPath));
 
 // 静态文件服务 - 服务上传的文件
-const uploadsPath = path.join(__dirname, '../../uploads');
+const uploadsPath = path.join(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadsPath));
 
 // 路由
 app.use('/api', apiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', imageAnalysisRoutes);
+app.use('/api', idPhotoRoutes);
 
 // 健康检查
 app.get('/health', (req, res) => {

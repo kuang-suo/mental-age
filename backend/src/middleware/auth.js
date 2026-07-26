@@ -30,8 +30,8 @@ export function errorHandler(err, req, res, next) {
 
 // 通用接口限流
 export const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15分钟
-  max: 100, // 限制每个IP 100次请求
+  windowMs: 1 * 60 * 1000, // 1分钟
+  max: 60, // 限制每个IP 60次请求
   standardHeaders: true, // 返回标准的限流响应头
   legacyHeaders: false, // 关闭旧版本的X-RateLimit-*头
   trustProxy: true, // 【核心新增】信任代理，和express的trust proxy配置匹配，解决报错

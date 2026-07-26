@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
+import sharp from 'sharp';
 import config from '../config/env.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -92,16 +93,23 @@ async function validateAndConsumeExchangeCode(tx, code, testType) {
       throw new Error('月卡已过期');
     }
     
-    const result = await tx.exchangeCode.updateMany({
-      where: { 
-        id: exchangeCode.id,
-        usedCount: { lt: exchangeCode.useLimit }
-      },
-      data: { usedCount: { increment: 1 }, usedAt: new Date() }
-    });
-    
-    if (result.count === 0) {
-      throw new Error('月卡使用次数已达上限');
+    if (exchangeCode.useLimit === null) {
+      await tx.exchangeCode.update({
+        where: { id: exchangeCode.id },
+        data: { usedCount: { increment: 1 }, usedAt: new Date() }
+      });
+    } else {
+      const result = await tx.exchangeCode.updateMany({
+        where: { 
+          id: exchangeCode.id,
+          usedCount: { lt: exchangeCode.useLimit }
+        },
+        data: { usedCount: { increment: 1 }, usedAt: new Date() }
+      });
+      
+      if (result.count === 0) {
+        throw new Error('月卡使用次数已达上限');
+      }
     }
   }
 
@@ -114,44 +122,131 @@ async function callImageAPI(imagePublicUrl, analysisType) {
     throw new Error('无效的分析类型');
   }
 
-  console.log(`调用图片生成API，图片URL: ${imagePublicUrl}`);
+  // 主API配置
+  const primaryConfig = {
+    apiUrl: config.imageAnalysis.apiUrl,
+    apiKey: config.imageAnalysis.apiKey,
+    model: config.imageAnalysis.model
+  };
 
-  const response = await fetch(`${config.imageAnalysis.apiUrl}/images/generations`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.imageAnalysis.apiKey}`
-    },
-    body: JSON.stringify({
-      model: config.imageAnalysis.model,
-      prompt: prompt,
-      size: '1520x1904',
-      quality: 'high',
-      response_format: 'url',
-      output_format: 'png',
-      background: 'auto',
-      moderation: 'auto',
-      image: [imagePublicUrl]
-    })
-  });
+  // 备用API配置
+  const backupConfig = config.imageAnalysis.backupApi;
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`API调用失败: ${response.status} - ${errorText}`);
+  // 将图片URL转换为base64格式
+  async function convertImageToBase64(imageUrl) {
+    console.log(`下载图片并转换为base64: ${imageUrl}`);
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`下载图片失败: ${response.status}`);
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = buffer.toString('base64');
+    // 根据图片类型确定mime type
+    const contentType = response.headers.get('content-type') || 'image/png';
+    return `data:${contentType};base64,${base64}`;
   }
 
-  const result = await response.json();
-  console.log('API返回结果:', JSON.stringify(result, null, 2));
+  // 尝试调用API的函数
+  async function tryApiCall(apiConfig, isBackup = false) {
+    const apiUrl = `${apiConfig.apiUrl}/images/generations`;
+    const label = isBackup ? '备用API' : '主API';
+    
+    console.log(`调用${label}: ${apiUrl}`);
+    console.log(`图片URL: ${imagePublicUrl}`);
+    console.log(`Model: ${apiConfig.model}`);
 
-  if (result.data && result.data[0] && result.data[0].url) {
-    return result.data[0].url;
+    // 根据是否是备用API使用不同的参数格式
+    let requestBody;
+    
+    if (isBackup) {
+      // 备用API（yunwu.ai）需要base64格式的图片
+      const imageBase64 = await convertImageToBase64(imagePublicUrl);
+      requestBody = {
+        model: apiConfig.model,
+        prompt: prompt,
+        size: 'auto',
+        quality: 'high',
+        response_format: 'url',
+        output_format: 'png',
+        n: 1,
+        image: [imageBase64]
+      };
+    } else {
+      // 主API使用原有参数格式（支持URL）
+      requestBody = {
+        model: apiConfig.model,
+        prompt: prompt,
+        size: '2160x2880',
+        quality: 'high',
+        response_format: 'url',
+        output_format: 'png',
+        background: 'auto',
+        moderation: 'auto',
+        image: [imagePublicUrl]
+      };
+    }
+
+    let response;
+    try {
+      response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiConfig.apiKey}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+    } catch (fetchError) {
+      console.error(`${label} Fetch错误: ${fetchError.message}`);
+      throw new Error(`${label}网络请求失败: ${fetchError.message}`);
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`${label}返回错误: ${response.status} - ${errorText}`);
+      throw new Error(`${label}调用失败: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log(`${label}返回结果:`, JSON.stringify(result, null, 2));
+
+    if (result.data && result.data[0] && result.data[0].url) {
+      return result.data[0].url;
+    }
+
+    if (result.url) {
+      return result.url;
+    }
+
+    throw new Error(`${label}返回格式异常，无法获取图片URL`);
   }
 
-  if (result.url) {
-    return result.url;
+  // 先尝试主API
+  try {
+    console.log('尝试使用主API...');
+    const imageUrl = await tryApiCall(primaryConfig, false);
+    console.log('主API调用成功');
+    return imageUrl;
+  } catch (primaryError) {
+    console.error(`主API失败: ${primaryError.message}`);
+    
+    // 如果有备用API配置，尝试使用备用API
+    if (backupConfig && backupConfig.apiUrl && backupConfig.apiKey) {
+      console.log('切换到备用API...');
+      try {
+        const imageUrl = await tryApiCall(backupConfig, true);
+        console.log('备用API调用成功');
+        return imageUrl;
+      } catch (backupError) {
+        console.error(`备用API也失败: ${backupError.message}`);
+        throw new Error(`主API和备用API都失败。主API错误: ${primaryError.message}；备用API错误: ${backupError.message}`);
+      }
+    }
+    
+    // 没有备用API配置，直接抛出主API错误
+    throw primaryError;
   }
-
-  throw new Error('API返回格式异常，无法获取图片URL');
 }
 
 async function downloadImage(url, savePath) {
@@ -176,12 +271,21 @@ export async function submitImageAnalysis(code, analysisType, photoFile) {
   
   const timestamp = Date.now();
   const randomStr = Math.random().toString(36).substring(2, 8);
-  const photoExt = path.extname(photoFile.originalname) || '.jpg';
-  const photoFilename = `${timestamp}_${randomStr}${photoExt}`;
+  const photoFilename = `${timestamp}_${randomStr}.jpg`;
   const photoPath = path.join(PHOTOS_DIR, photoFilename);
-  
-  fs.writeFileSync(photoPath, photoFile.buffer);
-  console.log(`照片已保存: ${photoFilename}`);
+
+  // 将图片转换为 JPG 格式，确保 AI API 兼容
+  try {
+    const convertedBuffer = await sharp(photoFile.buffer)
+      .jpeg({ quality: 95 })
+      .toBuffer();
+    fs.writeFileSync(photoPath, convertedBuffer);
+    console.log(`照片已转换为 JPG 格式并保存: ${photoFilename}`);
+  } catch (conversionError) {
+    console.error('图片转换失败，尝试直接保存:', conversionError.message);
+    fs.writeFileSync(photoPath, photoFile.buffer);
+    console.log(`照片已直接保存: ${photoFilename}`);
+  }
   
   const photoPublicUrl = `${config.imageAnalysis.serverUrl}/uploads/photos/${photoFilename}`;
   console.log(`照片公开URL: ${photoPublicUrl}`);

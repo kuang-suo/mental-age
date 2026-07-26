@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>心理测试中心</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .top-nav {
@@ -250,6 +251,75 @@
       padding: 4px 10px;
       background: #f5f5f5;
       border-radius: 10px;
+    }
+
+    .search-section {
+      background: white;
+      padding: 16px 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-icon {
+      font-size: 20px;
+      color: #999;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      color: #333;
+      background: transparent;
+    }
+
+    .search-input::placeholder {
+      color: #bbb;
+    }
+
+    .search-clear {
+      padding: 6px 12px;
+      background: #f5f5f5;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .search-clear:hover {
+      background: #eee;
+      color: #666;
+    }
+
+    .search-clear.show {
+      display: block;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      display: none;
+    }
+
+    .no-results-icon {
+      font-size: 60px;
+      margin-bottom: 16px;
+    }
+
+    .no-results-text {
+      font-size: 16px;
+      color: #999;
     }
 
     .section-title {
@@ -554,12 +624,20 @@
       <span class="code-hint-text">不知道如何获取兑换码？</span>
       <span class="code-hint-link" onclick="openImageModal(document.getElementById('codeHintImg'))">点击查看教程</span>
       <img id="codeHintImg" src="image/兑换码.png" alt="兑换码获取教程" style="display: none;">
+      <span style="margin: 0 8px; color: #ddd;">|</span>
+      <a href="query-results.html" class="code-hint-link">🔍 查询已有结果</a>
+    </div>
+
+    <div class="search-section">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索测试... 例如：MBTI、恋爱、依恋">
+      <button class="search-clear" id="searchClear">清除</button>
     </div>
 
     <div class="filter-section">
       <span class="filter-label">🏷️ 筛选：</span>
       <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">全部 <span class="filter-count">11</span></button>
+        <button class="filter-btn active" data-filter="all">全部 <span class="filter-count">13</span></button>
         <button class="filter-btn" data-filter="personality">🧠 性格</button>
         <button class="filter-btn" data-filter="love">💕 恋爱</button>
         <button class="filter-btn" data-filter="attachment">🛡️ 依恋</button>
@@ -571,7 +649,7 @@
 
     <h2 class="section-title" id="fun-tests">🎮 趣味测试</h2>
     <div class="test-grid" id="fun-test-grid">
-      <a href="index.html" class="test-card" data-category="personality">
+      <a href="index.html" class="test-card" data-category="personality" data-name="心理年龄测试" data-keywords="心理年龄 成熟度 性格 特质 情感">
         <div class="test-card-icon icon-pink">🧠</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -586,7 +664,7 @@
         </div>
       </a>
 
-      <a href="mbti.html" class="test-card" data-category="personality">
+      <a href="mbti.html" class="test-card" data-category="personality" data-name="MBTI 性格测试" data-keywords="MBTI 性格 16型人格 认知功能 职业倾向 人际关系">
         <div class="test-card-icon icon-purple">🔮</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -601,7 +679,7 @@
         </div>
       </a>
 
-      <a href="sbti.html" class="test-card" data-category="personality">
+      <a href="sbti.html" class="test-card" data-category="personality" data-name="SBTI 测试" data-keywords="SBTI 社会行为 行为风格 社交 决策 执行 团队">
         <div class="test-card-icon icon-teal">🎭</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -616,7 +694,7 @@
         </div>
       </a>
 
-      <a href="nbti.html" class="test-card" data-category="love">
+      <a href="nbti.html" class="test-card" data-category="love" data-name="NBTI 恋爱测试" data-keywords="NBTI 恋爱 恋爱人格 依恋模式 亲密关系 匹配">
         <div class="test-card-icon icon-hotpink">💕</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -631,7 +709,7 @@
         </div>
       </a>
 
-      <a href="city.html" class="test-card" data-category="city">
+      <a href="city.html" class="test-card" data-category="city" data-name="性格匹配城市测试" data-keywords="城市 性格匹配 定居 生活方式 价值观 未来规划">
         <div class="test-card-icon icon-blue">🏙️</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -646,7 +724,7 @@
         </div>
       </a>
 
-      <a href="avoidant.html" class="test-card" data-category="attachment">
+      <a href="avoidant.html" class="test-card" data-category="attachment" data-name="回避型依恋测试" data-keywords="回避型 依恋 亲密关系 情感疏离 安全感">
         <div class="test-card-icon icon-gold">🛡️</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -661,7 +739,7 @@
         </div>
       </a>
 
-      <a href="anxious.html" class="test-card" data-category="attachment">
+      <a href="anxious.html" class="test-card" data-category="attachment" data-name="焦虑型依恋测试" data-keywords="焦虑型 依恋 患得患失 不安全感 亲密关系">
         <div class="test-card-icon icon-orange">⚡</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -676,9 +754,39 @@
         </div>
       </a>
 
+      <a href="secret-crush.html" class="test-card" data-category="love" data-name="暗恋程度测试" data-keywords="暗恋 暗恋程度 表白 恋爱 心动 好感">
+        <div class="test-card-icon icon-hotpink">💕</div>
+        <div class="test-card-content">
+          <div class="test-card-header">
+            <div class="test-card-name">暗恋程度测试</div>
+            <div class="test-card-tag tag-love">💖 恋爱</div>
+          </div>
+          <p class="test-card-desc">你的暗恋有多深？15道题测出你对TA的真实心意，了解你的暗恋行为模式，获得表白时机建议。</p>
+          <div class="test-card-footer">
+            <div class="test-card-meta">约4分钟 · 暗恋程度</div>
+            <div class="test-card-btn btn-bg-hotpink">开始测试</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="lonely.html" class="test-card" data-category="personality" data-name="孤独程度测试" data-keywords="孤独 社交 连接 独处 归属感 人际关系">
+        <div class="test-card-icon icon-purple">🌙</div>
+        <div class="test-card-content">
+          <div class="test-card-header">
+            <div class="test-card-name">孤独程度测试</div>
+            <div class="test-card-tag tag-new">✨ 新上线</div>
+          </div>
+          <p class="test-card-desc">你的孤独感有多深？20道题测出你的社交连接状态，了解孤独的来源，获得针对性的改善建议。</p>
+          <div class="test-card-footer">
+            <div class="test-card-meta">约5分钟 · 社交状态</div>
+            <div class="test-card-btn btn-bg-purple">开始测试</div>
+          </div>
+        </div>
+      </a>
 
 
-      <a href="DISC.html" class="test-card" data-category="career">
+
+      <a href="DISC.html" class="test-card" data-category="career" data-name="DISC 测试" data-keywords="DISC 职场 支配 影响 稳健 服从 行为风格 团队协作">
         <div class="test-card-icon icon-purple">📊</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -698,7 +806,7 @@
     <h2 class="section-title" id="depth-tests">📊 深度测试/深度报告</h2>
     <div class="test-grid" id="depth-test-grid">
 
-      <a href="image-analysis.html" class="test-card" data-category="ai">
+      <a href="image-analysis.html" class="test-card" data-category="ai" data-name="个人形象分析" data-keywords="形象 AI 发型 妆容 穿搭 色彩 形象顾问">
         <div class="test-card-icon icon-hotpink">✨</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -713,7 +821,52 @@
         </div>
       </a>
 
-      <a href="love-depth.html" class="test-card" data-category="love">
+      <a href="id-photo.html" class="test-card" data-category="ai" data-name="个人证件照生成" data-keywords="证件照 AI 职业照 2寸照 韩式 男装 女装">
+        <div class="test-card-icon icon-blue">📸</div>
+        <div class="test-card-content">
+          <div class="test-card-header">
+            <div class="test-card-name">个人证件照生成</div>
+            <div class="test-card-tag tag-new">🔥 新功能</div>
+          </div>
+          <p class="test-card-desc">上传自拍照，AI为你生成专业证件照。支持男装/女装选择，提供高智感职业照、蓝色背景2寸照、韩式风格等多种风格。</p>
+          <div class="test-card-footer">
+            <div class="test-card-meta">AI生成 · 3种风格</div>
+            <div class="test-card-btn btn-bg-blue">开始生成</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="id-photo-compress.html" class="test-card" data-category="ai" data-name="证件照压缩工具" data-keywords="证件照 压缩 大小 尺寸 1寸 2寸 水印">
+        <div class="test-card-icon icon-orange">🗜️</div>
+        <div class="test-card-content">
+          <div class="test-card-header">
+            <div class="test-card-name">证件照压缩工具</div>
+            <div class="test-card-tag tag-new">✨ 新功能</div>
+          </div>
+          <p class="test-card-desc">上传证件照，自定义压缩尺寸和文件大小。支持1寸、2寸等预设尺寸，预览时自动添加水印，满足各类证件照上传要求。</p>
+          <div class="test-card-footer">
+            <div class="test-card-meta">自定义压缩 · 带水印预览</div>
+            <div class="test-card-btn btn-bg-orange">开始压缩</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="id-photo-layout.html" class="test-card" data-category="ai" data-name="证件照排版工具" data-keywords="证件照 排版 打印 相纸 5寸 6寸 A4">
+        <div class="test-card-icon icon-teal">🖨️</div>
+        <div class="test-card-content">
+          <div class="test-card-header">
+            <div class="test-card-name">证件照排版工具</div>
+            <div class="test-card-tag tag-new">✨ 新功能</div>
+          </div>
+          <p class="test-card-desc">上传证件照电子版，自动排版生成相纸打印图。支持5寸、6寸、A4等多种相纸尺寸，自动计算排版数量，一键下载或打印。</p>
+          <div class="test-card-footer">
+            <div class="test-card-meta">自动排版 · 多种尺寸</div>
+            <div class="test-card-btn btn-bg-teal">开始排版</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="love-depth.html" class="test-card" data-category="love" data-name="恋爱深度解析" data-keywords="恋爱 深度解析 恋爱人格 依恋模式 情感需求 24种人格">
         <div class="test-card-icon icon-love">💫</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -728,7 +881,7 @@
         </div>
       </a>
 
-      <a href="city-home.html" class="test-card" data-category="city">
+      <a href="city-home.html" class="test-card" data-category="city" data-name="城市深度调研报告" data-keywords="城市 调研报告 经济 就业 生活成本 定居策略 上海 北京 深圳 厦门 大理">
         <div class="test-card-icon icon-darkgold">🏙️</div>
         <div class="test-card-content">
           <div class="test-card-header">
@@ -751,7 +904,7 @@
         测试需要兑换码才能开始，兑换码通用趣味测试。
         <br>请在小红书购买兑换码，支持我们的创作。
       </p>
-      <a href="https://xhslink.com/m/3C1YqoEh1qn" class="xhs-link" target="_blank">🔗 点击前往小红书购买</a>
+      <a href="https://xhslink.com/m/3zEojDJxRrI" class="xhs-link" target="_blank">🔗 点击前往小红书购买</a>
     </div>
 
     <div class="wechat-promo">
@@ -762,19 +915,13 @@
       </p>
       <a href="https://xhslink.com/m/5f65Or9aHvY" class="xhs-link" style="background: linear-gradient(135deg, #07C160, #06AD56);" target="_blank">🔗 点击前往小红书购买</a>
     </div>
+  </div>
 
-    <div class="share-activity" id="shareActivity">
-      <h3 class="share-activity-title">🎁 晒单领大额劵0.1元可测试其它内容</h3>
-      <p class="share-activity-desc">晒单后免费获赠大额优惠券，可0.1元再测任意一个店铺内测试</p>
-      <img class="share-activity-flow" src="image/shaidan.png" alt="晒单流程" onclick="openImageModal(this)" title="点击放大查看">
-      <p class="share-activity-rule">活动规则以店铺内为准</p>
-    </div>
-
-    <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
-      <div class="image-modal-content">
-        <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
-        <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
-      </div>
+  <!-- 图片放大模态窗口 -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+    <div class="image-modal-content">
+      <button class="image-modal-close" onclick="closeImageModal(event)" aria-label="关闭">&times;</button>
+      <img id="imageModalImg" class="image-modal-img" src="" alt="放大查看">
     </div>
   </div>
 
@@ -815,46 +962,84 @@
       var depthTestGrid = document.getElementById('depth-test-grid');
       var funTestsTitle = document.getElementById('fun-tests');
       var depthTestsTitle = document.getElementById('depth-tests');
+      var searchInput = document.getElementById('searchInput');
+      var searchClear = document.getElementById('searchClear');
+      
+      var currentFilter = 'all';
+      var currentSearch = '';
+
+      function applyFilters() {
+        var visibleCount = 0;
+        var searchLower = currentSearch.toLowerCase().trim();
+
+        allCards.forEach(function(card) {
+          var category = card.getAttribute('data-category');
+          var name = (card.getAttribute('data-name') || '').toLowerCase();
+          var keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+          var desc = card.querySelector('.test-card-desc');
+          var descText = desc ? desc.textContent.toLowerCase() : '';
+
+          var matchFilter = currentFilter === 'all' || category === currentFilter;
+          var matchSearch = !searchLower || 
+            name.indexOf(searchLower) !== -1 || 
+            keywords.indexOf(searchLower) !== -1 || 
+            descText.indexOf(searchLower) !== -1;
+
+          if (matchFilter && matchSearch) {
+            card.style.display = 'flex';
+            card.style.animation = 'fadeIn 0.3s ease';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        var funVisible = 0;
+        funTestGrid.querySelectorAll('.test-card').forEach(function(c) {
+          if (c.style.display !== 'none') funVisible++;
+        });
+
+        var depthVisible = 0;
+        depthTestGrid.querySelectorAll('.test-card').forEach(function(c) {
+          if (c.style.display !== 'none') depthVisible++;
+        });
+
+        funTestsTitle.style.display = funVisible > 0 ? 'flex' : 'none';
+        depthTestsTitle.style.display = depthVisible > 0 ? 'flex' : 'none';
+
+        var countEl = document.querySelector('.filter-btn.active .filter-count');
+        if (countEl) {
+          countEl.textContent = visibleCount;
+        }
+      }
 
       filterBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
           filterBtns.forEach(function(b) { b.classList.remove('active'); });
           btn.classList.add('active');
-
-          var filter = btn.getAttribute('data-filter');
-          var visibleCount = 0;
-
-          allCards.forEach(function(card) {
-            var category = card.getAttribute('data-category');
-            if (filter === 'all' || category === filter) {
-              card.style.display = 'flex';
-              card.style.animation = 'fadeIn 0.3s ease';
-              visibleCount++;
-            } else {
-              card.style.display = 'none';
-            }
-          });
-
-          var funCards = funTestGrid.querySelectorAll('.test-card[style*="display: flex"], .test-card:not([style*="display: none"])');
-          var funVisible = 0;
-          funTestGrid.querySelectorAll('.test-card').forEach(function(c) {
-            if (c.style.display !== 'none') funVisible++;
-          });
-
-          var depthVisible = 0;
-          depthTestGrid.querySelectorAll('.test-card').forEach(function(c) {
-            if (c.style.display !== 'none') depthVisible++;
-          });
-
-          funTestsTitle.style.display = funVisible > 0 ? 'flex' : 'none';
-          depthTestsTitle.style.display = depthVisible > 0 ? 'flex' : 'none';
-
-          var countEl = document.querySelector('.filter-btn.active .filter-count');
-          if (countEl) {
-            countEl.textContent = visibleCount;
-          }
+          currentFilter = btn.getAttribute('data-filter');
+          applyFilters();
         });
       });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          currentSearch = searchInput.value;
+          if (searchClear) {
+            searchClear.classList.toggle('show', currentSearch.length > 0);
+          }
+          applyFilters();
+        });
+      }
+
+      if (searchClear) {
+        searchClear.addEventListener('click', function() {
+          searchInput.value = '';
+          currentSearch = '';
+          searchClear.classList.remove('show');
+          applyFilters();
+        });
+      }
     })();
   </script>
 </body>

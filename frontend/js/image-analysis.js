@@ -88,7 +88,7 @@ changePhotoBtn.addEventListener('click', (e) => {
 function handleFile(file) {
   const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
   if (!validTypes.includes(file.type)) {
-    showError('请上传 JPG、PNG 或 WEBP 格式的图片');
+    showError('请上传 JPG、PNG 或 WEBP 格式的图片（将自动转换为 JPG）');
     return;
   }
   
@@ -123,7 +123,12 @@ function updateSubmitButton() {
 }
 
 function showError(message) {
-  errorMessage.textContent = message;
+  // 如果是兑换码已被使用的提示，增加查询链接
+  if (message.includes('兑换码已被使用')) {
+    errorMessage.innerHTML = `${message}<br><a href="query-results.html" style="color: #E91E63; font-weight: 600; margin-top: 8px; display: inline-block;">🔍 点击查询已有结果</a>`;
+  } else {
+    errorMessage.textContent = message;
+  }
   errorMessage.classList.add('show');
 }
 

@@ -8,8 +8,13 @@ import {
   createMonthlyCards, getMonthlyCards, getMonthlyCardResults,
   updateCodeScope, batchUpdateCodeScope, updateMonthlyCardLimit,
   getTestConfigs, addTestConfig, updateTestConfig, deleteTestConfig, seedDefaultTestConfigs,
-  getImageAnalysisResults, getImageAnalysisResultById, deleteImageAnalysisResult, exportImageAnalysisResults
+  getImageAnalysisResults, getImageAnalysisResultById, deleteImageAnalysisResult, exportImageAnalysisResults,
+  getIdPhotoResults, getIdPhotoResultById, deleteIdPhotoResult,
+  getIdPhotoLayoutResults, getIdPhotoLayoutResultById, deleteIdPhotoLayoutResult,
+  getTestGroups, getTestGroupById, addTestGroup, updateTestGroup, deleteTestGroup, seedDefaultTestGroups,
+  deleteExchangeCode, batchDeleteExchangeCodes
 } from '../controllers/adminController.js';
+import { getVisitStats, cleanupOldLogs } from '../middleware/visitTracker.js';
 
 const router = express.Router();
 
@@ -40,7 +45,7 @@ router.get(
   query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
   query('codeType').optional().trim(),
   query('status').optional().trim(),
-  query('scope').optional().trim(),
+  query('groupId').optional().trim(),
   query('search').optional().trim(),
   async (req, res) => {
     try {
@@ -49,7 +54,7 @@ router.get(
       const filters = {
         codeType: req.query.codeType || null,
         status: req.query.status || null,
-        scope: req.query.scope || null,
+        groupId: req.query.groupId || null,
         search: req.query.search || null
       };
       const result = await getCodes(page, limit, filters);
@@ -65,6 +70,7 @@ router.post(
   '/generate-codes',
   authMiddleware,
   body('count').isInt({ min: 1, max: 100 }).withMessage('数量必须在1-100之间'),
+  body('groupId').optional({ checkFalsy: true }).isInt().toInt(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -72,7 +78,7 @@ router.post(
     }
 
     try {
-      const result = await generateCodes(req.body.count, req.body.allowedTestTypes || null);
+      const result = await generateCodes(req.body.count, req.body.groupId || null);
       res.json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -83,7 +89,7 @@ router.post(
 router.put(
   '/codes/:id/scope',
   authMiddleware,
-  body('allowedTestTypes').optional({ nullable: true }).isArray(),
+  body('groupId').optional({ checkFalsy: true }).isInt().toInt(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -93,7 +99,7 @@ router.put(
     try {
       const result = await updateCodeScope(
         parseInt(req.params.id),
-        req.body.allowedTestTypes || null
+        req.body.groupId || null
       );
       res.json(result);
     } catch (error) {
@@ -106,7 +112,7 @@ router.put(
   '/codes/batch-scope',
   authMiddleware,
   body('ids').isArray({ min: 1, max: 200 }).withMessage('请选择1-200个兑换码'),
-  body('allowedTestTypes').optional({ nullable: true }).isArray(),
+  body('groupId').optional({ checkFalsy: true }).isInt().toInt(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -116,8 +122,40 @@ router.put(
     try {
       const result = await batchUpdateCodeScope(
         req.body.ids,
-        req.body.allowedTestTypes || null
+        req.body.groupId || null
       );
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.delete(
+  '/codes/:id',
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const result = await deleteExchangeCode(parseInt(req.params.id));
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.post(
+  '/codes/batch-delete',
+  authMiddleware,
+  body('ids').isArray({ min: 1, max: 200 }).withMessage('请选择1-200个兑换码'),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const result = await batchDeleteExchangeCodes(req.body.ids);
       res.json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -240,6 +278,7 @@ router.post(
   body('count').isInt({ min: 1, max: 100 }).withMessage('数量必须在1-100之间'),
   body('validDays').optional().isInt({ min: 1 }).toInt(),
   body('useLimit').optional({ nullable: true }).isInt({ min: 1 }).toInt(),
+  body('groupId').optional({ checkFalsy: true }).isInt().toInt(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -252,7 +291,7 @@ router.post(
         req.body.validDays || 30,
         req.body.useLimit || null,
         req.body.remark || null,
-        req.body.allowedTestTypes || null
+        req.body.groupId || null
       );
       res.json(result);
     } catch (error) {
@@ -434,6 +473,233 @@ router.get(
       res.send('\uFEFF' + csv);
     } catch (error) {
       console.error('导出形象分析结果CSV失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// 证件照结果相关路由
+router.get(
+  '/id-photo-results',
+  authMiddleware,
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
+  query('startDate').optional().trim(),
+  query('endDate').optional().trim(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const result = await getIdPhotoResults(
+        req.query.page || 1,
+        req.query.limit || 20,
+        req.query.startDate,
+        req.query.endDate
+      );
+      res.json(result);
+    } catch (error) {
+      console.error('获取证件照结果列表失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.get('/id-photo-results/:id', authMiddleware, async (req, res) => {
+  try {
+    const result = await getIdPhotoResultById(parseInt(req.params.id));
+    if (!result) {
+      return res.status(404).json({ error: '结果不存在' });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error('获取证件照结果详情失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/id-photo-results/:id', authMiddleware, async (req, res) => {
+  try {
+    await deleteIdPhotoResult(parseInt(req.params.id));
+    res.json({ success: true, message: '删除成功' });
+  } catch (error) {
+    console.error('删除证件照结果失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 证件照排版结果相关路由
+router.get(
+  '/id-photo-layout-results',
+  authMiddleware,
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
+  query('startDate').optional().trim(),
+  query('endDate').optional().trim(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const result = await getIdPhotoLayoutResults(
+        req.query.page || 1,
+        req.query.limit || 20,
+        req.query.startDate,
+        req.query.endDate
+      );
+      res.json(result);
+    } catch (error) {
+      console.error('获取证件照排版结果列表失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.get('/id-photo-layout-results/:id', authMiddleware, async (req, res) => {
+  try {
+    const result = await getIdPhotoLayoutResultById(parseInt(req.params.id));
+    if (!result) {
+      return res.status(404).json({ error: '结果不存在' });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error('获取证件照排版结果详情失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/id-photo-layout-results/:id', authMiddleware, async (req, res) => {
+  try {
+    await deleteIdPhotoLayoutResult(parseInt(req.params.id));
+    res.json({ success: true, message: '删除成功' });
+  } catch (error) {
+    console.error('删除证件照排版结果失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/test-groups', authMiddleware, async (req, res) => {
+  try {
+    const groups = await getTestGroups();
+    res.json(groups);
+  } catch (error) {
+    console.error('获取测试分组失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/test-groups/:id', authMiddleware, async (req, res) => {
+  try {
+    const group = await getTestGroupById(parseInt(req.params.id));
+    if (!group) {
+      return res.status(404).json({ error: '分组不存在' });
+    }
+    res.json(group);
+  } catch (error) {
+    console.error('获取测试分组详情失败:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post(
+  '/test-groups',
+  authMiddleware,
+  body('name').trim().notEmpty().withMessage('分组名称不能为空'),
+  body('description').optional().trim(),
+  body('allowedTestTypes').optional().isArray(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const group = await addTestGroup(
+        req.body.name,
+        req.body.description || null,
+        req.body.allowedTestTypes || []
+      );
+      res.json(group);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.put(
+  '/test-groups/:id',
+  authMiddleware,
+  body('name').optional().trim().notEmpty(),
+  body('description').optional().trim(),
+  body('allowedTestTypes').optional().isArray(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const data = {};
+      if (req.body.name !== undefined) data.name = req.body.name;
+      if (req.body.description !== undefined) data.description = req.body.description;
+      if (req.body.allowedTestTypes !== undefined) data.allowedTestTypes = req.body.allowedTestTypes;
+
+      const group = await updateTestGroup(parseInt(req.params.id), data);
+      res.json(group);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+router.delete('/test-groups/:id', authMiddleware, async (req, res) => {
+  try {
+    await deleteTestGroup(parseInt(req.params.id));
+    res.json({ success: true, message: '删除成功' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.post('/test-groups/seed', authMiddleware, async (req, res) => {
+  try {
+    const result = await seedDefaultTestGroups();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get(
+  '/visit-stats',
+  authMiddleware,
+  query('days').optional().isInt({ min: 1, max: 30 }).toInt(),
+  async (req, res) => {
+    try {
+      const days = parseInt(req.query.days) || 7;
+      const stats = await getVisitStats(days);
+      res.json(stats);
+    } catch (error) {
+      console.error('获取访问统计失败:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.post(
+  '/cleanup-visit-logs',
+  authMiddleware,
+  body('daysToKeep').optional().isInt({ min: 7, max: 90 }).toInt(),
+  async (req, res) => {
+    try {
+      const daysToKeep = req.body.daysToKeep || 30;
+      const result = await cleanupOldLogs(daysToKeep);
+      res.json(result);
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }

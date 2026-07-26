@@ -9,7 +9,7 @@ export const generalLimiter = rateLimit({
 
 // 提交测试的速率限制（更严格）
 export const submitTestLimiter = rateLimit({
-  windowMs: 30 * 1000, // 30秒
+  windowMs: 10 * 1000, // 10秒
   max: 1, // 限制1个请求
   message: '提交过于频繁，请稍后再试',
   skip: (req) => req.ip === '::1' || req.ip === '127.0.0.1' // 本地开发环境跳过

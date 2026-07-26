@@ -11,15 +11,21 @@ export async function getQuestions() {
 
 export async function validateCode(code, testType) {
   const exchangeCode = await prisma.exchangeCode.findUnique({
-    where: { code }
+    where: { code },
+    include: {
+      group: {
+        select: { allowedTestTypes: true }
+      }
+    }
   });
 
   if (!exchangeCode) {
     throw new Error('兑换码不存在');
   }
 
-  if (exchangeCode.allowedTestTypes && Array.isArray(exchangeCode.allowedTestTypes) && exchangeCode.allowedTestTypes.length > 0) {
-    if (!testType || !exchangeCode.allowedTestTypes.includes(testType)) {
+  const allowedTestTypes = exchangeCode.group?.allowedTestTypes;
+  if (allowedTestTypes && Array.isArray(allowedTestTypes) && allowedTestTypes.length > 0) {
+    if (!testType || !allowedTestTypes.includes(testType)) {
       throw new Error('该兑换码不适用于当前测试');
     }
   }
